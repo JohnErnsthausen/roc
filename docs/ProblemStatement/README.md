@@ -7,10 +7,10 @@ my assignments for CSE 741 in the Fall 2020 semester.
 
 The folders and files for this folder are as follows:
 
-1 ProblemStatement.tex - Problem statement in Latex code
-2 Bib.bib - Bibliography in Latex code
-3 Makefile - Instructions to build a PDF document in the make build instructions
-4 ProblemStatement.pdf - The typeset document required for this assignment
+1. ProblemStatement.tex - Problem statement in Latex code
+2. Bib.bib - Bibliography in Latex code
+3. Makefile - Instructions to build a PDF document in the make build instructions
+4. ProblemStatement.pdf - The typeset document required for this assignment
 
 ## Build instructions
 
