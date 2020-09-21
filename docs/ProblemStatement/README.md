@@ -16,12 +16,8 @@ ProblemStatement.pdf - The typeset document required for this assignment
 
 To build Problemstatement.pdf
 
-'''
-make
-'''
+> make
 
 To remove temporary files
 
-'''
-make rm
-'''
+> make rm
