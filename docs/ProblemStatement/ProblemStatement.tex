@@ -3,9 +3,69 @@
 \usepackage{tabularx}
 \usepackage{booktabs}
 
-\title{CAS 741: Problem Statement\\Title of Project}
+\usepackage{amsmath,amssymb,xspace}
+% Environment
+\newcommand{\EQ}[1]{\begin{align} {#1} \end{align}}
+% Abbreviations
+\newcommand{\ode}{{\footnotesize ODE}\xspace}
+\newcommand{\dae}{{\footnotesize DAE}\xspace}
+\newcommand{\ivp}{{\footnotesize IVP}\xspace}
+\newcommand{\fadbad}{{\footnotesize FADBAD++}\xspace}
+\newcommand{\plainc}{{\footnotesize C}\xspace}
+\newcommand{\cpp}{{\footnotesize C++}\xspace}
+\newcommand{\adolc}{{\footnotesize ADOL-C}\xspace}
+\newcommand{\rdcon}{{\footnotesize DRDCV}\xspace}
+\newcommand{\fortran}{{\footnotesize FORTRAN 77}\xspace}
+\newcommand{\daets}{{\footnotesize DAETS}\xspace}
+% Mathematics
+\newcommand{\parn}[1]{( {#1} )}
+\newcommand{\parbg}[1]{\left(  {#1} \right)}
+\newcommand{\pbg}[1]{\bigl(  {#1} \bigr)}
+\def\Rz{\mathbb{R}}
+% Mathematics: ODE
+\newcommand{\iode}{\protect{\makebox{$[t_0,\tend]$}}\xspace}
+\newcommand{\lode}{\protect{\makebox{$[t_n,t_{n+1}]$}}\xspace}
+\newcommand{\tend}{t_\text{end}}
+\newcommand{\tc}[2]{(#1)_{#2}}
+\newcommand{\Tp}{T}
+\newcommand{\xn}{x_{n}}
+\newcommand{\tn}{t_{n}}
+% Reference
+\renewcommand{\eqref}[1]{(\ref{eq:#1})}
+\newcommand{\rrf}[2]{(\ref{eq:#1}--\ref{eq:#2})}
+\newcommand{\chref}[1]{\ref{ch:#1}}
+\newcommand{\sscref}[1]{\ref{ssc:#1}}
+\newcommand{\scref}[1]{Section~\ref{sc:#1}}
+\newcommand{\exref}[1]{\ref{ex:#1}}
+\newcommand{\rmref}[1]{\ref{rm:#1}}
+\newcommand{\apref}[1]{\ref{ap:#1}}
+\newcommand{\tbref}[1]{\ref{tb:#1}}
+\newcommand{\dfref}[1]{\ref{df:#1}}
+\newcommand{\leref}[1]{\ref{le:#1}}
+\newcommand{\fgref}[1]{\ref{fg:#1}}
+\newcommand{\coref}[1]{\ref{co:#1}}
+\newcommand{\thref}[1]{\ref{th:#1}}
+\newcommand{\agref}[1]{\ref{ag:#1}}
+\newcommand{\asref}[1]{\ref{as:#1}}
+\newcommand{\EQref}[1]{Equation~(\ref{eq:#1})}
+\newcommand{\CHref}[1]{Chapter~\ref{ch:#1}}
+\newcommand{\SSCref}[1]{Subsection~\ref{ssc:#1}}
+\newcommand{\SCref}[1]{Section~\ref{sc:#1}}
+\newcommand{\EXref}[1]{Example~\ref{ex:#1}}
+\newcommand{\RMref}[1]{Remark~\ref{rm:#1}}
+\newcommand{\APref}[1]{Appendix~\ref{ap:#1}}
+\newcommand{\TBref}[1]{Table~\ref{tb:#1}}
+\newcommand{\DFref}[1]{Definition~\ref{df:#1}}
+\newcommand{\LEref}[1]{Lemma~\ref{le:#1}}
+\newcommand{\FGref}[1]{Figure~\ref{fg:#1}}
+\newcommand{\COref}[1]{Corollary~\ref{co:#1}}
+\newcommand{\THref}[1]{Theorem~\ref{th:#1}}
+\newcommand{\AGref}[1]{Algorithm~\ref{ag:#1}}
+\newcommand{\ASref}[1]{Assumption~\ref{as:#1}}
 
-\author{Author name and macid}
+\title{CAS 741: Problem Statement\\Radius of Convergence}
+
+\author{John Ernsthausen (macid: ernsthjm)}
 
 \date{}
 
@@ -21,19 +81,56 @@
 \toprule
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
-Date1 & Name(s) & Description of changes\\
-Date2 & Name(s) & Description of changes\\
-... & ... & ...\\
+September 18, 2020 & John Ernsthausen & Initial draft\\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-Put your problem statement here.  Comments to you can be added, like this:
+After generating a real-valued Taylor series (TS) approximate solution of order $p$ to the
+ordinary differential equation (\ode) initial-value problem (\ivp) 
+\EQ
+{
+  \label{eq:introduction-mathematical-odeivp}
+  y'\parn{t} = f\pbg{t,y\parn{t}},
+  \quad
+  y\parn{t_0} = y_0 \in \mathcal D \subset \Rz^d,
+  \quad
+  t \in \iode \subset \Rz,
+}
+the TS methods defined in
+Jorba and Zou \cite{jorba2005software} (JZ),
+Bergsma and Mooij \cite{bergsma2016application} (BM),
+and
+Chang and Corliss \cite{chang1982} (CC)
+explicitly require an estimate for the TS radius of convergence (RC).
 
-\wss{comment}
+At each $\parn{t_n,x_n}$, $n \geq 0$, the TS method for the numerical solution
+of \eqref{introduction-mathematical-odeivp} computes Taylor coefficients (TCs)
+$\tc{\xn}{i}$ at $t_{n}$ to construct the TS approximate solution
+\begin{align}
+  \label{eq:tss}
+  \Tp(t) = \xn + \sum_{i=1}^{p}\tc{\xn}{i}(t-\tn)^{i} \quad\mbox{on}\quad \lode.
+\end{align}
+TCs can be readily computed through automatic differentiation (AD) with packages
+such as \fadbad \cite{FADBAD++} and \adolc \cite{GriewankADBook2/e}.
+In choosing the order $p$ and the stepsize $h = t_{n+1} - t_n$, the goal is to minimize the amount
+of computational work required during the integration process while maintaining a user specified accuracy tolerance. 
 
-You can also leave comments for yourself, like this:
+JZ compute the RC from the TS as the minimum of the $p-1$ and $p$ terms in the usual ratio test.
+While the JZ process is straightforward, it can be inaccurate.
+CC fit the tail of the computed TS to the TS of a model problem, which has proven to be satisfactory
+on standard test problems \cite{enright1987examples}.
 
-\an{comment}
+I propose to translate the decision logic of CC's method \rdcon from \fortran to \plainc/\cpp
+and broaden its applicability to TS methods in the differential-algebraic equation(\dae{}) solver
+\daets.
 
+%  \wss{comment}
+%  
+%  You can also leave comments for yourself, like this:
+%  
+%  \an{comment}
+
+\bibliographystyle{elsarticle-num} 
+\bibliography{Bib}
 \end{document}
