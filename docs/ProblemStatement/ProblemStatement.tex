@@ -82,6 +82,7 @@
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
 September 18, 2020 & John Ernsthausen & Initial draft\\
+September 25, 2020 & John Ernsthausen & Removed connection to \daets\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -121,9 +122,9 @@ While the JZ process is straightforward, it can be inaccurate.
 CC fit the tail of the computed TS to the TS of a model problem, which has proven to be satisfactory
 on standard test problems \cite{enright1987examples}.
 
-I propose to translate the decision logic of CC's method \rdcon from \fortran to \plainc/\cpp
-and broaden its applicability to TS methods in the differential-algebraic equation(\dae{}) solver
-\daets.
+I propose to estimate the RC of a given Taylor series based on top line analysis
+\cite[pp.~127--128]{chang1982}, one of several sub-algorithms of the CC algorithm.
+Top line analysis is the default approach when all their other tests fail.
 
 %  \wss{comment}
 %  
