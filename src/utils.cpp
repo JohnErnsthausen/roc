@@ -1,7 +1,13 @@
 #include "utils.h"
 
-#define x(i) x[i-1]
-#define y(i) y[i-1]
+#define map(i,j) ((j)-1)*lda+((i)-1)
+#define a(i,j) a[map(i,j)]
+#define map1(i) (i)-1
+#define x(i) x[map1(i)]
+#define y(i) y[map1(i)]
+#define ipiv(i) ipiv[map1(i)]
+#define wrk(i) wrk[map1(i)]
+#define tau(i) tau[map1(i)]
 
 int sgn(double val)
 {
@@ -13,46 +19,370 @@ double sign(double a, double b)
   return (b>=0.0) ? abs(a) : -abs(a);
 }
 
-void swap(double *x, double *y)
+void iswap(int *x, int *y)
+{
+  int tmp = *x;
+  *x = *y;
+  *y = tmp;
+}
+
+void dswap(double *x, double *y)
 {
   double tmp = *x;
   *x = *y;
   *y = tmp;
 }
 
-//  Generates an n-dimensional Householder reflector
+// Compute the QR factorization with column pivoting on all columns 
+// of an M by N matrix A
+//                     A*P = Q*R
 //
-//     H = I - tau*( 1 ) * ( 1 v' ),    H' * H = I,   tau scalar
-//                 ( v ) 
+// The matrix Q is represented as a product of elementary reflectors
 //
-//  such that
+//    Q = H(1) H(2) . . . H(k),   where k = min(m,n).
 //
-//     H * ( alpha ) = ( beta ),    alpha, beta scalars
-//         (   x   )   (   0  )     x  (n-1)-dimensional vector
+// Each H(i) has the form
 //
-//  Because of H'* H = I it follows that
-// 
-//     alpha^2 + x^T x = beta^2    ==> beta = sqrt(alpha^2 + x^T x)
+//    H(i) = I - tau * v * v'
 //
-//     H'( beta )  = ( alpha )     ==> tau = (beta - alpha)/beta
-//       (  0   )    (  x    )           v = xscal*x,  
-//                                   xscal = 1/(beta - alpha)
-//       
-//     If x = 0, then tau = 0 and H = I, otherwise  1 <= tau <= 2.
+// where tau is a real scalar, and v is a real vector with v(1:i-1) = 0
+// and v(i) = 1; v(i+1:m) is stored on exit in A(i+1:m,i), 
+// and tau in TAU(i).
 //
-//  This is an edited version of the LAPACK routine DLARFG
+// The matrix P is represented in IPIV as follows: If IPIV(j) = i
+// then the jth column of P is the ith canonical unit vector.
 //
-//  Variables in the calling sequence:
-//  ----------------------------------
-//  N      I   IN   Dimension of H
-//  ALPHA  D   IN   The scalar alpha
-//             OUT  The scalar beta
-//  X      D   IN   The given vector x of dimension n - 1
-//             OUT  The vector v
-//  INCX   I   IN   The increment between elements of X, INCX .NE. 0
-//  TAU    D   OUT  The scalar tau
-//  SAFMIN D   IN   Safe minimum such that 1.0/SAFMIN does not
-//                  overflow
+// Variables in the calling sequence
+// ---------------------------------
+// M      I   IN   The number of rows of the matrix A.  M >= 0.
+// N      I   IN   The number of columns of the matrix A.  N >= 0.
+// A      D   IN   The given M by N matrix
+//            OUT  The elements on and above the diagonal contain
+//                 the min(m,n) by n upper trapezoidal matrix R 
+//                 (R is upper triangular if m >= n); the elements 
+//                  belowthe diagonal, together with the array TAU, 
+//                  represent the orthogonal matrix Q as a product 
+//                  of min(m,n) elementary reflectors
+// LDA    I   IN   The leading dimension of A. LDA >= max(1,M).
+// IPIV   I   OUT  If IPIV(i) = k, then the i-th column of A*P was the 
+//                  k-th column of A.
+// TAU    I   OUT  Array of dimension min(M,N), The scalar factors of 
+//                 the elementary reflectors
+// WRK    D   WK   Work array of  dimension N
+// SAFMIN D   IN   Safe minimum such that 1.0/SAFMIN does not
+//                 overflow
+// IER    I   OUT  Error indicator
+//                 IER = 0   successful exit
+//                 IER = 1   data-error
+//                 IER = 2   input data error in HOUSL
+//                 IER < 0   zero pivot encountered
+int qrf( int m, int n, double *a, int lda, int *ipiv, double *tau,
+         double *wrk, double safmin, int *ier )
+{
+  const double fact = 0.05, one = 1.0, zer = 0.0;
+  int imax=0, ip1=0, mn=0;
+  double cnrm=0.0, cnrmj=0.0, taui=0.0, tmp1=0.0, tmp2=0.0, tmp3=0.0;
+
+  // Validate input
+  if( (m<0) || (n<0) || (lda<m) )
+  {
+    *ier = 1;
+    return 1;
+  }
+
+  // Quick return
+  if( (m==0) || (n==0) )
+  {
+    *ier = 0;
+    return 0;
+  }
+  
+  // Initialize column norms and pivot array
+  for(int i=1;i<=n;i++)
+  {
+    cnrm = ddist2(m,a+map(1,i),1,a+map(1,i),1,1);
+    tau(i)  = cnrm;
+    wrk(i)  = cnrm;
+    ipiv(i) = i;
+  }
+
+  mn = n;
+  if( m<n ) mn = m;
+
+  // Main loop for the factorization
+  for(int i=1;i<=mn;i++)
+  {
+    ip1 = i + 1;
+    // determine pivot column
+    cnrm = tau(i);
+    imax = i;
+    if( i<n )
+    {
+      for(int j=ip1;j<=n;j++)
+      {
+        if( tau(j)>cnrm )
+        {
+          imax = j;
+          cnrm = tau(j);
+        }
+      }
+      if( cnrm==zer)
+      {
+        printf("Message from QRF: Zero pivot encountered\n"); 
+        *ier = -i;
+      }
+      // Swap the columns if necessary
+      if( imax!=i )
+      {
+        for(int j=1;j<=m;j++)
+        {
+          dswap(a+map(j,imax), a+map(j,i));
+        }
+        iswap(ipiv+map1(imax), ipiv+map1(i));
+        tau(imax)  = tau(i);
+        wrk(imax)  = wrk(i);
+      }
+    }
+    if( cnrm==zer )
+    {
+      printf("Message from QRF: Zero pivot encountered\n"); 
+      *ier = -i;
+    }
+    else
+    {
+      // Generate elementary reflector H(i)
+      taui = zer;
+      if( i<m ) housg(m-i+1,a+map(i,i),a+map(ip1,i),1,&taui,safmin);
+      if( i<n )
+      {
+        // Apply h(i) to a(i:m,i+1:n) from the left
+        housl( m-i+1,n-i,a+map(i,i),1,taui,a+map(i,ip1),lda,ier );
+        if( *ier!=0 )
+        {
+          printf("Message from QRF: Input-dimension error in housl\n"); 
+          *ier = 2;
+          return *ier;
+        }
+        // Update column norms
+        for(int j=ip1;j<=n;j++)
+        {
+          cnrmj = tau(j);
+          if( cnrmj!=zer )
+          {
+            tmp1 = abs(a(i,j))/cnrmj;
+            tmp2 = one - tmp1*tmp1;
+            if( tmp2<=zer)
+            {
+              tmp2 = zer;
+              tmp3 = zer;
+            }
+            else
+            {
+              tmp3 = sqrt(tmp2);
+            }
+            tmp1 = cnrmj/wrk(j);
+            tmp2 = one + fact*tmp2*tmp1*tmp1;
+            if( tmp2==one )
+            {
+              tau(j) = ddist2(m-i,a+map(ip1,j),1,a+map(ip1,j),1,1);
+              wrk(j) = tau(j);
+            }
+            else
+            {
+              tau(j) = tau(j)*tmp3;
+            }
+          }
+        }
+      }
+      tau(i) = taui;
+    }
+  }
+  *ier = 0;
+  return *ier;
+}
+
+// For an  M x N matrix A with M >= N and rank A = N, and a given
+// M-vector Y, compute the least squares solution
+//
+//    min { || A*X - Y || ; X in R^N }
+//
+// by the algorithm  
+//
+//     1.  Y := Q^T Y
+//     2.  IF( M >= N ) THEN Solve R*Z := (I, 0)Y, Set X := Z
+//                      ELSE Solve R*Z := Y, Set X = (Z,0)
+//
+// under the assumption that the arrays A and TAU contain the
+// QR-factorization of an M x N matrix A.
+//
+// The routine returns Q^T Y in the array Y and the least squares
+// solution in the array X. The array X may be identified with Y 
+// if Q^T*Y is not needed.
+//
+// Variables in the calling sequence
+// ---------------------------------
+// M    I   IN   Number of rows of the matrix A, M >= N
+// N    I   IN   Number of columns of the matrix A
+// A    D   IN   Array of dimension LDA x n, the factored matrix
+// LDA  I   IN   Leading dimension of A, LDA >= M
+// TAU  D   IN   Array of dimension N containing the scalar 
+//               factor of the elementary reflectors, as 
+//               returned by QRF
+// Y    D   IN   Array of dimension M, the given vector Y 
+//          OUT  The vector Q^T Y
+// X    D   OUT  Array of dimension N, the computed solution
+// IER  I   OUT  Error indicator
+//               IER = 0   no error
+//               IER = 1  input data error
+//               IER < 0  zero pivot encountered
+//                        IER = -J signifies that the
+//                        J-th diagonal element of the
+//                        triangular matrix R is zero.
+//
+int qrs( int m, int n, double *a, int lda, double *tau, double *y, double *x, int *ier )
+{
+  const double zer=0.0;
+  int jm1,jp1;
+  double sum,t;
+
+  // Validate input: lda >= m >= 0 holds from these conditions
+  if( (m<0) || (n<0) || (m<n) || (lda<m) )
+  {
+    *ier = 1;
+    return 1;
+  }
+
+  // Quick return: 0 = m >= n >= 0 implies m=n=0 so that lda >= 0.
+  // If lda=0, then there is a quick return and matrix a is not accessed.
+  if( (n==0) || ((m==0) && (n==0)) )
+  {
+    *ier = 0;
+    return 0;
+  }
+  
+  // The case m = 1, under the assumption m >= n, implies n=1
+  if( m==1 )
+  {
+    if( a(1,1)==zer )
+    {
+      printf("Message from QRS: Zero pivot encountered\n"); 
+      *ier = -1;
+      return -1;
+    }
+    else
+    {
+      x(1) = y(1)/a(1,1);
+      *ier = 0;
+      return 0;
+    }
+  }
+
+  // Compute transpose(Q)*y
+  //
+  // The matrix Q is represented as a product of elementary reflectors
+  //
+  //    Q = H(1) H(2) . . . H(k),   where k = min(m,n).
+  //
+  // Each H(i) has the form
+  //
+  //    H(i) = I - tau * v * v'
+  //
+  //  v(1) = 1. transpose(Q) = H(j) H(j-1) . . . H(1).
+  for( int j=1;j<=n;j++)
+  {
+    jp1 = j + 1;
+
+    // Multiply transpose(v)*y
+    sum = y(j); // The first element of the elementary vector is 1
+    if( j<m )
+    {
+      for(int i=jp1;i<=m;i++)
+      {
+        sum = sum + a(i,j)*y(i); // v stored in lower triangle of A
+      }
+    }
+
+    // y overwritten by y - tau(j)*(transpose(v)*y)*v
+    if( sum!=zer ) // v is not zero
+    {
+      t = - tau(j)*sum;
+      y(j) = y(j) + t; // The first element of v is 1
+      if( j<m )
+      {
+        for(int i=jp1;i<=m;i++)
+        {
+          y(i) = y(i) + t*a(i,j);
+        }
+      }
+    }
+  }
+
+  // Set x := the first n components of y
+  for(int j=1;j<=n;j++)
+  {
+    x(j) = y(j);
+  }
+  // R is stored in the upper triangle of A including diagonal.
+  //
+  // Solve R*Z := (I,0)Y, and set X := Z
+  // or solve  R*Z := Y, and set X := (Z,0)
+  for(int j=n;j>=1;j--)
+  {
+    if( a(j,j)==zer )
+    {
+      printf("Message from QRS: Zero pivot encountered\n"); 
+      *ier = -j;
+      return -j;
+    }
+    // Back substitution
+    x(j) = x(j)/a(j,j);
+    if( j>1 )
+    {
+      jm1 = j - 1;
+      t = -x(j);
+      for(int i=1;i<=jm1;i++)
+      {
+        x(i) = x(i) + t*a(i,j);
+      }
+    }
+  }
+  *ier = 0;
+  return *ier;
+}
+
+// Generates an n-dimensional Householder reflector
+//
+//    H = I - tau*( 1 ) * ( 1 v' ),    H' * H = I,   tau scalar
+//                ( v ) 
+//
+// such that
+//
+//    H * ( alpha ) = ( beta ),    alpha, beta scalars
+//        (   x   )   (   0  )     x  (n-1)-dimensional vector
+//
+// Because of H'* H = I it follows that
+//
+//    alpha^2 + x^T x = beta^2    ==> beta = sqrt(alpha^2 + x^T x)
+//
+//    H'( beta )  = ( alpha )     ==> tau = (beta - alpha)/beta
+//      (  0   )    (  x    )           v = xscal*x,  
+//                                  xscal = 1/(beta - alpha)
+//      
+//    If x = 0, then tau = 0 and H = I, otherwise  1 <= tau <= 2.
+//
+// This is an edited version of the LAPACK routine DLARFG
+//
+// Variables in the calling sequence:
+// ----------------------------------
+// N      I   IN   Dimension of H
+// ALPHA  D   IN   The scalar alpha
+//            OUT  The scalar beta
+// X      D   IN   The given vector x of dimension n - 1
+//            OUT  The vector v
+// INCX   I   IN   The increment between elements of X, INCX .NE. 0
+// TAU    D   OUT  The scalar tau
+// SAFMIN D   IN   Safe minimum such that 1.0/SAFMIN does not
+//                 overflow
 int housg(int n, double *alpha, double *x, int incx, double *tau, double safmin)
 {
   const double one=1.0, zer=0.0;
@@ -96,6 +426,7 @@ int housg(int n, double *alpha, double *x, int incx, double *tau, double safmin)
   kx = 1;
   if( incx<0 ) kx = 1 - (n-1)*incx;
 
+  // Compute alpha, beta, tau, and xscal
   a1 = xnorm;
   a2 = abs(*alpha);
   if( a1<a2 )
@@ -113,6 +444,8 @@ int housg(int n, double *alpha, double *x, int incx, double *tau, double safmin)
     beta = a2*sqrt( one + tmp*tmp );
   }
   if( *alpha>zer ) beta = -beta;
+
+  // Test for loss of accuracy
   if( abs(beta)>=safmin )
   {
     *tau = (beta - *alpha) / beta;
@@ -193,103 +526,135 @@ int housg(int n, double *alpha, double *x, int incx, double *tau, double safmin)
   return 0;
 }
 
-//  Computes either the Euclidean distance between two N-dimensional 
-//  vectors X and Y or the Euclidean norm of one such vector X. 
+// Multiplies a given M x N matrix A from the (L)eft by an 
+// M-dimensional Householder reflector
 //
-//  Call the routine 
-//  either
-//     with KVEC = 2 and two vectors X and Y of dimension N stored
-//     with storage-increments INCX and INCY, respectively.
-//  or
-//     with KVEC = 1 and one vector X of dimension N stored
-//     with storage-increment INCX. In this case the second array 
-//     is not referenced and can be a dummy array or simply the
-//     array X again.
+//    H = I - tau*x*x',   H' * H = I,  x = ( 1 )    
+//                                         ( v ) 
 //
-//  If N .LE. 0 then zero is returned, if N .GE. 1 then the
-//  storage increments cannot be zero.
+// that is, overwrite A by the product H * A
 //
-//  The algorithm follows the four-phase method of C. L. Lawson in the
-//  LAPACK routine DNRM2.F.  As in DNRM2.F two built-in constants are 
-//  used that are hopefully applicable to all machines.
-//     CUTLO = maximum of  DSQRT(u/eps)  over all known machines.
-//     CUTHI = minimum of  DSQRT(v)      over all known machines.
-//  where
-//     eps = smallest number such that 1.0d0 + eps .gt. 1.0d0
-//     u   = smallest positive number  (underflow limit)
-//     v   = largest  number           (overflow  limit)
+// Variables in the calling sequence:
+// ----------------------------------
+// M     I   IN   The number of rows of A
+// N     I   IN   The number of columns of A
+// X     D   IN   The given vector x. x(1) = 1.0 is enforced
+// INCX  I   IN   The increment between elements of X, INCX .NE. 0
+// TAU   D   IN   The scalar tau
+// A     D   IN   The given matrix of dimension M x N
+//           OUT  The computed matrix product H * A
+// LDA   I   IN   The leading dimension of the array A, LDA >= M
+// IER   I   OUT  Error indicator
+//                IER = 0  no error
+//                IER = 1  input-data error
+int housl(int m, int n, double *x, int incx, double tau, double *a, int lda, int *ier)
+{
+  const double zer=0.0;
+  int ix=0, kx=0;
+  double sum=0.0, tmp=0.0;
+
+  // Valid data
+  if( (m<0) || (n<0) || (incx==0) || (lda<m) )
+  {
+    *ier = 1;
+    return 1;
+  }
+
+  // Quick return
+  if( (m==0) || (n==0) || (tau==0.0) )
+  {
+    *ier = 0;
+    return 0;
+  }
+
+  kx = 1;
+  if( incx<0 ) kx = 1 - (m-1)*incx;
+  
+  // Compute w = A' * x and  A := A - tau * x * w'
+
+  for(int j=1;j<=n;j++)
+  {
+    sum = a(1,j);
+    if( m>1 )
+    {
+      ix = kx;
+      for(int i=2;i<=m;i++)
+      {
+        ix  = ix + incx;
+        sum = sum + a(i,j)*x(ix);
+      }
+    }
+    if( sum!=zer )
+    {
+      tmp = -tau*sum;
+      a(1,j) = a(1,j) + tmp;
+      if( m>1)
+      {
+        ix = kx;
+        for(int i=2;i<=m;i++)
+        {
+          ix     = ix + incx;
+          a(i,j) = a(i,j) + x(ix)*tmp;
+        }
+      }
+    }
+  }
+  return *ier;
+}
+
+// Computes either the Euclidean distance between two N-dimensional 
+// vectors X and Y or the Euclidean norm of one such vector X. 
 //
-//  Values for CUTLO and CUTHI listed in DNRM2.F are as follows:
+// Call the routine 
+// either
+//    with KVEC = 2 and two vectors X and Y of dimension N stored
+//    with storage-increments INCX and INCY, respectively.
+// or
+//    with KVEC = 1 and one vector X of dimension N stored
+//    with storage-increment INCX. In this case the second array 
+//    is not referenced and can be a dummy array or simply the
+//    array X again.
 //
-//     CUTLO, s.p.  u/eps = 2**(-102) for honeywell. Close 
-//                  seconds are univac and dec at 2**(-103)
-//                  thus CUTLO = 2**(-51) = 4.44089e-16
-//     CUTHI, s.p.  v = 2**127 for univac, honeywell, and dec.
-//                  thus CUTHI = 2**(63.5) = 1.30438e19
-//     CUTLO, d.p.  u/eps = 2**(-67) for honeywell and dec.
-//                  thus CUTLO = 2**(-33.5) = 8.23181d-11
-//     CUTHI, d.p.  same as s.p.  CUTHI = 1.30438d19
+// If N .LE. 0 then zero is returned, if N .GE. 1 then the
+// storage increments cannot be zero.
 //
-//     data cutlo, cuthi / 8.232d-11,  1.304d19 /
-//     data cutlo, cuthi / 4.441e-16,  1.304e19 /                 
+// This code is inspired by the LAPACK function DNRM2 written by
+// Sven Hammarling.
 //
-//  In line with the four phases of DNRM2.F, the algorithm uses 
-//  four states identified by LEVEL = 0,1,2,3, respectively, 
-//  which correspond to the following cases:
-//
-//     LEVEL = 0  only zero terms have been found so far
-//     LEVEL = 1  all nonzero terms encountered so far do not
-//                exceed CUTLO in modulus
-//     LEVEL = 2  there are some terms that are larger than
-//                CUTLO in modulus but none exceeds 
-//                HITEST = CUTLO/DBLE(N) 
-//     LEVEL = 3  there are terms that exceed HITEST in modulus.
-//
-//  All state transitions can only increase the LEVEL.
-//
-//  Variables in the calling sequence
-//  ---------------------------------
-//     N     I    IN   Dimension of the vectors X and Y
-//     X     D    IN   The first vector of dimension N
-//     INCX  I    IN   Storage increment of X
-//     Y     D    IN   The second vector of dimension N
-//     INYY  D    IN   Storage increment of Y
-//     KVEC  I    IN   Number of vectors
-//                     KVEC = 1  Only one vector, namely X, is given,
-//                               the Euclidean norm of X is computed  
-//                               and the Y array is not referenced
-//                               This is the default
-//                     KVEC = 2  Two vectors X and Y  are given,
-//                               the Euclidean distance between 
-//                               X and Y is computed
+// Variables in the calling sequence
+// ---------------------------------
+//    N     I    IN   Dimension of the vectors X and Y
+//    X     D    IN   The first vector of dimension N
+//    INCX  I    IN   Storage increment of X
+//    Y     D    IN   The second vector of dimension N
+//    INYY  D    IN   Storage increment of Y
+//    KVEC  I    IN   Number of vectors
+//                    KVEC = ANY INTEGER OTHER THAN 2
+//                              Only one vector, namely X, is given,
+//                              the Euclidean norm of X is computed  
+//                              and the Y array is not referenced
+//                              This is the default
+//                    KVEC = 2  Two vectors X and Y  are given,
+//                              the Euclidean distance between 
+//                              X and Y is computed
 //
 double ddist2( int n, double *x, int incx, double *y, int incy, int kvec)
 {
-  const double zer=0.0, one=1.0, cutlo=8.232e-11, cuthi=1.304e19;
+  const double zer=0.0, one=1.0;
 
-  int ix=1, iy=1, level=0, job=1;
-  double ddist2 = zer;
+  int ix=1, iy=1;
   double diff=0.0, dx=0.0, dy=0.0;
-  double hitest=0.0;
-  double sum=0.0, tmp=0.0, trm=0.0, xmax=0.0;
+  double scale=0.0, sum=0.0, tmp=0.0, trm=0.0;
 
-  // The inner product is computed whenever kvec=2.
-  // Otherwise proceeds as if kvec=1.
-  job= ( kvec==2 ) ? 2 : 1;
+  if( kvec!=2 ) kvec = 1;
 
-  // If n<=0, then define the norm of x or the inner product of x with y to be zero
+  // Define the inner product to be zero whenever the dimension is not positive or
+  // a storage incrementor (incx/incy) is zero
   if( n <= 0 ) return zer;
-
-  // If the storage-increment incx equals zero, then define the norm of x to be zero
-  if( job==1 && incx==0 ) return zer;
-
-  // If both incx and incy equal zero, then define the inner product of x with y to be zero
-  if( job==2 && incx==0 && incy==0 ) return zer;
+  if( kvec==1 && incx==0 ) return zer;
+  if( kvec==2 && incx==0 && incy==0 ) return zer;
   
-  // Initializations
-
-  hitest = cuthi/n;
-  if( hitest < cutlo ) hitest = cutlo;
+  // Initialize incrementors
 
   ix = 1;
   if( incx < 0 ) ix = (-n+1)*incx + 1;
@@ -297,14 +662,12 @@ double ddist2( int n, double *x, int incx, double *y, int incy, int kvec)
   if( incy < 0 ) iy = (-n+1)*incy + 1;
 
   sum = zer;
-  xmax = zer;
-  level = 0;
-
-  for(int j=1;j<n;j++)
+  scale = zer;
+  for(int j=1;j<=n;j++)
   {
     dx = x(ix);
     ix = ix + incx;
-    if( job==1 )  // One vector case
+    if( kvec==1 )  // One vector case
     {
       diff = dx;
     }
@@ -313,127 +676,60 @@ double ddist2( int n, double *x, int incx, double *y, int incy, int kvec)
       dy = y(iy);
       iy = iy + incy;
 
-      // Compute diff = dx - dy to avoid subtractive cancellation
-
-      if( sgn(dx) != sgn(dy) )
-      {
-        // If dx and dy are not of the same sgn, then safely subtract
-        diff = dx - dy;
-      }
-      else
-      {
-        // If dx and dy are of the same sign, then subtract by
-        // 1.) make sure dx > dy
-        // 2.a) We have sgn(dx)=sgn(dy).
-        //      If dx=0, then dy=0. Thus diff=0.
-        // 2.b) else Subtract dx - dy = dx*(one-dy/dx)
-        if( abs(dx) < abs(dy) )
-        {
-           tmp = dy;
-           dy  = dx;
-           dx  = tmp;
-        }
-        if( dx == zer )
-        {
-           diff = zer;
-        }
-        else
-        {
-           diff = dx*(one - dy/dx);
-        }
-      }
+      // Compute diff = dx - dy
+      diff = diff_avoids_subtractive_cancellation(dx, dy);
     }
     
-    // Sum the squares of the nonzero terms
+    // Sum the scaled squares (all less than or equal to one) of the nonzero terms.
 
     if( diff!=zer )
     {
       trm = abs(diff);
-      if( trm<=cutlo ) // Very small terms
+      if( scale<trm )
       {
-        if( level==0 ) // The first nonzero term encountered
-        {
-          level = 1;
-          xmax = trm;
-          tmp = trm/xmax;
-          sum = sum + tmp*tmp;
-        }
-        else
-        { 
-          if( level==1 )
-          {
-            if( trm>xmax )
-            {
-              tmp = xmax/trm;
-              sum = one + sum*tmp*tmp;
-              xmax = trm;
-            }
-            else
-            {
-              tmp = trm/xmax;
-              sum = sum + tmp*tmp;
-            }
-          }
-          else
-          {           
-            sum = sum + trm*trm;
-          }
-        }
+        tmp = scale/trm;
+        sum = one + sum*tmp*tmp;
+        scale = trm;
       }
       else
       {
-        // Mid-sized terms -- transition to level 2
-        if( level==0 )
-        {
-           level = 2;
-        }
-        else
-        {
-          if( level==1)
-          {
-            level = 2;
-            sum = (sum * xmax) * xmax;
-          }
-        }
-  
-        if( trm<=hitest )
-        {
-          sum = sum + trm*trm;
-        }
-        else
-        {
-          // large terms
-          if( level==2 )
-          {
-            // transition to level = 3
-            level = 3;
-            sum = (sum / trm) / trm;
-            xmax = trm;
-          }
-
-          if( trm>xmax )
-          {
-            tmp = xmax/trm;
-            sum = one + sum*tmp*tmp;
-            xmax = trm;
-          }
-          else
-          {
-            tmp = trm/xmax;
-            sum = sum + tmp*tmp;
-          }
-        }
-      } // Mid
+        tmp = trm/scale;
+        sum += tmp*tmp;
+      }
     }
   }
+  return scale*sqrt(sum);
+}
 
-  if( (xmax==zer) || (level==2) )
+// If dx and dy are not of the same sgn, then safely subtract
+//
+// else
+//
+// If dx and dy are of the same sign, then subtract by
+// 1.) make sure dx > dy
+// 2.a) We have sgn(dx)=sgn(dy).
+//      If dx=0, then dy=0. Thus diff=0.
+// 2.b) else Subtract dx - dy = dx*(one-dy/dx)
+double diff_avoids_subtractive_cancellation(double dx, double dy)
+{
+  const double zer=0.0, one=1.0;
+  double diff=0.0;
+
+  if( sgn(dx) != sgn(dy) )
   {
-    ddist2 = sqrt(sum);
+    diff = dx - dy;
   }
   else
   {
-    ddist2 = xmax *sqrt(sum);
+    if( abs(dx) < abs(dy) ) dswap(&dx,&dy);
+    if( dx == zer )
+    {
+       diff = zer;
+    }
+    else
+    {
+       diff = dx*(one - dy/dx);
+    }
   }
-  return ddist2;
+  return diff;
 }

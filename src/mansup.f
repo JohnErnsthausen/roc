@@ -1,3 +1,7 @@
+  for(int col=1; col<=n; col++)
+    for(int row=1; row<=m; row++)
+      printf("A[%d][%d]=%22.16f\n",row,col,a(row,col));
+  printf("\n\n");
        PROGRAM FUN
 
        INTEGER N,INCX
