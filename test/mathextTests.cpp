@@ -8,12 +8,14 @@ extern "C"
 
 using namespace testing;
 
-TEST(TestThatMathext, SgnFunctionReturnsNegativeOneWhenEvaluatedAtNegativeTwelve)
+TEST(TestThatMathext,
+     SgnFunctionReturnsNegativeOneWhenEvaluatedAtNegativeTwelve)
 {
   ASSERT_THAT(sgn(-12.0), Eq(-1));
 }
 
-TEST(TestThatMathext, SgnFunctionReturnsPositiveOneWhenEvaluatedAtPositiveTwelve)
+TEST(TestThatMathext,
+     SgnFunctionReturnsPositiveOneWhenEvaluatedAtPositiveTwelve)
 {
   ASSERT_THAT(sgn(12.0), Eq(1.0));
 }

@@ -1,5 +1,5 @@
-#include <tgmath.h>
 #include "dist.h"
+#include <tgmath.h>
 #include "mathext.h"
 #include "swap.h"
 
@@ -7,16 +7,16 @@
 #define x(i) x[ map1(i) ]
 #define y(i) y[ map1(i) ]
 
-// Computes either the Euclidean distance between two N-dimensional 
-// vectors X and Y or the Euclidean norm of one such vector X. 
+// Computes either the Euclidean distance between two N-dimensional
+// vectors X and Y or the Euclidean norm of one such vector X.
 //
-// Call the routine 
+// Call the routine
 // either
 //    with KVEC = 2 and two vectors X and Y of dimension N stored
 //    with storage-increments INCX and INCY, respectively.
 // or
 //    with KVEC = 1 and one vector X of dimension N stored
-//    with storage-increment INCX. In this case the second array 
+//    with storage-increment INCX. In this case the second array
 //    is not referenced and can be a dummy array or simply the
 //    array X again.
 //
@@ -36,43 +36,43 @@
 //    KVEC  I    IN   Number of vectors
 //                    KVEC = ANY INTEGER OTHER THAN 2
 //                              Only one vector, namely X, is given,
-//                              the Euclidean norm of X is computed  
+//                              the Euclidean norm of X is computed
 //                              and the Y array is not referenced
 //                              This is the default
 //                    KVEC = 2  Two vectors X and Y  are given,
-//                              the Euclidean distance between 
+//                              the Euclidean distance between
 //                              X and Y is computed
 //
-double ddist2( int n, double *x, int incx, double *y, int incy, int kvec)
+double ddist2(int n, double *x, int incx, double *y, int incy, int kvec)
 {
-  const double zer=0.0, one=1.0;
+  const double zer = 0.0, one = 1.0;
 
-  int ix=1, iy=1;
-  double diff=0.0, dx=0.0, dy=0.0;
-  double scale=0.0, sum=0.0, tmp=0.0, trm=0.0;
+  int ix = 1, iy = 1;
+  double diff = 0.0, dx = 0.0, dy = 0.0;
+  double scale = 0.0, sum = 0.0, tmp = 0.0, trm = 0.0;
 
-  if( kvec!=2 ) kvec = 1;
+  if (kvec != 2) kvec = 1;
 
-  // Define the inner product to be zero whenever the dimension is not positive or
-  // a storage incrementor (incx/incy) is zero
-  if( n <= 0 ) return zer;
-  if( kvec==1 && incx==0 ) return zer;
-  if( kvec==2 && incx==0 && incy==0 ) return zer;
-  
+  // Define the inner product to be zero whenever the dimension is not positive
+  // or a storage incrementor (incx/incy) is zero
+  if (n <= 0) return zer;
+  if (kvec == 1 && incx == 0) return zer;
+  if (kvec == 2 && incx == 0 && incy == 0) return zer;
+
   // Initialize incrementors
 
   ix = 1;
-  if( incx < 0 ) ix = (-n+1)*incx + 1;
+  if (incx < 0) ix = (-n + 1) * incx + 1;
   iy = 1;
-  if( incy < 0 ) iy = (-n+1)*incy + 1;
+  if (incy < 0) iy = (-n + 1) * incy + 1;
 
   sum = zer;
   scale = zer;
-  for(int j=1;j<=n;j++)
+  for (int j = 1; j <= n; j++)
   {
     dx = x(ix);
     ix = ix + incx;
-    if( kvec==1 )  // One vector case
+    if (kvec == 1)  // One vector case
     {
       diff = dx;
     }
@@ -84,26 +84,27 @@ double ddist2( int n, double *x, int incx, double *y, int incy, int kvec)
       // Compute diff = dx - dy
       diff = diff_avoids_subtractive_cancellation(dx, dy);
     }
-    
-    // Sum the scaled squares (all less than or equal to one) of the nonzero terms.
 
-    if( diff!=zer )
+    // Sum the scaled squares (all less than or equal to one) of the nonzero
+    // terms.
+
+    if (diff != zer)
     {
       trm = fabs(diff);
-      if( scale<trm )
+      if (scale < trm)
       {
-        tmp = scale/trm;
-        sum = one + sum*tmp*tmp;
+        tmp = scale / trm;
+        sum = one + sum * tmp * tmp;
         scale = trm;
       }
       else
       {
-        tmp = trm/scale;
-        sum += tmp*tmp;
+        tmp = trm / scale;
+        sum += tmp * tmp;
       }
     }
   }
-  return scale*sqrt(sum);
+  return scale * sqrt(sum);
 }
 
 // If dx and dy are not of the same sgn, then safely subtract
@@ -117,23 +118,23 @@ double ddist2( int n, double *x, int incx, double *y, int incy, int kvec)
 // 2.b) else Subtract dx - dy = dx*(one-dy/dx)
 double diff_avoids_subtractive_cancellation(double dx, double dy)
 {
-  const double zer=0.0, one=1.0;
-  double diff=0.0;
+  const double zer = 0.0, one = 1.0;
+  double diff = 0.0;
 
-  if( sgn(dx) != sgn(dy) )
+  if (sgn(dx) != sgn(dy))
   {
     diff = dx - dy;
   }
   else
   {
-    if( fabs(dx) < fabs(dy) ) dswap(&dx,&dy);
-    if( dx == zer )
+    if (fabs(dx) < fabs(dy)) dswap(&dx, &dy);
+    if (dx == zer)
     {
-       diff = zer;
+      diff = zer;
     }
     else
     {
-       diff = dx*(one - dy/dx);
+      diff = dx * (one - dy / dx);
     }
   }
   return diff;
