@@ -1,3 +1,7 @@
+extern "C"
+{
+#include "swap.h"
+}
 #include "utils.h"
 
 #define map(i,j) ((j)-1)*lda+((i)-1)
@@ -17,20 +21,6 @@ int sgn(double val)
 double sign(double a, double b)
 {
   return (b>=0.0) ? abs(a) : -abs(a);
-}
-
-void iswap(int *x, int *y)
-{
-  int tmp = *x;
-  *x = *y;
-  *y = tmp;
-}
-
-void dswap(double *x, double *y)
-{
-  double tmp = *x;
-  *x = *y;
-  *y = tmp;
 }
 
 // Compute the QR factorization with column pivoting on all columns 

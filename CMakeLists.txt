@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.18)
 
 # Radius Of Convergence
 project(ROC)
@@ -34,24 +34,27 @@ set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O2")
 
-set(PROJECT_LINK_LIBS libroc.a)
 message("-- Using this project source dir: [${PROJECT_SOURCE_DIR}]")
-link_directories(${PROJECT_SOURCE_DIR}/build)
 
-include_directories(${PROJECT_SOURCE_DIR}/include)
-
-file(GLOB ROC_SRC src/*.c src/*.cpp)
-add_library(roc STATIC ${ROC_SRC})
+file(GLOB all_SRCS
+        "${PROJECT_SOURCE_DIR}/src/*.cpp"
+        "${PROJECT_SOURCE_DIR}/src/*.c"
+        )
+add_library(roc SHARED ${all_SRCS})
+target_include_directories(roc PRIVATE ${PROJECT_SOURCE_DIR}/include)
 
 find_package(GTest REQUIRED)
 if(GTEST_FOUND)
   set(Gtest_FOUND TRUE)
 endif()
 if(GTest_FOUND)
-  include(GoogleTest)
+  file(GLOB ROC_TESTS "${PROJECT_SOURCE_DIR}/test/*.cpp")
+  set(TEST_EXE_NAME run)
   enable_testing()
-  add_executable(run test/MainTests.cpp test/HouseholderTests.cpp )
-  target_link_libraries(run GTest::GTest)
-  target_link_libraries(run ${PROJECT_LINK_LIBS})
-  gtest_discover_tests(run)
+  include(GoogleTest)
+  add_executable(${TEST_EXE_NAME} test/MainTests.cpp test/swapTests.cpp test/HouseholderTests.cpp)
+  target_include_directories(${TEST_EXE_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include)
+  target_link_libraries(${TEST_EXE_NAME} GTest::GTest)
+  target_link_libraries(${TEST_EXE_NAME} roc)
+  gtest_discover_tests(${TEST_EXE_NAME})
 endif()

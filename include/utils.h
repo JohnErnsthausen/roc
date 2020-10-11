@@ -13,8 +13,6 @@
 
 int sgn(double val);
 double sign(double a, double b);
-void dswap(double *x, double *y);
-void iswap(int *x, int *y);
 
 int housg(int n, double *alpha, double *x, int incx, double *tau, double safemin);
 int housl(int m, int n, double *x, int incx, double tau, double *a, int lda, int *ier);

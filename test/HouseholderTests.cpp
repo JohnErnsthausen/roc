@@ -48,26 +48,6 @@ TEST(TestThatUtils, SignFunctionReturnsNegativeTwelveWhenEvaluatedAtNegativeTwel
   ASSERT_THAT(sign(-12.0,-1.0), DoubleEq(-12.0));
 }
 
-TEST(TestThatUtils, HasSwapDoubleMethod)
-{
-  double a=1.0, b=2.0;
-
-  dswap(&a,&b);
-
-  EXPECT_THAT(a,DoubleEq(2.0));
-  EXPECT_THAT(b,DoubleEq(1.0));
-}
-
-TEST(TestThatUtils, HasSwapIntegerMethod)
-{
-  int a=1, b=2;
-
-  iswap(&a,&b);
-
-  EXPECT_THAT(a,Eq(2));
-  EXPECT_THAT(b,Eq(1));
-}
-
 class TestThatDDIST2: public Test
 {
  public:
@@ -927,7 +907,7 @@ class TestThatQRSIntegrationTest: public Test
 // Problem from
 // https://tutorial.math.lamar.edu/Classes/CalcII/PowerSeries.aspx
 //
-// Ignore the first 17 terms of the TCs.
+// We want to fit the tail of the Taylor series, ignore the first 17 terms of the TCs.
 //
 // Solve on the first two components
 // transpose(Q)*b=transpose(Q)*A*E*E*x=transpose(Q)*Q*R*E*x=R*E*x

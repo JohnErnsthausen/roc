@@ -51,6 +51,11 @@ task :rm_swp do
   Rake::Cleaner.cleanup_files(SWAP_FILES)
 end
 
+desc "Run clang format on all files"
+task :clang do
+  sh "find . -regex '.*\.\(cpp\|hpp\|cu\|c\|h\)' -exec clang-format -style=file -i {} \;"
+end
+
 desc "Git HEAD tarball"
 task :tar do
   dirname = Dir.getwd
