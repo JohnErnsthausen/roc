@@ -53,7 +53,8 @@ end
 
 desc "Run clang format on all files"
 task :clang do
-  sh "find . -regex '.*\.\(cpp\|hpp\|cu\|c\|h\)' -exec clang-format -style=file -i {} \;"
+  matchers = %w{cpp hpp cu c h}.collect{|ext| "**/*.#{ext}" }
+  FileList.new(matchers).exclude(/^build/).each{|f| sh "clang-format -i #{f}"}
 end
 
 desc "Git HEAD tarball"
