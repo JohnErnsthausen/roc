@@ -20,8 +20,11 @@ With the software described above in place, there are two ways to compile the co
 the developer is in the top level directory roc/. Then
 
 > mkdir build
+
 > cd build
+
 > cmake ..
+
 > make
 
 The Ruby shortcut to do all this in one simple command is
@@ -40,11 +43,13 @@ to learn all the advantage of this small but mighty script. For example, format 
 or run all the unit tests with
 
 > rake test
+
 > rake run
 
 Clean up the repository with
 
 > rake clean
+
 > rake clobber
 
 Examples reside in the directory roc/examples. Change to this directory and type
@@ -58,6 +63,7 @@ and a Makefile will be constructed and executed. To execute the software built f
 Clean up the directories with a
 
 > make clean
+
 > rake clean
 
 To remove the Makefile, type
