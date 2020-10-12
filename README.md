@@ -1,6 +1,6 @@
 # Radius of Convergence
 
-Developer(s) Name: John Ernsthausen
+Developer(s) Name: John Ernsthausen<br>
 Date of project start: 17 September 2020
 
 ## Introduction
