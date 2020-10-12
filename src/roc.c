@@ -1,8 +1,8 @@
-#include <stdio.h>
-#include <float.h>
-#include <tgmath.h>
-#include <stdlib.h>
 #include <assert.h>
+#include <float.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <tgmath.h>
 
 #include "qrfactorization.h"
 
@@ -16,17 +16,20 @@
 
 //  error code 1 if less than 10 coefficients to estimate Rc
 
-int roc(int num_tc, double *tc, double scale, int kstart, double *rc, double *slope, double *intercept)
+int roc(int num_tc, double *tc, double scale, int kstart, double *rc,
+        double *slope, double *intercept)
 {
-  if( num_tc-kstart<11 )
+  if (num_tc - kstart < 11)
   {
-    printf("Message from ROC: Need at least 10 Taylor coefficients to estimate Rc\n");
+    printf(
+        "Message from ROC: Need at least 10 Taylor coefficients to estimate "
+        "Rc\n");
     return 1;
   }
 
   int m = num_tc - kstart + 1;
   int lda = m, n = 2, min_m_n = 0;
-  int res=0, ier=0;
+  int res = 0, ier = 0;
   double *a = NULL;
   int *ipiv = NULL;
   double *tau = NULL;
@@ -81,31 +84,35 @@ int roc(int num_tc, double *tc, double scale, int kstart, double *rc, double *sl
 
   // Construct the least squares linear system
   //
-  // We want to fit the tail of the Taylor series, ignore the first kstart terms of
-  // the TCs.
-  for(int k=kstart; k<=num_tc; k++)
+  // We want to fit the tail of the Taylor series, ignore the first kstart terms
+  // of the TCs.
+  for (int k = kstart; k <= num_tc; k++)
   {
-    int row = k-kstart+1;
-    a(row,1) = 1.0;
-    a(row,2) = (double) k;
-    y(row)   = log10(fabs( tc(k) ));
+    int row = k - kstart + 1;
+    a(row, 1) = 1.0;
+    a(row, 2) = (double)k;
+    y(row) = log10(fabs(tc(k)));
   }
 
   // Find the QRFactorization of the least squares linear system
   res = qrf(m, n, a, lda, ipiv, tau, wrk, safmin, &ier);
-  if( res!= 0 || ier!=0 )
+  if (res != 0 || ier != 0)
   {
-    printf("Error QR factoring A with res[%d]!=0 or ier[%d]!=0\n",res,ier);
+    printf("Error QR factoring A with res[%d]!=0 or ier[%d]!=0\n", res, ier);
   }
 
-  // Find the least squares solution of the linear system via the QRFactorization
+  // Find the least squares solution of the linear system via the
+  // QRFactorization
   //
   // Solve on the first (two) n rows of R as in
   // transpose(Q)*b=transpose(Q)*A*E*E*x=transpose(Q)*Q*R*E*x=R*E*x
   res = qrs(m, n, a, lda, tau, y, x, &ier);
-  if( res!= 0 || ier!=0 )
+  if (res != 0 || ier != 0)
   {
-    printf("Error finding the Least Squares Solution with res[%d]!=0 or ier[%d]!=0\n",res,ier);
+    printf(
+        "Error finding the Least Squares Solution with res[%d]!=0 or "
+        "ier[%d]!=0\n",
+        res, ier);
   }
 
   // If Taylor coefficients TC(i) are unscaled, then the scaled TCs are
@@ -123,11 +130,12 @@ int roc(int num_tc, double *tc, double scale, int kstart, double *rc, double *sl
   //
   // by linear least squares. Then
   //
-  // Log10(L) = Log10(abs(T(i+1))/abs(T(i))) = Log10(abs(T(i+1)))-Log10(abs(T(i)))
+  // Log10(L) = Log10(abs(T(i+1))/abs(T(i))) =
+  // Log10(abs(T(i+1)))-Log10(abs(T(i)))
   //          = m*(i+1)+b - (m*i+b) = m
-  // 
+  //
   // It follows that
-  // 
+  //
   // rc = 1/L = scale/pow(10, m).
   *rc = scale / pow(10, x(ipiv(2)));
   *intercept = x(ipiv(1));

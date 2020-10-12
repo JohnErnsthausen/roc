@@ -1,5 +1,5 @@
-#include <tgmath.h>
 #include <stdio.h>
+#include <tgmath.h>
 
 #include "roc.h"
 
@@ -17,18 +17,24 @@ int main(void)
   int num_tc = NUM_TC, kstart = 18;
   int res;
   double scale = 1.0;
-  double rc = 0.0, slope=0.0, intercept=0.0;
-  double tc[NUM_TC] = {0};
+  double rc = 0.0, slope = 0.0, intercept = 0.0;
+  double tc[ NUM_TC ] = {0};
 
-  for(int k=0; k<num_tc; k++) { tc[k] = pow(8,k+1)/((double) (k+1)); }
+  for (int k = 0; k < num_tc; k++)
+  {
+    tc[ k ] = pow(8, k + 1) / ((double)(k + 1));
+  }
 
   res = roc(num_tc, tc, scale, kstart, &rc, &slope, &intercept);
-  if( res!= 0 )
+  if (res != 0)
   {
     printf("Error finding the Radius of Convergence\n");
   }
 
-  printf("The Radius of Convergence Rc for the given data and scale\nRc[%22.16f] scale[%22.16f]\n",
+  printf(
+      "The Radius of Convergence Rc for the given data and scale\nRc[%22.16f] "
+      "scale[%22.16f]\n",
       rc, scale);
-  printf("The Least Squares best fit is y = %22.16f x +  %22.16f\n",slope,intercept);
+  printf("The Least Squares best fit is y = %22.16f x +  %22.16f\n", slope,
+         intercept);
 }

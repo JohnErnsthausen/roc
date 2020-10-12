@@ -1,7 +1,7 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
-#include <cfloat>
 #include <cassert>
+#include <cfloat>
 
 extern "C"
 {
@@ -19,7 +19,7 @@ class TestThatROC : public Test
  public:
   int num_tc = 30, kstart = 18;
   double scale = 1.0;
-  double rc = 0.0, slope=0.0, intercept=0.0;
+  double rc = 0.0, slope = 0.0, intercept = 0.0;
   double *tc = NULL;
 
   void SetUp() override
@@ -32,10 +32,7 @@ class TestThatROC : public Test
     }
   }
 
-  void TearDown() override
-  {
-    free(tc);
-  }
+  void TearDown() override { free(tc); }
 };
 
 TEST_F(TestThatROC, CanAccessTheLeastSquaredSolutionMethod)
@@ -51,7 +48,10 @@ TEST_F(TestThatROC, CanAccessTheLeastSquaredSolutionMethod)
 // the TCs.
 TEST_F(TestThatROC, WillComputeLeastSquarsSolution)
 {
-  for(int k=0; k<num_tc; k++) { tc[k] = pow(8,k+1)/((double) (k+1)); }
+  for (int k = 0; k < num_tc; k++)
+  {
+    tc[ k ] = pow(8, k + 1) / ((double)(k + 1));
+  }
 
   EXPECT_THAT(roc(num_tc, tc, scale, kstart, &rc, &slope, &intercept), Eq(0));
   EXPECT_THAT(intercept, DOUBLE_NEAR_MULTIPLIER(-9.340358069665058e-01, 100.0));
