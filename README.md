@@ -112,8 +112,8 @@ Software aspects were inspired by the [MANPAK](https://www.sciencedirect.com/sci
 
 The folders and files for this project are as follows:
 
-docs - Documentation for the project
-refs - Reference material used for the project, including papers
-src - Source code
-test - Test cases
-examples - Example use cases
+1. docs - Documentation for the project
+2. refs - Reference material used for the project, including papers
+3. src - Source code
+4. test - Test cases
+5. examples - Example use cases
