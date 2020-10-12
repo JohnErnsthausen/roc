@@ -106,7 +106,7 @@ and a Differential-Algebraic Equation solver.
 
 This software described in [Chang and Corliss](https://dl.acm.org/doi/pdf/10.1145/355993.355995).
 Linear algebra described in [Stewart](https://books.google.com/books?hl=en&lr=&id=XXzNCgAAQBAJ&oi=fnd&pg=PP1&dq=stewart+introduction+to+matrix+computations&ots=sj2tcycEub&sig=OzbhV-wuRoBZanLVSiQwtN_Gr34#v=onepage&q=stewart%20introduction%20to%20matrix%20computations&f=false) as well as __Golub, G. H., C. F. Van Loan, and Matrix Computations. "Johns Hopkins Univ." Press, Baltimore (1989)__.
-Software aspects were inspired by the [MANPAK](https://www.sciencedirect.com/science/article/pii/S0898122196002040) project I worked on Rheinboldt.
+Software aspects were inspired by the [MANPAK](https://www.sciencedirect.com/science/article/pii/S0898122196002040) project which I worked on with Rheinboldt.
 
 ## This repository
 
