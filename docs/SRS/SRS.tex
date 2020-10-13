@@ -77,8 +77,9 @@
 
 \begin{document}
 
-\title{Software Requirements Specification for \progname: subtitle describing software} 
-\author{Author Name(s)}
+\title{Software Requirements Specification for \progname{L}: software estimating the radius of convergence of
+a power series} 
+\author{John M Ernsthausen}
 \date{\today}
 	
 \maketitle
@@ -96,8 +97,7 @@
 \begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+12 October 2020 & 1.0 & First submission\\
 \bottomrule
 \end{tabularx}
 
@@ -109,6 +109,9 @@ This section records information for easy reference.
 
 \subsection{Table of Units}
 
+A Table of Units is not applicable to \progname{f}.
+
+\plt{
 Throughout this document SI (Syst\`{e}me International d'Unit\'{e}s) is employed
 as the unit system.  In addition to the basic units, several derived units are
 used as described below.  For each unit, the symbol is given followed by a
@@ -131,6 +134,7 @@ description of the unit and the SI name.
   \end{tabular}
   %	\caption{Provide a caption}
 %\end{table}
+}
 
 \plt{Only include the units that your SRS actually uses.}
 
@@ -152,23 +156,36 @@ description of the unit and the SI name.
 
 \subsection{Table of Symbols}
 
-The table that follows summarizes the symbols used in this document along with
-their units.  The choice of symbols was made to be consistent with the heat
-transfer literature and with existing documentation for solar water heating
-systems.  The symbols are listed in alphabetical order.
+The table that follows summarizes the mathematical notation used in this document.
+%The symbols are listed in alphabetical order.
+
 
 \renewcommand{\arraystretch}{1.2}
 %\noindent \begin{tabularx}{1.0\textwidth}{l l X}
-\noindent \begin{longtable*}{l l p{12cm}} \toprule
-\textbf{symbol} & \textbf{unit} & \textbf{description}\\
-\midrule 
-$A_C$ & \si[per-mode=symbol] {\square\metre} & coil surface area
-\\
-$A_\text{in}$ & \si[per-mode=symbol] {\square\metre} & surface area over 
-which heat is transferred in
-\\ 
+\noindent \begin{longtable*}{l p{12cm}} \toprule
+\textbf{symbol} & \textbf{description}\\
+\midrule
+  $z \in \Cz$ & A complex number z is a member of the complex numbers $\Cz$\\
+  $x \in \Rz$ & A real number x is a member of the real numbers $\Rz$\\
+  $\Setbg{c_n} \subset \Cz$ & An ordered set (sequence) of complex numbers
+  whose $n^\text{th}$ element is $c_n \in \Cz$\\
+  $\Setbg{c_n}_{n=0}^{N-1} \subset \Cz$ & An finite sequence of $N$ complex numbers
+  whose $n^\text{th}$ element is $c_n \in \Cz$\\
+  $\Setbg{x_n} \subset \Cz$ & An ordered set (sequence) of real numbers
+  whose $n^\text{th}$ element is $x_n \in \Rz$\\
+  $\sum_{n=0}^{\infty} c_n z^n$ & A power series. $c_n \in \Cz$ is the
+  $n^\text{th}$ coefficient. $z^n$ is the $n^\text{th}$ power of $z \in \Cz$\\ 
+  $\nliminf{n}$ & Lower subsequential limit\\
+  $\nlimsup{n}$ & Upper subsequential limit\\
+  $R_c$ & Radius of the circle of convergence\\
+  $\Rz^d$ & A $d$-dimension real vector space\\
+  $\mathcal D$ & An open subset of $\Rz^d$\\
+  $\iode$ & Interval of real numbers, $t \in \iode$ means $t_0 \leq t \leq \tend$\\
+  $\lode$ & Interval of real numbers, $t \in \lode$ means $t_n \leq t \leq t_{n+1}$\\
+  $\tc{\xn}{n}$ & The $n^\text{th}$ Taylor coefficient\\
 \bottomrule
 \end{longtable*}
+
 \plt{Use your problems actual symbols.  The si package is a good idea to use for
   units.}
 
@@ -180,20 +197,29 @@ which heat is transferred in
   \textbf{symbol} & \textbf{description}\\
   \midrule 
   A & Assumption\\
+  BM & Bergsma and Mooij \cite{bergsma2016application}\\
+  CC & Chang and Corliss \cite{chang1982}\\
+  \cpp & The programming language\\
   DD & Data Definition\\
+  \fortran & The programming language\\
   GD & General Definition\\
   GS & Goal Statement\\
   IM & Instance Model\\
+  \ivp & Initial Value Problem\\
+  JZ & Jorba and Zou \cite{jorba2005software}\\
   LC & Likely Change\\
-  PS & Physical System Description\\
+%  PS & Physical System Description\\
+  \ode & Ordinary Differential Equation\\
   R & Requirement\\
+  \progname{f} & Radius of Convergence software developed for this project\\
   SRS & Software Requirements Specification\\
-  \progname{} & \plt{put an expanded version of your program name here (as appropriate)}\\
   T & Theoretical Model\\
+  TC & Taylor coefficient\\
+  TS & Taylor series\\
   \bottomrule
 \end{tabular}\\
 
-\plt{Add any other abbreviations or acronyms that you add}
+% \plt{Add any other abbreviations or acronyms that you add}
 
 \newpage
 
@@ -262,7 +288,27 @@ which heat is transferred in
   trust the authors of the SRS on any statements.  They should be able to
   independently verify/derive every statement made.}
 
-\section{Introduction}
+%CHAPTER
+\section{Introduction} \label{sc:introduction}
+
+Given a sequence $\Setbg{c_n} \subset \Cz$ of complex numbers, the series
+\EQ
+{
+  \label{eq:power-series}
+  \sum_{n=0}^{\infty} c_n z^n
+}
+is called a {\it power series}. The number $c_n$ is the $n^\text{th}$ coefficient of $z^n$.
+The term $z^n$ denotes the $n^\text{th}$ power of the complex number $z$.
+
+In general, a power series will converge or diverge, depending on the magnitude of $z$.
+With every power series, there is associated a circle of convergence such that
+\eqref{power-series} converges if $z$ is in the interior of the circle of convergence or
+diverges if $z$ is in the exterior of the circle of convergence. The convergence/divergence
+behavior of \eqref{power-series} on the circle of convergence can not be described so simply.
+By convention, the entire complex plane is the interior of a circle of infinite radius, and a
+point is the interior of a circle of zero radius.
+
+This project is concerned with estimating the radius of the circle of convergence, $R_c$.
 
 \plt{The introduction section is written to introduce the problem.  It starts
   general and focuses on the problem domain. The general advice is to start with
@@ -271,6 +317,13 @@ paragraph.  A roadmap orients the reader by telling them what sub-sections to
 expect in the Introduction section.}
 
 \subsection{Purpose of Document}
+
+The purpose of this SRS document is to facilitate the communication, planning,
+ design, development/testing maintenance, and documentation of \progname{f}
+ by communicating and reflecting on its software requirements.
+Success of this project depends on \progname{f} meeting these requirement.
+The scientific and business problem \progname{f} solves is described in the
+\Quote{Problem~Description} section (Section~\ref{Sec_pd}). 
 
 \plt{This section summarizes the purpose of the SRS document.  It does not focus
   on the problem itself.  The problem is described in the ``Problem
@@ -283,6 +336,18 @@ expect in the Introduction section.}
   for the design stage, etc.}
 
 \subsection{Scope of Requirements} 
+
+\Ni The problem \progname{f} solves will be restricted to the real case.
+
+\vspace{2mm}
+
+\Ni The software \progname{f} will estimate the radius of convergence.
+It will not compute $R_c$ exactly.
+
+\vspace{2mm}
+
+\Ni The software \progname{f} will produce its estimated $R_c$ from a finite number of terms
+in the power series.
 
 \plt{Modelling the real world requires simplification.  The full complexity of
   the actual physics, chemistry, biology is too much for existing models, and
@@ -301,6 +366,9 @@ expect in the Introduction section.}
 
 \subsection{Characteristics of Intended Reader} \label{sec_IntendedReader}
 
+This document assumes the intended reader has familiarity with real analysis and complex analysis.
+
+
 \plt{This section summarizes the skills and knowledge of the readers of the
   SRS.  It does NOT have the same purpose as the ``User Characteristics''
   section (Section~\ref{SecUserCharacteristics}).  The intended readers are the
@@ -318,11 +386,19 @@ expect in the Introduction section.}
 
 \subsection{Organization of Document}
 
+This document is built from the template \cite{Smith2006, SmithMcCutchanAndCarette2017} that
+ seeks to standardize software documentation. The suggested order for reading this SRS document is:
+ Goal Statement (\SSCref{goal-statements}), Instance Models (\SSCref{instance-models}),
+ Requirements (\SCref{requirements}), Introduction (\SCref{introduction}), and
+ Specific System Description (\SCref{specific-system-description}).
+
+
 \plt{This section provides a roadmap of the SRS document.  It will help the
   reader orient themselves.  It will provide direction that will help them
   select which sections they want to read, and in what order.  This section will
   be similar between project.}
 
+%CHAPTER
 \section{General System Description}
 
 This section provides general information about the system.  It identifies the
@@ -340,6 +416,11 @@ characteristics and lists the system constraints.  \plt{This text can likely be
 
 \subsection{System Context}
 
+The following equation depicts \progname{f} abstractly:
+\EQ{
+  \Setbg{c_n}_{n=0}^{N-1} \rightarrow R_c
+}
+
 \plt{Your system context will include a figure that shows the abstract view of
   the software.  Often in a scientific context, the program can be viewed
   abstractly following the design pattern of Inputs $\rightarrow$ Calculations
@@ -352,6 +433,7 @@ characteristics and lists the system constraints.  \plt{This text can likely be
   entities, besides the user.  For instance, when the software product is a
   library, the user will be another software program, not an actual end user.}
 
+\plt{
 \begin{figure}[h!]
 \begin{center}
  \includegraphics[width=0.6\textwidth]{SystemContextFigure}
@@ -359,11 +441,13 @@ characteristics and lists the system constraints.  \plt{This text can likely be
 \label{Fig_SystemContext} 
 \end{center}
 \end{figure}
+}
 
 \plt{For each of the entities in the system context diagram its responsibilities
   should be listed.  Whenever possible the system should check for data quality,
   but for some cases the user will need to assume that responsibility.}
 
+\plt{
 \begin{itemize}
 \item User Responsibilities:
 \begin{itemize}
@@ -376,8 +460,46 @@ characteristics and lists the system constraints.  \plt{This text can likely be
 \item 
 \end{itemize}
 \end{itemize}
+}
 
 \subsection{User Characteristics} \label{SecUserCharacteristics}
+
+One intended user of \progname{f} is a user of \maple or \matlab. While
+neither \matlab nor \maple currently implements an estimate for $R_c$,
+presumably the companies that develop \matlab and \maple will want
+to provide such a facility when robust, reliable, and available.
+
+After generating a real-valued Taylor series (TS) approximate solution of order $p$ to the
+ordinary differential equation (\ode) initial-value problem (\ivp) 
+\EQ
+{
+  \label{eq:introduction-mathematical-odeivp}
+  y'\parn{t} = f\pbg{t,y\parn{t}},
+  \quad
+  y\parn{t_0} = y_0 \in \mathcal D \subset \Rz^d,
+  \quad
+  t \in \iode \subset \Rz,
+}
+the TS methods defined in
+Jorba and Zou \cite{jorba2005software} (JZ),
+Bergsma and Mooij \cite{bergsma2016application} (BM),
+and
+Chang and Corliss \cite{chang1982} (CC)
+explicitly require an estimate for the TS radius of convergence.
+
+% From a practical standpoint, an order $1 \leq p \leq k$ TS approximate solution requires
+% $\parbg{t,y} \mapsto f\parbg{t,y} \in \Rz^d$ to be $k$-times differentiable.
+JZ permit the order $p$ to change from step to step.
+At each $\parn{t_n,x_n}$, $n \geq 0$, the TS method for the numerical solution
+of \eqref{introduction-mathematical-odeivp} computes Taylor coefficients (TCs)
+$\tc{\xn}{i}$ at $t_{n}$ to construct the TS approximate solution
+\begin{align}
+  \label{eq:tss}
+  \Tp(t) = \xn + \sum_{i=1}^{p}\tc{\xn}{i}(t-\tn)^{i} \quad\mbox{on}\quad \lode.
+\end{align}
+
+Another type of intended user is any developers like BM, JZ, or CC of a TS method seeking the accuracy
+assurance from knowing the domain $\lode$ is in the circle of convergence.
 
 \plt{This section summarizes the knowledge/skills expected of the user.
   Measuring usability, which is often a required non-function requirement,
@@ -390,6 +512,10 @@ characteristics and lists the system constraints.  \plt{This text can likely be
 
 \subsection{System Constraints}
 
+The method developed in this project is expected to be independent of system constraints. However
+most TS methods are developed in \cpp or \fortran, the goto languages of scientific computing.
+Certainly a scripting language would not be sufficient for large systems.
+
 \plt{System constraints differ from other type of requirements because they
   limit the developers’ options in the system design and they identify how the
   eventual system must fit into the world. This is the only place in the SRS
@@ -398,7 +524,8 @@ characteristics and lists the system constraints.  \plt{This text can likely be
   included if they are truly required. In the context of CAS 741, you often will
   may not have any system constraints.}
 
-\section{Specific System Description}
+%CHAPTER
+\section{Specific System Description} \label{sc:specific-system-description}
 
 This section first presents the problem description, which gives a high-level
 view of the problem to be solved.  This is followed by the solution characteristics
@@ -408,10 +535,19 @@ the instance models.  \plt{Add any project specific details that are relevant
 
 \subsection{Problem Description} \label{Sec_pd}
 
-\progname{} is intended to solve ... \plt{What problem does your program solve?
+\progname{f} is intended to estimate the radius of the circle of convergence of a power series.
+
+Indeed, \progname{f} accepts a sufficiently large integer $N$ and
+a finite sequence $\Setbg{c_0, c_1, \ldots, c_{N-1}}$ with each $c_n \in \Cz$ as inputs.
+\progname{f} returns as output an estimate for the radius of the circle of convergence, $R_c \in \Rz$.
+
+
+\plt{What problem does your program solve?
 The description here should be in the problem space, not the solution space.}
 
 \subsubsection{Terminology and  Definitions}
+
+This subsection doesn't apply to \progname{f}.
 
 \plt{This section is expressed in words, not with equations.  It provide the
   meaning of the different words and phrases used in the domain of the problem.
@@ -419,6 +555,7 @@ The terminology is used to introduce concepts from the world outside of the
 mathematical model  The terminology provides a real world connection to give the
 mathematical model meaning.}
 
+\plt{
 This subsection provides a list of terms that are used in the subsequent
 sections and their meaning, with the purpose of reducing ambiguity and making it
 easier to correctly understand the requirements:
@@ -428,8 +565,11 @@ easier to correctly understand the requirements:
 \item 
 
 \end{itemize}
+}
 
 \subsubsection{Physical System Description} \label{sec_phySystDescrip}
+
+This subsection doesn't apply to \progname{f}.
 
 \plt{The purpose of this section is to clearly and unambiguously state the
   physical system that is to be modelled. Effective problem solving requires a
@@ -444,6 +584,7 @@ easier to correctly understand the requirements:
   interactions between the elements and their physical environment; ii) the
   interactions between elements; and, iii) the initial or boundary conditions.}
 
+\plt{
 The physical system of \progname{}, as shown in Figure~?,
 includes the following elements:
 
@@ -466,8 +607,9 @@ includes the following elements:
 % \caption{\label{<Label>} <Caption>}
 % \end{center}
 % \end{figure}
+}
 
-\subsubsection{Goal Statements}
+\subsubsection{Goal Statements}\label{ssc:goal-statements}
 
 \plt{The goal statements refine the ``Problem Description''
   (Section~\ref{Sec_pd}).  A goal is a functional objective the system under
@@ -479,17 +621,35 @@ includes the following elements:
   amount of technical language.  They should be understandable by non-domain
   experts.}
 
-\noindent Given the \plt{inputs}, the goal statements are:
+\Ni Given the inputs, the goal statements are:
 
 \begin{itemize}
 
+\plt{
 \item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] \plt{One
     sentence description of the goal.  There may be more than one.  Each Goal
     should have a meaningful label.}
+}
+
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_topline}:] Implement CC top line analysis
+\cite[pp.~127--128]{chang1982} to estimate the $R_c$, one of several sub-algorithms of the CC algorithm.
+
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_textbook}:] Use top line analysis to estimate $R_c$
+  for three problems from real analysis where $R_c$ is known. Report on the accuracy of the result.
+
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_order}:] Use top line analysis to estimate
+  the order of a singularity as described in CC \cite[pp.~127--128]{chang1982}.
+
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_tsmethod}:] Use top line analysis to estimate $R_c$
+  while solving \ode \ivp by the TS method.
 
 \end{itemize}
 
 \subsection{Solution Characteristics Specification}
+
+This section characterizes the attributes of an acceptable solution.
+Both analysts and stakeholders should agree on these attributes
+so that the solution can be accepted when the project is complete.
 
 \plt{This section specifies the information in the solution domain of the system
   to be developed. This section is intended to express what is required in
@@ -533,14 +693,19 @@ includes the following elements:
   ``uses'' above.  The figure adds ``Likely Changes,'' which are able to
   reference (use) Assumptions.}
 
+\plt{
 \begin{figure}[H]
   \includegraphics[scale=0.9]{RelationsBetweenTM_GD_IM_DD_A.pdf}
 \end{figure}
 
-The instance models that govern \progname{} are presented in
+}
+
+\plt{
+The instance models that govern \progname{f} are presented in
 Subsection~\ref{sec_instance}.  The information to understand the meaning of the
 instance models and their derivation is also presented, so that the instance
 models can be verified.
+}
 
 \subsubsection{Assumptions} \label{sec_assumpt}
 
@@ -560,12 +725,20 @@ likely change [LC], in which the respective assumption is used.
 
 \begin{itemize}
 
+\plt{
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{A_meaningfulLabel}:]
   \plt{Short description of each assumption.  Each assumption
     should have a meaningful label.  Use cross-references to identify the
     appropriate traceability to T, GD, DD etc., using commands like dref, ddref
     etc.  Each assumption should be atomic - that is, there should not be an
     explicit (or implicit) ``and'' in the text of an assumption.}
+}
+
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{another}:]
+
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{linear_least_squares}:] Linear Fit to data.
+
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{another}:]
 
 \end{itemize}
 
@@ -576,10 +749,11 @@ likely change [LC], in which the respective assumption is used.
   (Section~\ref{sec_phySystDescrip}). Examples of theoretical models are
   physical laws, constitutive equations, relevant conversion factors, etc.}
 
-This section focuses on the general equations and laws that \progname{} is based
+This section focuses on the general equations and laws that \progname{f} is based
 on.  \plt{Modify the examples below for your problem, and add additional models
   as appropriate.}
 
+\plt{
 ~\newline
 
 \noindent
@@ -615,6 +789,7 @@ on.  \plt{Modify the examples below for your problem, and add additional models
 \end{minipage}\\
 
 ~\newline
+}
 
 \subsubsection{General Definitions}\label{sec_gendef}
 
@@ -631,6 +806,7 @@ instance models.
   heading should be kept.}  \plt{Modify the examples below for your problem, and
   add additional definitions as appropriate.}
 
+\plt{
 ~\newline
 
 \noindent
@@ -669,6 +845,7 @@ between the environment and the object (\si{\celsius}).
 \end{minipage}\\
 
 \subsubsection*{Detailed derivation of simplified rate of change of temperature}
+}
 
 \plt{This may be necessary when the necessary information does not fit in the
   description field.}
@@ -690,6 +867,7 @@ This section collects and defines all the data needed to build the instance
 models. The dimension of each quantity is also given.  \plt{Modify the examples
   below for your problem, and add additional definitions as appropriate.}
 
+\plt{
 ~\newline
 
 \noindent
@@ -728,8 +906,10 @@ Symbol &$q_C$\\
   \hline
 \end{tabular}
 \end{minipage}\\
+}
 
 \subsubsection{Instance Models} \label{sec_instance}    
+\label{ssc:instance-models}
 
 \plt{The motivation for this section is to reduce the problem defined in
   ``Physical System Description'' (Section~\ref{sec_phySystDescrip}) to one
@@ -742,6 +922,7 @@ one which is expressed in mathematical terms. It uses concrete symbols defined
 in Section~\ref{sec_datadef} to replace the abstract symbols in the models 
 identified in Sections~\ref{sec_theoretical} and~\ref{sec_gendef}.
 
+\plt{
 The goals \plt{reference your goals} are solved by \plt{reference your instance
   models}.  \plt{other details, with cross-references where appropriate.}
 \plt{Modify the examples below for your problem, and add additional models as
@@ -789,12 +970,15 @@ The goals \plt{reference your goals} are solved by \plt{reference your instance
 %~\newline
 
 \subsubsection*{Derivation of ...}
+}
 
 \plt{The derivation shows how the IM is derived from the TMs/GDs.  In cases
   where the derivation cannot be described under the Description field, it will
   be necessary to include this subsection.}
 
 \subsubsection{Input Data Constraints} \label{sec_DataConstraints}    
+
+\plt{
 
 Table~\ref{TblInputVar} shows the data constraints on the input output
 variables.  The column for physical constraints gives the physical limitations
@@ -864,8 +1048,9 @@ A correct solution must exhibit \plt{fill in the details}.  \plt{These
   \bottomrule
 \end{longtable*}
 \end{table}
+}
 
-\section{Requirements}
+\section{Requirements}\label{sc:requirements}
 
 \plt{The requirements refine the goal statement.  They will make heavy use of
   references to the instance models.}
@@ -923,6 +1108,7 @@ qualities that the software is expected to exhibit.
 
 \section{Traceability Matrices and Graphs}
 
+\plt{
 The purpose of the traceability matrices is to provide easy references on what
 has to be additionally modified if a certain component is changed.  Every time a
 component is changed, the items in the column of that component that are marked
@@ -933,12 +1119,14 @@ dependencies of instance models, requirements, and data constraints on each
 other. Table~\ref{Table:A_trace} shows the dependencies of theoretical models,
 general definitions, data definitions, instance models, and likely changes on
 the assumptions.
+}
 
 \plt{You will have to modify these tables for your problem.}
 
 \plt{The traceability matrix is challenging to maintain manually.  Please do
   your best.  In the future tools (like Drasil) will make this much easier.}
 
+\plt{
 \afterpage{
 \begin{landscape}
 \begin{table}[h!]
@@ -1035,7 +1223,7 @@ changed. Figure~\ref{Fig_ATrace} shows the dependencies of theoretical models,
 general definitions, data definitions, instance models, likely changes, and
 assumptions on each other. Figure~\ref{Fig_RTrace} shows the dependencies of
 instance models, requirements, and data constraints on each other.
-
+}
 % \begin{figure}[h!]
 % 	\begin{center}
 % 		%\rotatebox{-90}
@@ -1058,6 +1246,8 @@ instance models, requirements, and data constraints on each other.
 % \end{figure}
 
 \section{Values of Auxiliary Constants}
+
+\progname{f} does not have symbolic parameters at this time.
 
 \plt{Show the values of the symbolic parameters introduced in the report.}
 

@@ -1,67 +1,6 @@
 \documentclass{article}
 
-\usepackage{tabularx}
-\usepackage{booktabs}
-
-\usepackage{amsmath,amssymb,xspace}
-% Environment
-\newcommand{\EQ}[1]{\begin{align} {#1} \end{align}}
-% Abbreviations
-\newcommand{\ode}{{\footnotesize ODE}\xspace}
-\newcommand{\dae}{{\footnotesize DAE}\xspace}
-\newcommand{\ivp}{{\footnotesize IVP}\xspace}
-\newcommand{\fadbad}{{\footnotesize FADBAD++}\xspace}
-\newcommand{\plainc}{{\footnotesize C}\xspace}
-\newcommand{\cpp}{{\footnotesize C++}\xspace}
-\newcommand{\adolc}{{\footnotesize ADOL-C}\xspace}
-\newcommand{\rdcon}{{\footnotesize DRDCV}\xspace}
-\newcommand{\fortran}{{\footnotesize FORTRAN 77}\xspace}
-\newcommand{\daets}{{\footnotesize DAETS}\xspace}
-% Mathematics
-\newcommand{\parn}[1]{( {#1} )}
-\newcommand{\parbg}[1]{\left(  {#1} \right)}
-\newcommand{\pbg}[1]{\bigl(  {#1} \bigr)}
-\def\Rz{\mathbb{R}}
-% Mathematics: ODE
-\newcommand{\iode}{\protect{\makebox{$[t_0,\tend]$}}\xspace}
-\newcommand{\lode}{\protect{\makebox{$[t_n,t_{n+1}]$}}\xspace}
-\newcommand{\tend}{t_\text{end}}
-\newcommand{\tc}[2]{(#1)_{#2}}
-\newcommand{\Tp}{T}
-\newcommand{\xn}{x_{n}}
-\newcommand{\tn}{t_{n}}
-% Reference
-\renewcommand{\eqref}[1]{(\ref{eq:#1})}
-\newcommand{\rrf}[2]{(\ref{eq:#1}--\ref{eq:#2})}
-\newcommand{\chref}[1]{\ref{ch:#1}}
-\newcommand{\sscref}[1]{\ref{ssc:#1}}
-\newcommand{\scref}[1]{Section~\ref{sc:#1}}
-\newcommand{\exref}[1]{\ref{ex:#1}}
-\newcommand{\rmref}[1]{\ref{rm:#1}}
-\newcommand{\apref}[1]{\ref{ap:#1}}
-\newcommand{\tbref}[1]{\ref{tb:#1}}
-\newcommand{\dfref}[1]{\ref{df:#1}}
-\newcommand{\leref}[1]{\ref{le:#1}}
-\newcommand{\fgref}[1]{\ref{fg:#1}}
-\newcommand{\coref}[1]{\ref{co:#1}}
-\newcommand{\thref}[1]{\ref{th:#1}}
-\newcommand{\agref}[1]{\ref{ag:#1}}
-\newcommand{\asref}[1]{\ref{as:#1}}
-\newcommand{\EQref}[1]{Equation~(\ref{eq:#1})}
-\newcommand{\CHref}[1]{Chapter~\ref{ch:#1}}
-\newcommand{\SSCref}[1]{Subsection~\ref{ssc:#1}}
-\newcommand{\SCref}[1]{Section~\ref{sc:#1}}
-\newcommand{\EXref}[1]{Example~\ref{ex:#1}}
-\newcommand{\RMref}[1]{Remark~\ref{rm:#1}}
-\newcommand{\APref}[1]{Appendix~\ref{ap:#1}}
-\newcommand{\TBref}[1]{Table~\ref{tb:#1}}
-\newcommand{\DFref}[1]{Definition~\ref{df:#1}}
-\newcommand{\LEref}[1]{Lemma~\ref{le:#1}}
-\newcommand{\FGref}[1]{Figure~\ref{fg:#1}}
-\newcommand{\COref}[1]{Corollary~\ref{co:#1}}
-\newcommand{\THref}[1]{Theorem~\ref{th:#1}}
-\newcommand{\AGref}[1]{Algorithm~\ref{ag:#1}}
-\newcommand{\ASref}[1]{Assumption~\ref{as:#1}}
+\input{../Common}
 
 \title{CAS 741: Problem Statement\\Radius of Convergence}
 
