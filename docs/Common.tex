@@ -1,10 +1,5 @@
 % Common Parts
 
-\usepackage{tabularx}
-\usepackage{booktabs}
-\usepackage{ifthen}
-\usepackage{amsmath,amssymb,xspace}
-
 %PUT YOUR PROGRAM NAME HERE %Every program should have a name
 \newcommand{\progname}[1]
 {%
@@ -29,6 +24,7 @@
 % User commands
 \newcommand{\Quote}[1]{``{#1}''}
 \newcommand{\Ni}{\noindent}
+\newcommand{\defeq}{\stackrel{\textup{\tiny def}}{=}}
 % Environment
 \newcommand{\EQ}[1]{\begin{align} {#1} \end{align}}
 % Mathematics
@@ -38,6 +34,7 @@
 \newcommand{\Setbg}[1]{\bigl\{ {#1} \bigr\}}
 \def\Rz{\mathbb{R}}
 \def\Cz{\mathbb{C}}
+\def\Iz{\mathbb{N}}
 \newcommand{\nliminf}[1]{\liminf\limits_{{#1} \rightarrow \infty}}
 \newcommand{\nlimsup}[1]{\limsup\limits_{{#1} \rightarrow \infty}}
 % Mathematics: ODE

@@ -9,6 +9,8 @@
 \usepackage{hyperref}
 \usepackage{longtable}
 \usepackage{xfrac}
+\usepackage{xspace}
+\usepackage{ifthen}
 \usepackage{tabularx}
 \usepackage{float}
 \usepackage{siunitx}
@@ -21,13 +23,24 @@
 
 %\usepackage{refcheck}
 
+\usepackage{lipsum}
+\usepackage{filecontents}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{hyperref}
+\usepackage{cleveref}
+
+\newcommand\myshade{85}
+\colorlet{mylinkcolor}{violet}
+\colorlet{mycitecolor}{YellowOrange}
+\colorlet{myurlcolor}{Aquamarine}
+
 \hypersetup{
-    bookmarks=true,         % show bookmarks bar?
-      colorlinks=true,       % false: boxed links; true: colored links
-    linkcolor=red,          % color of internal links (change box color with linkbordercolor)
-    citecolor=green,        % color of links to bibliography
-    filecolor=magenta,      % color of file links
-    urlcolor=cyan           % color of external links
+  bookmarks=true,         % show bookmarks bar?
+  colorlinks = true,
+  linkcolor  = mylinkcolor!\myshade!black,
+  citecolor  = mycitecolor!\myshade!black,
+  urlcolor   = myurlcolor!\myshade!black,
+  filecolor  = magenta,      % color of file links
 }
 
 \input{../Comments}
@@ -165,24 +178,21 @@ The table that follows summarizes the mathematical notation used in this documen
 \noindent \begin{longtable*}{l p{12cm}} \toprule
 \textbf{symbol} & \textbf{description}\\
 \midrule
-  $z \in \Cz$ & A complex number z is a member of the complex numbers $\Cz$\\
-  $x \in \Rz$ & A real number x is a member of the real numbers $\Rz$\\
-  $\Setbg{c_n} \subset \Cz$ & An ordered set (sequence) of complex numbers
-  whose $n^\text{th}$ element is $c_n \in \Cz$\\
-  $\Setbg{c_n}_{n=0}^{N-1} \subset \Cz$ & An finite sequence of $N$ complex numbers
-  whose $n^\text{th}$ element is $c_n \in \Cz$\\
-  $\Setbg{x_n} \subset \Cz$ & An ordered set (sequence) of real numbers
-  whose $n^\text{th}$ element is $x_n \in \Rz$\\
-  $\sum_{n=0}^{\infty} c_n z^n$ & A power series. $c_n \in \Cz$ is the
-  $n^\text{th}$ coefficient. $z^n$ is the $n^\text{th}$ power of $z \in \Cz$\\ 
+  $z \in \Cz$ & A member $z$ of the complex numbers $\Cz$\\
+  $x \in \Rz$ & A member $x$ of the real numbers $\Rz$\\
+  $\Setbg{c_n} \subset \Cz$ & A sequence of complex numbers
+  whose $n^\text{th}$ term is $c_n \in \Cz$\\
+  $\Setbg{c_n}_{n=0}^{N-1} \subset \Cz$ & A finite sequence of $N$ complex numbers
+  whose $n^\text{th}$ term is $c_n \in \Cz$\\
+  $\sum_{n=0}^{\infty} c_n (z-z_0)^n$ & A power series. $c_n \in \Cz$ is the
+  $n^\text{th}$ coefficient. $z^n$ is the $n^\text{th}$ power of $z \in \Cz$. $z_0$ is the center point.\\ 
   $\nliminf{n}$ & Lower subsequential limit\\
   $\nlimsup{n}$ & Upper subsequential limit\\
   $R_c$ & Radius of the circle of convergence\\
   $\Rz^d$ & A $d$-dimension real vector space\\
   $\mathcal D$ & An open subset of $\Rz^d$\\
-  $\iode$ & Interval of real numbers, $t \in \iode$ means $t_0 \leq t \leq \tend$\\
-  $\lode$ & Interval of real numbers, $t \in \lode$ means $t_n \leq t \leq t_{n+1}$\\
-  $\tc{\xn}{n}$ & The $n^\text{th}$ Taylor coefficient\\
+  $[a,b] \subset \Rz$ & Interval of real numbers, $t \in [a,b]$ means $a \leq t \leq b$ and $t \in \Rz$\\
+  $\tc{\xn}{n}$ & $n^\text{th}$ Taylor coefficient of $t \in \Rz \mapsto x \in \Rz^d$ evaluated at $t_n \in \Rz$\\
 \bottomrule
 \end{longtable*}
 
@@ -200,6 +210,7 @@ The table that follows summarizes the mathematical notation used in this documen
   BM & Bergsma and Mooij \cite{bergsma2016application}\\
   CC & Chang and Corliss \cite{chang1982}\\
   \cpp & The programming language\\
+  $\Cz$ & Complex numbers\\
   DD & Data Definition\\
   \fortran & The programming language\\
   GD & General Definition\\
@@ -208,8 +219,10 @@ The table that follows summarizes the mathematical notation used in this documen
   \ivp & Initial Value Problem\\
   JZ & Jorba and Zou \cite{jorba2005software}\\
   LC & Likely Change\\
+  $\Iz$ & The nonnegative integers\\
 %  PS & Physical System Description\\
   \ode & Ordinary Differential Equation\\
+  $\Rz$ & Real numbers\\
   R & Requirement\\
   \progname{f} & Radius of Convergence software developed for this project\\
   SRS & Software Requirements Specification\\
@@ -291,16 +304,17 @@ The table that follows summarizes the mathematical notation used in this documen
 %CHAPTER
 \section{Introduction} \label{sc:introduction}
 
-Given a sequence $\Setbg{c_n} \subset \Cz$ of complex numbers, the series
+Given a sequence $\Setbg{c_n}$ of complex numbers, the series
 \EQ
 {
   \label{eq:power-series}
-  \sum_{n=0}^{\infty} c_n z^n
+  \sum_{n=0}^{\infty} c_n (z-z_0)^n
 }
-is called a {\it power series}. The number $c_n$ is the $n^\text{th}$ coefficient of $z^n$.
-The term $z^n$ denotes the $n^\text{th}$ power of the complex number $z$.
+is called a {\it power series}. The number $c_n  \in \Cz$ is the $n^\text{th}$ coefficient in the power series.
+The symbol $z^n$ denotes the $n^\text{th}$ power of the complex number $z$. This power series is {\it centered}
+at $z_0 \in \Cz$.
 
-In general, a power series will converge or diverge, depending on the magnitude of $z$.
+In general, a power series will converge or diverge, depending on the magnitude of $z-z_0$.
 With every power series, there is associated a circle of convergence such that
 \eqref{power-series} converges if $z$ is in the interior of the circle of convergence or
 diverges if $z$ is in the exterior of the circle of convergence. The convergence/divergence
@@ -308,7 +322,7 @@ behavior of \eqref{power-series} on the circle of convergence can not be describ
 By convention, the entire complex plane is the interior of a circle of infinite radius, and a
 point is the interior of a circle of zero radius.
 
-This project is concerned with estimating the radius of the circle of convergence, $R_c$.
+This project is concerned with estimating the radius $R_c$ of the circle of convergence.
 
 \plt{The introduction section is written to introduce the problem.  It starts
   general and focuses on the problem domain. The general advice is to start with
@@ -318,12 +332,12 @@ expect in the Introduction section.}
 
 \subsection{Purpose of Document}
 
-The purpose of this SRS document is to facilitate the communication, planning,
- design, development/testing maintenance, and documentation of \progname{f}
- by communicating and reflecting on its software requirements.
-Success of this project depends on \progname{f} meeting these requirement.
-The scientific and business problem \progname{f} solves is described in the
-\Quote{Problem~Description} section (Section~\ref{Sec_pd}). 
+The purpose of this document is to facilitate communication between the stakeholders and developers
+ during the software development of project \progname{f}
+ %design, software development and testing, verification and validation, and documentation of \progname{f}
+ by communicating and reflecting its software requirements.
+The scientific and business problem \progname{f} solves is described in
+Section~\ref{Sec_pd}, the \Quote{Problem~Description}. 
 
 \plt{This section summarizes the purpose of the SRS document.  It does not focus
   on the problem itself.  The problem is described in the ``Problem
@@ -335,19 +349,43 @@ The scientific and business problem \progname{f} solves is described in the
   of the document is the purpose of the SRS, including communication, planning
   for the design stage, etc.}
 
-\subsection{Scope of Requirements} 
+\subsection{Scope of Requirements}
 
-\Ni The problem \progname{f} solves will be restricted to the real case.
+In the late 1800's, several authors resolved problems
+concerning the characterization and analysis of singularities for power series. CC discuss
+this history \cite{chang1982}.
 
-\vspace{2mm}
+The CC approach to series analysis is the topic of the following quote.
 
-\Ni The software \progname{f} will estimate the radius of convergence.
-It will not compute $R_c$ exactly.
+\begin{quote}
+Our approach to series analysis was motivated by the observation that series
+for solutions to \ode{s} follow a few very definite patterns which are characterized
+by the location of primary singularities. In general, the coefficients of a power
+series follow no patterns, so few theorems about truncated series can be proved.
+However, series which are real-valued on the real axis can have poles, logarithmic
+branch points, and essential singularities only on the real axis or in conjugate pairs.
+Further, the effects of all secondary singularities disappear if sufficiently
+  long series are used.  \citep[p.~122]{chang1982}
+\end{quote}
 
-\vspace{2mm}
+A primary singularity of \eqref{power-series} is the closest singularity to the series
+expansion point $z_0$ in the complex plane. All other singularities are secondary singularities.
 
-\Ni The software \progname{f} will produce its estimated $R_c$ from a finite number of terms
-in the power series.
+CC proposed a method of four parts to estimate the radius $R_c$ of the circle of convergence
+as well as the order and location of primary singularities. The top-hump analysis applies to
+the power series of entire functions. The 3-term analysis applies to the power series of
+functions exhibiting a single primary singularity. The 6-term analysis applies to the
+power series of functions exhibiting a conjugate pair of primary singularities.
+Whenever these three analysis fail to resolve the $R_c$, singularity order, and
+singularity location parameters for the series, the CC method does
+a top-line analysis. Each CC sub-method works by fitting $R_c$, singularity order, and
+singularity location parameters of a known model to the given sequence.
+
+Top-line analysis always applies to power series. It resolves situations where secondary singularities are
+less distinguishable from primary singularities. However it is less accurate, and it does
+not have a convergence analysis.
+
+The scope of this \progname{f} project is limited to top-line analysis.
 
 \plt{Modelling the real world requires simplification.  The full complexity of
   the actual physics, chemistry, biology is too much for existing models, and
@@ -366,7 +404,11 @@ in the power series.
 
 \subsection{Characteristics of Intended Reader} \label{sec_IntendedReader}
 
-This document assumes the intended reader has familiarity with real analysis and complex analysis.
+This document assumes the intended reader has familiarity with basic real analysis and complex analysis.
+Sequences and power series as well as the ratio and root tests will be discussed
+in this document. However, our exposition will only cover the concepts needed for our purposes. For proofs
+and for a complete exposition of all background materials, the interested reader should consult a beginning level
+graduate text such as \cite{rudin1976} for proofs.
 
 
 \plt{This section summarizes the skills and knowledge of the readers of the
@@ -386,9 +428,9 @@ This document assumes the intended reader has familiarity with real analysis and
 
 \subsection{Organization of Document}
 
-This document is built from the template \cite{Smith2006, SmithMcCutchanAndCarette2017} that
- seeks to standardize software documentation. The suggested order for reading this SRS document is:
- Goal Statement (\SSCref{goal-statements}), Instance Models (\SSCref{instance-models}),
+This document is built on the template recommendations in \citet{SmithAndLai2005, SmithEtAl2007} that
+ seeks to standardize communication tools for software development. The suggested order for reading
+ this SRS document is: Goal Statement (\SSCref{goal-statements}), Instance Models (\SSCref{instance-models}),
  Requirements (\SCref{requirements}), Introduction (\SCref{introduction}), and
  Specific System Description (\SCref{specific-system-description}).
 
@@ -403,7 +445,7 @@ This document is built from the template \cite{Smith2006, SmithMcCutchanAndCaret
 
 This section provides general information about the system.  It identifies the
 interfaces between the system and its environment, describes the user
-characteristics and lists the system constraints.  \plt{This text can likely be
+characteristics, and lists the system constraints.  \plt{This text can likely be
   borrowed verbatim.}
 
 \plt{The purpose of this section is to provide general information about the
@@ -416,8 +458,9 @@ characteristics and lists the system constraints.  \plt{This text can likely be
 
 \subsection{System Context}
 
-The following equation depicts \progname{f} abstractly:
-\EQ{
+The following equation depicts \progname{f} in symbols:
+\EQ
+{
   \Setbg{c_n}_{n=0}^{N-1} \rightarrow R_c
 }
 
@@ -463,11 +506,13 @@ The following equation depicts \progname{f} abstractly:
 }
 
 \subsection{User Characteristics} \label{SecUserCharacteristics}
+\label{sc:SecUserCharacteristics}
 
 One intended user of \progname{f} is a user of \maple or \matlab. While
 neither \matlab nor \maple currently implements an estimate for $R_c$,
 presumably the companies that develop \matlab and \maple will want
-to provide such a facility when robust, reliable, and available.
+to provide such a facility when robust, reliable, and accurate computational
+tools are available.
 
 After generating a real-valued Taylor series (TS) approximate solution of order $p$ to the
 ordinary differential equation (\ode) initial-value problem (\ivp) 
@@ -489,7 +534,7 @@ explicitly require an estimate for the TS radius of convergence.
 
 % From a practical standpoint, an order $1 \leq p \leq k$ TS approximate solution requires
 % $\parbg{t,y} \mapsto f\parbg{t,y} \in \Rz^d$ to be $k$-times differentiable.
-JZ permit the order $p$ to change from step to step.
+% JZ permit the order $p$ to change from step to step.
 At each $\parn{t_n,x_n}$, $n \geq 0$, the TS method for the numerical solution
 of \eqref{introduction-mathematical-odeivp} computes Taylor coefficients (TCs)
 $\tc{\xn}{i}$ at $t_{n}$ to construct the TS approximate solution
@@ -507,7 +552,7 @@ assurance from knowing the domain $\lode$ is in the circle of convergence.
   different role from the ``intended reader,'' as given in
   Section~\ref{sec_IntendedReader}.  As in Section~\ref{sec_IntendedReader}, the
   user characteristics should be specific an unambiguous.  For instance, ``The
-  end user of \progname{} should have an understanding of undergraduate Level 1
+  end user of \progname{f} should have an understanding of undergraduate Level 1
   Calculus and Physics.''}
 
 \subsection{System Constraints}
@@ -537,17 +582,52 @@ the instance models.  \plt{Add any project specific details that are relevant
 
 \progname{f} is intended to estimate the radius of the circle of convergence of a power series.
 
-Indeed, \progname{f} accepts a sufficiently large integer $N$ and
-a finite sequence $\Setbg{c_0, c_1, \ldots, c_{N-1}}$ with each $c_n \in \Cz$ as inputs.
-\progname{f} returns as output an estimate for the radius of the circle of convergence, $R_c \in \Rz$.
-
-
 \plt{What problem does your program solve?
 The description here should be in the problem space, not the solution space.}
 
 \subsubsection{Terminology and  Definitions}
 
-This subsection doesn't apply to \progname{f}.
+A {\it sequence} is a function $f$ whose domain is the positive real numbers $\Iz$
+and range is in $\Cz$, that is, $n \in \Iz \mapsto f(n) = c_n \in \Cz$. It is customary
+to denote the sequence $f$ by the symbol $\Setbg{c_n}$ or by $c_0, c_1, c_2, \ldots$.
+The values of $f$, that is, the elements $c_n$ are called the {\it terms} of the sequence.
+If $A$ is a set and if $c_n \in A$ for all $n \in \Iz$, the $\Setbg{c_n}$ is said to be
+a {\it sequence in $A$}. The terms of a sequence need not be distinct.
+
+Given a sequence $\Setbg{c_n}$, we use the notation
+\EQ
+{
+  \sum_{n=p}^q c_n \qquad\text{with}\qquad p \leq q
+}
+to denote the sum $c_p + c_{p+1} + \cdots + c_q$. With the sequence $\Setbg{c_n}$, we associate a sequence
+$\Setbg{s_n}$, where
+\EQ
+{
+  \label{eq:partial-sum}
+  s_n \defeq \sum_{k=0}^n c_k.
+}
+For the sequence $\Setbg{s_n}$, we may use the symbolic expression $c_0, c_1, c_2, \ldots$ or
+\EQ
+{
+  \label{eq:series-symbol}
+  \sum_{n=0}^{\infty} c_n.
+}
+
+The symbol \eqref{series-symbol} is called an {\it infinite series} or just {\it series}. The
+terms $s_n \in \Cz$ are called {\it partial sums} of the series, they are just numbers.
+If $\Setbg{s_n} \rightarrow s$ as $n \rightarrow \infty$, then we say $\Setbg{s_n}$ converges to $s$,
+the series converges, and write
+\EQ
+{
+  \label{eq:series-limit}
+  \sum_{n=0}^{\infty} c_n = s.
+}
+The number $s$ is the limit of a sequence of sums called the {\it sum of the series}. If $\Setbg{s_n}$
+diverges, then the series is said to diverge.
+
+ADD LIM INF
+
+ADD LIM SUP
 
 \plt{This section is expressed in words, not with equations.  It provide the
   meaning of the different words and phrases used in the domain of the problem.
@@ -709,6 +789,23 @@ models can be verified.
 
 \subsubsection{Assumptions} \label{sec_assumpt}
 
+Indeed, \progname{f} accepts a sufficiently large integer $N$ and
+a finite sequence $\Setbg{c_0, c_1, \ldots, c_{N-1}}$ with each $c_n \in \Cz$ as inputs.
+\progname{f} returns as output an estimate for the radius of the circle of convergence, $R_c \in \Rz$.
+
+
+\Ni The problem \progname{f} solves will be restricted to the real case.
+
+\vspace{2mm}
+
+\Ni The software \progname{f} will estimate the radius of convergence.
+It will not compute $R_c$ exactly.
+
+\vspace{2mm}
+
+\Ni The software \progname{f} will produce its estimated $R_c$ from a finite number of terms
+in the power series.
+
 \plt{The assumptions are a refinement of the scope.  The scope is general, where
   the assumptions are specific.  All assumptions should be listed, even those
   that domain experts know so well that they are rarely (if ever) written down.}
@@ -734,11 +831,11 @@ likely change [LC], in which the respective assumption is used.
     explicit (or implicit) ``and'' in the text of an assumption.}
 }
 
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{another}:]
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{another-1}:]
 
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{linear_least_squares}:] Linear Fit to data.
 
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{another}:]
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{another-2}:]
 
 \end{itemize}
 
@@ -1061,6 +1158,10 @@ qualities that the software is expected to exhibit.
 
 \subsection{Functional Requirements}
 
+The method developed in this project is expected to be independent of system constraints. However
+most TS methods are developed in \cpp or \fortran, the goto languages of scientific computing.
+Certainly a scripting language would not be sufficient for large systems.
+
 \noindent \begin{itemize}
 
 \item[R\refstepcounter{reqnum}\thereqnum \label{R_Inputs}:] \plt{Requirements
@@ -1084,6 +1185,12 @@ qualities that the software is expected to exhibit.
 
 \subsection{Nonfunctional Requirements}
 
+\SCref{SecUserCharacteristics}
+This section summarizes the knowledge/skills expected of the user.
+  Measuring usability, which is often a required non-function requirement,
+  requires knowledge of a typical user. 
+
+
 \plt{List your nonfunctional requirements.  You may consider using a fit
   criterion to make them verifiable.}
 
@@ -1100,7 +1207,7 @@ qualities that the software is expected to exhibit.
 
 \noindent \begin{itemize}
 
-\item[LC\refstepcounter{lcnum}\thelcnum\label{LC_meaningfulLabel}:] \plt{Give
+\item[LC\refstepcounter{lcnum}\thelcnum\label{UC_meaningfulLabel}:] \plt{Give
     the unlikely changes.  The design can assume that the changes listed will
     not occur.}
 
