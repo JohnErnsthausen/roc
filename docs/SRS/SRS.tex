@@ -219,7 +219,7 @@ The table that follows summarizes the mathematical notation used in this documen
   \ivp & Initial Value Problem\\
   JZ & Jorba and Zou \cite{jorba2005software}\\
   LC & Likely Change\\
-  $\Iz$ & The nonnegative integers\\
+  $\Iz$ & The non-negative integers\\
 %  PS & Physical System Description\\
   \ode & Ordinary Differential Equation\\
   $\Rz$ & Real numbers\\
@@ -585,14 +585,15 @@ the instance models.  \plt{Add any project specific details that are relevant
 \plt{What problem does your program solve?
 The description here should be in the problem space, not the solution space.}
 
-\subsubsection{Terminology and  Definitions}
+\subsubsection{Terminology and  Definitions}\label{ssc:terminology-definitions}
 
-A {\it sequence} is a function $f$ whose domain is the positive real numbers $\Iz$
-and range is in $\Cz$, that is, $n \in \Iz \mapsto f(n) = c_n \in \Cz$. It is customary
+A {\it sequence} is a function $f$ whose domain is the non-negative integers $\Iz$
+and range is in $E$, that is, a sequence is the mapping $n \in \Iz \mapsto f(n) = c_n \in E$. It is customary
 to denote the sequence $f$ by the symbol $\Setbg{c_n}$ or by $c_0, c_1, c_2, \ldots$.
 The values of $f$, that is, the elements $c_n$ are called the {\it terms} of the sequence.
-If $A$ is a set and if $c_n \in A$ for all $n \in \Iz$, the $\Setbg{c_n}$ is said to be
-a {\it sequence in $A$}. The terms of a sequence need not be distinct.
+If $A$ is a subset of $E$ and if $c_n \in A$ for all $n \in \Iz$, the $\Setbg{c_n}$ is said to be
+a {\it sequence in $A$}. The terms of a sequence need not be distinct. Typically, $E$ is
+the complex numbers $\Cz$ or the real numbers $\Rz$.
 
 Given a sequence $\Setbg{c_n}$, we use the notation
 \EQ
@@ -606,7 +607,7 @@ $\Setbg{s_n}$, where
   \label{eq:partial-sum}
   s_n \defeq \sum_{k=0}^n c_k.
 }
-For the sequence $\Setbg{s_n}$, we may use the symbolic expression $c_0, c_1, c_2, \ldots$ or
+For the sequence $\Setbg{s_n}$, we may use the symbolic expression $c_0 + c_1 + c_2 + \ldots$ or
 \EQ
 {
   \label{eq:series-symbol}
@@ -614,7 +615,7 @@ For the sequence $\Setbg{s_n}$, we may use the symbolic expression $c_0, c_1, c_
 }
 
 The symbol \eqref{series-symbol} is called an {\it infinite series} or just {\it series}. The
-terms $s_n \in \Cz$ are called {\it partial sums} of the series, they are just numbers.
+terms $s_n$ are called {\it partial sums} of the series, they are just numbers.
 If $\Setbg{s_n} \rightarrow s$ as $n \rightarrow \infty$, then we say $\Setbg{s_n}$ converges to $s$,
 the series converges, and write
 \EQ
@@ -625,9 +626,21 @@ the series converges, and write
 The number $s$ is the limit of a sequence of sums called the {\it sum of the series}. If $\Setbg{s_n}$
 diverges, then the series is said to diverge.
 
-ADD LIM INF
+\label{ssc:terminology-definitions}
 
-ADD LIM SUP
+Given a sequence $\Setbg{e_n}$, consider a sequence $\Setbg{n_k}$ of non-negative integers such that
+$n_0 < n_1 < n_2 < \cdots$. Then the sequence $\Setbg{e_{n_k}}$ is called a {\it subsequence} of
+$\Setbg{e_n}$. If $\Setbg{e_{n_k}}$ converges, its limit is called a {\it subsequential limit} of $\Setbg{e_n}$.
+
+Let $\Setbg{s_n}$ be a sequence of real numbers. Let $E$ be the set of numbers $x$ in the extended real number
+system such that $s_{n_k} \rightarrow x$ for some subsequence $\Setbg{s_{n_k}}$.
+This set $E$ contains all subsequential limits plus possibly $+\infty$ and $-\infty$. Define $s^* \defeq \sup E$ and
+$s_* \defeq \inf E$. The numbers $s^*$ and $s_*$ are called the {\it upper limit} and {\it lower limit}
+of $\Setbg{s_n}$. We use the notation
+\EQ
+{
+  \nliminf{n} s_n = s_* \qquad\text{and}\qquad \nlimsup{n} s_n = s^*.
+}
 
 \plt{This section is expressed in words, not with equations.  It provide the
   meaning of the different words and phrases used in the domain of the problem.
@@ -711,8 +724,7 @@ includes the following elements:
     should have a meaningful label.}
 }
 
-\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_topline}:] Implement CC top line analysis
-\cite[pp.~127--128]{chang1982} to estimate the $R_c$, one of several sub-algorithms of the CC algorithm.
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_topline}:] Implement CC top line analysis to estimate $R_c$.
 
 \item[GS\refstepcounter{goalnum}\thegoalnum \label{G_textbook}:] Use top line analysis to estimate $R_c$
   for three problems from real analysis where $R_c$ is known. Report on the accuracy of the result.
@@ -789,23 +801,6 @@ models can be verified.
 
 \subsubsection{Assumptions} \label{sec_assumpt}
 
-Indeed, \progname{f} accepts a sufficiently large integer $N$ and
-a finite sequence $\Setbg{c_0, c_1, \ldots, c_{N-1}}$ with each $c_n \in \Cz$ as inputs.
-\progname{f} returns as output an estimate for the radius of the circle of convergence, $R_c \in \Rz$.
-
-
-\Ni The problem \progname{f} solves will be restricted to the real case.
-
-\vspace{2mm}
-
-\Ni The software \progname{f} will estimate the radius of convergence.
-It will not compute $R_c$ exactly.
-
-\vspace{2mm}
-
-\Ni The software \progname{f} will produce its estimated $R_c$ from a finite number of terms
-in the power series.
-
 \plt{The assumptions are a refinement of the scope.  The scope is general, where
   the assumptions are specific.  All assumptions should be listed, even those
   that domain experts know so well that they are rarely (if ever) written down.}
@@ -814,11 +809,14 @@ in the power series.
   recommended that the documentation either include, or point to, an explanation
   and justification for the assumption.}
 
-This section simplifies the original problem and helps in developing the
+\plt{This section simplifies the original problem and helps in developing the
 theoretical model by filling in the missing information for the physical
 system. The numbers given in the square brackets refer to the theoretical model
 [T], general definition [GD], data definition [DD], instance model [IM], or
-likely change [LC], in which the respective assumption is used.
+likely change [LC], in which the respective assumption is used.}
+
+Given a tolerance \tol, consider the sequence $\Setbg{c_n}$ and its power series $\sum_{n=0}^{\infty} c_n$
+under the following assumptions:
 
 \begin{itemize}
 
@@ -831,15 +829,62 @@ likely change [LC], in which the respective assumption is used.
     explicit (or implicit) ``and'' in the text of an assumption.}
 }
 
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{another-1}:]
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{assumption-n}:]
+  We know an integer $N$ such that, for all $m \geq n \geq N$,
+  $| \sum_{k=n}^{m} c_k | < \tol$.
 
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{linear_least_squares}:] Linear Fit to data.
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{assumption-real}:]
+  The sequence $\Setbg{c_n}$ is a subset of $\Rz$.
 
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{another-2}:]
+
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{lassumption-approximate}:]
+  The software \progname{f} will estimate the radius of convergence from a finite number of terms
+  in the power series. It will not compute $R_c$ exactly. 
+
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{lassumption-linear-least-squares}:]
+  A Linear Least Squares fit to the input sequence approximates the Least Squares residual within \tol.
 
 \end{itemize}
 
 \subsubsection{Theoretical Models}\label{sec_theoretical}
+
+For the sequence $\Setbg{s_n}$, we may use the symbolic expression $c_0 + c_1 + c_2 + \ldots$ or
+\EQ
+{
+  \label{eq:series-symbol}
+  \sum_{n=0}^{\infty} c_n.
+}
+
+
+A series \eqref{series-symbol} converges if an only if,
+for every $\epsilon > 0$, there is an integer $N$ such that
+\EQ
+{
+  \label{eq:series-cauchy-condition}
+  | \sum_{k=n}^{m} c_k | < \epsilon
+}
+if $m \geq n \geq N$. It follows that, if \eqref{series-symbol} converges, then $\lim_{n \rightarrow \infty} c_n = 0$.
+
+
+
+Indeed, \progname{f} accepts a sufficiently large integer $N$ and
+a finite sequence $\Setbg{c_0, c_1, \ldots, c_{N-1}}$ with each $c_n \in \Cz$ as inputs.
+\progname{f} returns as output an estimate for the radius of the circle of convergence, $R_c \in \Rz$.
+
+
+[TM] Root test.
+
+[TM] Ratio test.
+
+[GD] Compare these tests.
+
+Remark.
+
+[GD] Definition of $R_c$.
+
+[IM] Derivation of slope equation.
+
+[Likely change] Error estimate. Sum the tail using linear model as truth.
 
 \plt{Theoretical models are sets of abstract mathematical equations or axioms
   for solving the problem described in Section ``Physical System Description''
@@ -940,9 +985,10 @@ between the environment and the object (\si{\celsius}).
   \hline
 \end{tabular}
 \end{minipage}\\
+}
 
 \subsubsection*{Detailed derivation of simplified rate of change of temperature}
-}
+
 
 \plt{This may be necessary when the necessary information does not fit in the
   description field.}
@@ -1065,15 +1111,18 @@ The goals \plt{reference your goals} are solved by \plt{reference your instance
 \end{minipage}\\
 
 %~\newline
+}
 
 \subsubsection*{Derivation of ...}
-}
+
 
 \plt{The derivation shows how the IM is derived from the TMs/GDs.  In cases
   where the derivation cannot be described under the Description field, it will
   be necessary to include this subsection.}
 
 \subsubsection{Input Data Constraints} \label{sec_DataConstraints}    
+
+Properly scaled sequence.
 
 \plt{
 
@@ -1122,6 +1171,7 @@ Table~\ref{TblSpecParams}.
   \bottomrule
 \end{longtable*}
 \end{table}
+}
 
 \subsubsection{Properties of a Correct Solution} \label{sec_CorrectSolution}
 
@@ -1145,7 +1195,6 @@ A correct solution must exhibit \plt{fill in the details}.  \plt{These
   \bottomrule
 \end{longtable*}
 \end{table}
-}
 
 \section{Requirements}\label{sc:requirements}
 
