@@ -831,13 +831,12 @@ under the following assumptions:
   We know an integer $N$ such that, for all $m \geq n \geq N$,
   $| \sum_{k=n}^{m} c_k | < \tol$.
 
-%\item[A\refstepcounter{assumpnum}\theassumpnum \label{as:real}:]
-%  The sequence $\Setbg{c_n}$ is a subset of $\Rz$.
-
-
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{as:approximate}:]
   The software \progname{f} will estimate the radius of convergence from a finite number of terms
   in the power series. It will not compute $R_c$ exactly. 
+
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{as:real}:]
+  The sequence $\Setbg{c_n}$ is a subset of $\Rz$.
 
 %\item[A\refstepcounter{assumpnum}\theassumpnum \label{as:linear-least-squares}:]
 %  A Linear Least Squares fit to the input sequence approximates the Least Squares residual within \tol.
@@ -876,28 +875,28 @@ tends to infinity.
 \end{tabular}
 \end{minipage}\\
 
-% ~\newline
-% 
-% \noindent
-% \begin{minipage}{\textwidth}
-% \renewcommand*{\arraystretch}{1.5}
-% \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
-%   \hline
-%   \rowcolor[gray]{0.9}
-%   Number& T\refstepcounter{theorynum}\thetheorynum \label{TM-convergence-of-sequence}\\
-%   \hline
-%   Label&\bf Convergence of sequence\\
-%   \hline
-%   Theorem& If series $\sum_{n=0}^{\infty} c_n$ converges, then $\lim_{n \rightarrow \infty} c_n = 0$.\\
-%   \hline
-%   Description & If a series converges, then its terms converge to zero.\\
-%   \hline
-%   Source & Theorem 3.28 \cite[p.~60]{rudin1976}\\
-%   \hline
-%   Ref.\ By & Our IM uses this to estimate $\alpha$.\\
-%   \hline
-% \end{tabular}
-% \end{minipage}\\
+~\newline
+
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+  \hline
+  \rowcolor[gray]{0.9}
+  Number& T\refstepcounter{theorynum}\thetheorynum \label{TM-convergence-of-sequence}\\
+  \hline
+  Label&\bf Convergence of sequence\\
+  \hline
+  Theorem& If series $\sum_{n=0}^{\infty} c_n$ converges, then $\lim_{n \rightarrow \infty} c_n = 0$.\\
+  \hline
+  Description & If a series converges, then its terms converge to zero.\\
+  \hline
+  Source & Theorem 3.28 \cite[p.~60]{rudin1976}\\
+  \hline
+  Ref.\ By & Our IM uses this to estimate $\alpha$.\\
+  \hline
+\end{tabular}
+\end{minipage}\\
 
 ~\newline
 
@@ -913,7 +912,7 @@ tends to infinity.
   \hline
   Theorem&
   \begin{minipage}[t]{0.8\textwidth}  
-  Given a series $\sum_{n=0}^{\infty} c_n$. Set $\alpha \defeq \proot{n}{|c_n|}$.
+    Given a series $\sum_{n=0}^{\infty} c_n$. Set $\alpha \defeq \nlimsup{n} \proot{n}{|c_n|}$.
   Then
   \begin{itemize}
     \item[(a)] if $\alpha < 1$, then $\sum_{n=0}^{\infty} c_n$ converges;
@@ -1091,7 +1090,7 @@ understand the role of the root test in the proof of \dref{GD-rc}.
 \subsubsection*{Inside \dref{GD-rc}}
 
 Given any sequence $\Setbg{c_n}$, construct the power series
-$\sum_{n=0}^{\infty} c_n (z-z_0)^n$. Set $a_n = c_n (z - z_0)^n$, and apply the root test
+$\sum_{n=0}^{\infty} c_n (z-z_0)^n$. Set $a_n = c_n (z - z_0)^n$, and apply the root test \tref{TM-root-test}
 to the series $\sum_{n=0}^{\infty} a_n$.
 \EQ
 {
@@ -1105,7 +1104,7 @@ Obtain from the root test that
   \item[(c)] if $|z-z_0| = R_c$, then this test gives no information.
 \end{itemize}
 
-The next section derives an IM to compute $R_c$.
+The next section derives an IM to approximate $R_c$.
 
 \plt{General Definitions (GDs) are a refinement of one or more TMs, and/or of
   other GDs.  The GDs are less abstract than the TMs.  Generally the reduction
@@ -1240,7 +1239,6 @@ identified in Sections~\ref{sec_theoretical} and~\ref{sec_gendef}.
 
 Given $\tol>0$ and any sequence $\Setbg{c_n}$, construct the power series
 $\sum_{n=0}^{\infty} c_n (z-z_0)^n$.
-
 Use \ASref{n} to obtain an integer $N$ such that,
 for all $m \geq n \geq N$, $| \sum_{k=n}^{m} c_k | < \tol$.
 It is no loss in generality to assume $N>30$, else replace $N$ with $30$.
@@ -1255,16 +1253,20 @@ With $k = i+N-14$, obtain the best linear fit $y(k) = m k + b$ in the $2$-norm t
   \Setbg{(N-14, \log_{10} | c_{N-14} |), (N-13, \log_{10} |c_{N-13}|), \ldots, (N, \log_{10} |c_{N}|)},
 }
 that is, find $m$ and $b$ such that $\sum_{i=0}^{14} |\log_{10} |c_{i+N-14}| - y(i+N-14)|^2$ is minimized.
+Because $\sum_{n=0}^{\infty} c_n$ converges, \tref{TM-convergence-of-sequence} says that
+$c_n \rightarrow 0$ as $n \rightarrow \infty$. The model parameter $m$ will be negative.
 
-Compute the ratio with our model
+Compute the ratio in the ratio test \tref{TM-ratio-test} with our model. Then 
 \EQ
 {
   \log_{10} \left| \tfrac{y(k+1)}{y(k)} \right| = \log_{10} | y(k+1) | - \log_{10} | y(k) | = m,
 }
-Which is independent of $k$. By continuity of $\log_{10}$ and the best linear fit $y$, we observe
-$\log_{10} \left| \tfrac{y(k+1)}{y(k)} \right| \rightarrow m$. $\log_{10} \left| \tfrac{y(k+1)}{y(k)} \right|$
-approximates $\log_{10} \left| \tfrac{c_{k+1}}{c_k} \right|$. By \tref{TM-comparing-ratio-and-root},
-the ratio test converging implies the root test converges. They converge to a single limit and the same limit.
+which is independent of $k$. By continuity of $\log_{10}$ and the best linear fit function $y$ as well as
+$\log_{10} \left| \tfrac{y(k+1)}{y(k)} \right|$ approximates $\log_{10} \left| \tfrac{c_{k+1}}{c_k} \right|$,
+we observe that $\log_{10} \left| \tfrac{y(k+1)}{y(k)} \right| \rightarrow m$ is approximately
+$\log_{10} \left| \tfrac{c_{k+1}}{c_k} \right| \rightarrow m$. By \tref{TM-comparing-ratio-and-root},
+the ratio test \tref{TM-ratio-test} converging implies the root test \tref{TM-root-test} converges, because
+they converge to a single limit and the same limit. See description section of \tref{TM-comparing-ratio-and-root}.
 It follows from \dref{GD-rc} that the power series converges whenever $m<0$ and diverges whenever $m>0$.
 Moreover \dref{GD-rc} says $R_c = 1/10^m$. 
 
@@ -1284,14 +1286,19 @@ Moreover \dref{GD-rc} says $R_c = 1/10^m$.
   \hline
   Output& $R_c$ or confirmation of divergence.\\
   \hline
-  Description& Approximate the radius of the circle of convergence.\\
+  Description& Approximate the radius of the circle of convergence, $R_c \approx 1/10^m$.\\
   \hline
-  Sources& Chang and Corliss \cite{chang1982} and my own contribution.\\
+  Sources& The full details are my own contribution. However the ideas are inspired by conversations
+  with G. Corliss and N. Nedialkov.\\
   \hline
   Ref.\ By & Final product.\\
   \hline
 \end{tabular}
 \end{minipage}\\
+
+
+Chang and Corliss \cite{chang1982} and ASref{real}. The sequence $\Setbg{c_n}$ is a subset of $\Rz$.
+
 
 
 \plt{The motivation for this section is to reduce the problem defined in
