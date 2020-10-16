@@ -66,7 +66,7 @@
 \newcommand{\ddref}[1]{DD\ref{#1}}
 \newcounter{theorynum} %Theory Number
 \newcommand{\tthetheorynum}{T\thetheorynum}
-\newcommand{\tref}[1]{T\ref{#1}}
+\newcommand{\tref}[1]{TM\ref{#1}}
 \newcounter{tablenum} %Table Number
 \newcommand{\tbthetablenum}{T\thetablenum}
 \newcommand{\tbref}[1]{TB\ref{#1}}
@@ -626,8 +626,6 @@ the series converges, and write
 The number $s$ is the limit of a sequence of sums called the {\it sum of the series}. If $\Setbg{s_n}$
 diverges, then the series is said to diverge.
 
-\label{ssc:terminology-definitions}
-
 Given a sequence $\Setbg{e_n}$, consider a sequence $\Setbg{n_k}$ of non-negative integers such that
 $n_0 < n_1 < n_2 < \cdots$. Then the sequence $\Setbg{e_{n_k}}$ is called a {\it subsequence} of
 $\Setbg{e_n}$. If $\Setbg{e_{n_k}}$ converges, its limit is called a {\it subsequential limit} of $\Setbg{e_n}$.
@@ -829,71 +827,190 @@ under the following assumptions:
     explicit (or implicit) ``and'' in the text of an assumption.}
 }
 
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{assumption-n}:]
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{as:n}:]
   We know an integer $N$ such that, for all $m \geq n \geq N$,
   $| \sum_{k=n}^{m} c_k | < \tol$.
 
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{assumption-real}:]
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{as:real}:]
   The sequence $\Setbg{c_n}$ is a subset of $\Rz$.
 
 
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{lassumption-approximate}:]
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{as:approximate}:]
   The software \progname{f} will estimate the radius of convergence from a finite number of terms
   in the power series. It will not compute $R_c$ exactly. 
 
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{lassumption-linear-least-squares}:]
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{as:linear-least-squares}:]
   A Linear Least Squares fit to the input sequence approximates the Least Squares residual within \tol.
 
 \end{itemize}
 
 \subsubsection{Theoretical Models}\label{sec_theoretical}
+\label{ssc:TM}
 
-For the sequence $\Setbg{s_n}$, we may use the symbolic expression $c_0 + c_1 + c_2 + \ldots$ or
-\EQ
-{
-  \label{eq:series-symbol}
-  \sum_{n=0}^{\infty} c_n.
-}
+Applying the terminology and definitions from \SSCref{terminology-definitions}, this section records
+theorems required to identify a convergent/divergent series.
 
+Consider the sequence $\Setbg{c_n}$ and its power series $\sum_{n=0}^{\infty} c_n$. The following
+TM is used to show that the coefficients in the terms of a series tend to zero as the index of the term
+tends to infinity.
 
-A series \eqref{series-symbol} converges if an only if,
-for every $\epsilon > 0$, there is an integer $N$ such that
-\EQ
-{
-  \label{eq:series-cauchy-condition}
-  | \sum_{k=n}^{m} c_k | < \epsilon
-}
-if $m \geq n \geq N$. It follows that, if \eqref{series-symbol} converges, then $\lim_{n \rightarrow \infty} c_n = 0$.
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+  \hline
+  \rowcolor[gray]{0.9}
+  Number& T\refstepcounter{theorynum}\thetheorynum \label{TM-series-cauchy-condition}\\
+  \hline
+  Label&\bf Cauchy convergence condition\\
+  \hline
+  Theorem& A series $\sum_{n=0}^{\infty} c_n$ converges if an only if, for every $\epsilon > 0$,
+  there is an integer $N$ such that $| \sum_{k=n}^{m} c_k | < \epsilon$ whenever $m \geq n \geq N$.\\ 
+  \hline
+  Description & Tools to identify when a series converges.\\
+  \hline
+  Source & Theorem 3.22 \cite[p.~59]{rudin1976}\\
+  \hline
+  Ref.\ By & Used to choose sequence to approximate and obtain error.\\
+  \hline
+\end{tabular}
+\end{minipage}\\
 
+~\newline
 
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+  \hline
+  \rowcolor[gray]{0.9}
+  Number& T\refstepcounter{theorynum}\thetheorynum \label{TM-convergence-of-sequence}\\
+  \hline
+  Label&\bf Convergence of sequence\\
+  \hline
+  Theorem& If series $\sum_{n=0}^{\infty} c_n$ converges, then $\lim_{n \rightarrow \infty} c_n = 0$.\\
+  \hline
+  Description & If a series converges, then its terms converge to zero.\\
+  \hline
+  Source & Theorem 3.28 \cite[p.~60]{rudin1976}\\
+  \hline
+  Ref.\ By & Our IM uses this to estimate $\alpha$.\\
+  \hline
+\end{tabular}
+\end{minipage}\\
 
-Indeed, \progname{f} accepts a sufficiently large integer $N$ and
-a finite sequence $\Setbg{c_0, c_1, \ldots, c_{N-1}}$ with each $c_n \in \Cz$ as inputs.
-\progname{f} returns as output an estimate for the radius of the circle of convergence, $R_c \in \Rz$.
+~\newline
 
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+  \hline
+  \rowcolor[gray]{0.9}
+  Number& T\refstepcounter{theorynum}\thetheorynum \label{TM-root-test}\\
+  \hline
+  Label&\bf Root test\\
+  \hline
+  Theorem&
+  \begin{minipage}[t]{0.8\textwidth}  
+  Given a series $\sum_{n=0}^{\infty} c_n$. Set $\alpha \defeq \proot{n}{|c_n|}$.
+  Then
+  \begin{itemize}
+    \item[(a)] if $\alpha < 1$, then $\sum_{n=0}^{\infty} c_n$ converges;
+    \item[(b)] if $\alpha > 1$, then $\sum_{n=0}^{\infty} c_n$ diverges;
+    \item[(c)] if $\alpha = 1$, then this test gives no information.
+  \end{itemize}
+  \end{minipage}\\
+  \hline
+  Description & Tools to identify when a series converges/diverges.\\
+  \hline
+  Source & Theorem 3.33 \cite[p.~65]{rudin1976}\\
+  \hline
+  Ref.\ By & Used to define $R_c$.\\
+  \hline
+\end{tabular}
+\end{minipage}\\
 
-[TM] Root test.
+~\newline
 
-[TM] Ratio test.
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+  \hline
+  \rowcolor[gray]{0.9}
+  Number& T\refstepcounter{theorynum}\thetheorynum \label{TM-ratio-test}\\
+  \hline
+  Label&\bf Ratio test\\
+  \hline
+  Theorem&
+  \begin{minipage}[t]{0.8\textwidth} 
+  The series $\sum_{n=0}^{\infty} c_n$
+  \begin{itemize}
+    \item[(a)] converges if $\nlimsup{n} \lvert \tfrac{c_{n+1}}{c_n} \rvert < 1$,
+    \item[(b)] diverges if $\lvert \tfrac{c_{n+1}}{c_n} \rvert \geq 1$ for $n \geq N$, where $N$ is some fixed integer.
+  \end{itemize}
+  \end{minipage}\\
+  \hline
+  Description & Tools to identify when a series converges/diverges.\\
+  \hline
+  Source & Theorem 3.34 \cite[p.~66]{rudin1976}\\
+  \hline
+  Ref.\ By & Used to define our $R_c$.\\
+  \hline
+\end{tabular}
+\end{minipage}\\
 
-[GD] Compare these tests.
+~\newline
+The ratio test is often easier to apply than the root test. However, the root test resolves more application
+than the ratio test. Both the ratio test and the root test deduce divergence from the statement in
+Theoretical Model \ref{TM-convergence-of-sequence}, if a series converges, then its terms converge to zero.
+~\newline
 
-Remark.
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+  \hline
+  \rowcolor[gray]{0.9}
+  Number& T\refstepcounter{theorynum}\thetheorynum \label{TM-comparing-ratio-and-root}\\
+  \hline
+  Label&\bf Comparing the Ratio test and the Root test\\
+  \hline
+  Theorem& 
+  \begin{minipage}[t]{0.8\textwidth} 
+  For any sequence $\Setbg{c_n}$ of positive (real) numbers,
+  \begin{itemize}
+    \item[(a)] $\nliminf{n} \tfrac{c_{n+1}}{c_n} \leq \nliminf{n}\proot{n}{c_n}$,
+    \item[(b)] $\nlimsup{n}\proot{n}{c_n} \leq \nlimsup{n} \tfrac{c_{n+1}}{c_n}$
+  \end{itemize}
+  \end{minipage}\\
+  \hline
+  Description & This General Definition shows that if the ratio test converges,
+  then the root test converges and if the root test is inconclusive, then the ratio test is inconclusive.
+  Whenever the limit exists and it is unique, then there is equality in (a) and (b) and
+  $\lim_{n \rightarrow \infty} \tfrac{c_{n+1}}{c_n} = \lim_{n \rightarrow \infty} \proot{n}{c_n}$.
+  \\
+  \hline
+  Source & Theorem 3.37 \cite[p.~68]{rudin1976}\\
+  \hline
+  Ref.\ By & Our IM uses this for equality between Root test and Ratio test.\\
+  \hline
+\end{tabular}
+\end{minipage}\\
 
-[GD] Definition of $R_c$.
-
-[IM] Derivation of slope equation.
-
-[Likely change] Error estimate. Sum the tail using linear model as truth.
+~\newline
 
 \plt{Theoretical models are sets of abstract mathematical equations or axioms
   for solving the problem described in Section ``Physical System Description''
   (Section~\ref{sec_phySystDescrip}). Examples of theoretical models are
   physical laws, constitutive equations, relevant conversion factors, etc.}
 
+\plt{
 This section focuses on the general equations and laws that \progname{f} is based
 on.  \plt{Modify the examples below for your problem, and add additional models
   as appropriate.}
+}
 
 \plt{
 ~\newline
@@ -935,14 +1052,71 @@ on.  \plt{Modify the examples below for your problem, and add additional models
 
 \subsubsection{General Definitions}\label{sec_gendef}
 
+The proofs of the theorem in this section apply the terminology and definitions
+from \SSCref{terminology-definitions} as well as the Theoretical models from \SSCref{TM}.
+
+The radius of the circle of convergence is defined in the next General Definition, a theorem
+that enables us to justify and construct the IM so that \progname{f} will estimate $R_c$.
+~\newline
+
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+  \hline
+  \rowcolor[gray]{0.9}
+  Number& GD\refstepcounter{defnum}\thedefnum \label{GD-rc}\\
+  \hline
+  Label&\bf Define the radius of the circle of convergence\\
+  \hline
+  Theorem& Given any sequence $\Setbg{c_n}$, construct the power series
+  $\sum_{n=0}^{\infty} c_n (z-z_0)^n$. Set $\alpha \defeq \nlimsup{n} \proot{n}{|c_n|}$ and $R_c \defeq |z-z_0|/\alpha$.
+  Then $\sum_{n=0}^{\infty} c_n (z-z_0)^n$ converges whenever $|z - z_0| < R_c$.\\
+  \hline
+  Description & This General Definition defines $R_c$, the radius of convergence of the power series.
+  By our convention stated \SSCref{terminology-definitions}, $\alpha = 0$ implies $R_c = +\infty$ and
+  $\alpha = +\infty$ implies $R_c = 0$.\\
+  \hline
+  Source & Theorem 3.39 \cite[p.~69]{rudin1976}\\
+  \hline
+  Ref.\ By & Our IM uses this to determine $R_c$.\\
+  \hline
+\end{tabular}
+\end{minipage}\\
+
+~\newline
+We need to relate the root test to the ratio test to obtain our IM. It is instructive to
+understand the role of the root test in the proof of \dref{GD-rc}.
+
+\subsubsection*{Inside \dref{GD-rc}}
+
+Given any sequence $\Setbg{c_n}$, construct the power series
+$\sum_{n=0}^{\infty} c_n (z-z_0)^n$. Set $a_n = c_n (z - z_0)^n$, and apply the root test
+to the series $\sum_{n=0}^{\infty} a_n$.
+\EQ
+{
+  \label{eq:rc-definition}
+  \nlimsup{n} \proot{n}{|a_n|} = |z-z_0| \nlimsup{n} \proot{n}{|c_n|} \defeq \tfrac{|z-z_0|}{R_c}.
+}
+Obtain from the root test that
+\begin{itemize}
+  \item[(a)] if $|z-z_0| < R_c$, then the power series converges;
+  \item[(b)] if $|z-z_0| > R_c$, then the power series diverges;
+  \item[(c)] if $|z-z_0| = R_c$, then this test gives no information.
+\end{itemize}
+
+The next section derives an IM to compute $R_c$.
+
 \plt{General Definitions (GDs) are a refinement of one or more TMs, and/or of
   other GDs.  The GDs are less abstract than the TMs.  Generally the reduction
   in abstraction is possible through invoking (using/referencing) Assumptions.
   For instance, the TM could be Newton's Law of Cooling stated abstracting.  The
   GD could take the general law and apply it to get a 1D equation.}
 
+\plt{
 This section collects the laws and equations that will be used in building the
 instance models.
+}
 
 \plt{Some projects may not have any content for this section, but the section
   heading should be kept.}  \plt{Modify the examples below for your problem, and
@@ -987,8 +1161,9 @@ between the environment and the object (\si{\celsius}).
 \end{minipage}\\
 }
 
+\plt{
 \subsubsection*{Detailed derivation of simplified rate of change of temperature}
-
+}
 
 \plt{This may be necessary when the necessary information does not fit in the
   description field.}
@@ -996,6 +1171,8 @@ between the environment and the object (\si{\celsius}).
   clear where the equation came from.}
 
 \subsubsection{Data Definitions}\label{sec_datadef}
+
+\progname{f} does not rely on any Data Definitions at this time.
 
 \plt{The Data Definitions are definitions of symbols and equations that are
   given for the problem.  They are not derived; they are simply used by other
@@ -1006,9 +1183,11 @@ between the environment and the object (\si{\celsius}).
 \plt{All Data Definitions should be used (referenced) by at least one other
   model.}
 
+\plt{
 This section collects and defines all the data needed to build the instance
 models. The dimension of each quantity is also given.  \plt{Modify the examples
   below for your problem, and add additional definitions as appropriate.}
+}
 
 \plt{
 ~\newline
@@ -1054,16 +1233,32 @@ Symbol &$q_C$\\
 \subsubsection{Instance Models} \label{sec_instance}    
 \label{ssc:instance-models}
 
+This section transforms the problem defined in Section~\ref{Sec_pd} into 
+one which can be translated into software. We will define finite sequences
+and series to replace the infinite counterparts
+identified in Sections~\ref{sec_theoretical} and~\ref{sec_gendef}.
+
+Given $\tol>0$, use \ASref{n} to obtain an integer $N$ such that,
+  for all $m \geq n \geq N$, $| \sum_{k=n}^{m} c_k | < \tol$.
+
+Indeed, \progname{f} accepts a sufficiently large integer $N$ and
+a finite sequence $\Setbg{c_0, c_1, \ldots, c_{N-1}}$ with each $c_n \in \Cz$ as inputs.
+\progname{f} returns as output an estimate for the radius of the circle of convergence, $R_c \in \Rz$.
+
+[IM] Derivation of slope equation.
+
 \plt{The motivation for this section is to reduce the problem defined in
   ``Physical System Description'' (Section~\ref{sec_phySystDescrip}) to one
   expressed in mathematical terms. The IMs are built by refining the TMs and/or
   GDs.  This section should remain abstract.  The SRS should specify the
   requirements without considering the implementation.}
 
+\plt{
 This section transforms the problem defined in Section~\ref{Sec_pd} into 
 one which is expressed in mathematical terms. It uses concrete symbols defined 
 in Section~\ref{sec_datadef} to replace the abstract symbols in the models 
 identified in Sections~\ref{sec_theoretical} and~\ref{sec_gendef}.
+}
 
 \plt{
 The goals \plt{reference your goals} are solved by \plt{reference your instance
@@ -1175,6 +1370,8 @@ Table~\ref{TblSpecParams}.
 
 \subsubsection{Properties of a Correct Solution} \label{sec_CorrectSolution}
 
+Error tail.
+
 \noindent
 A correct solution must exhibit \plt{fill in the details}.  \plt{These
   properties are in addition to the stated requirements.  There is no need to
@@ -1206,6 +1403,19 @@ software is expected to complete, and the nonfunctional requirements, the
 qualities that the software is expected to exhibit.
 
 \subsection{Functional Requirements}
+
+Positive.
+
+Chang and Corliss. Concave down. Envelope.
+
+Reflect known cases.
+
+Use top line analysis to estimate $R_c$ for three problems from real analysis where $R_c$ is known.
+Report on the accuracy of the result.
+
+Use top line analysis to estimate the order of a singularity as described in CC \cite[pp.~127--128]{chang1982}.
+
+Use top line analysis to estimate $R_c$ while solving \ode \ivp by the TS method.
 
 The method developed in this project is expected to be independent of system constraints. However
 most TS methods are developed in \cpp or \fortran, the goto languages of scientific computing.
@@ -1244,6 +1454,12 @@ This section summarizes the knowledge/skills expected of the user.
   criterion to make them verifiable.}
 
 \section{Likely Changes}    
+
+[Likely change] Error estimate. Sum the tail using linear model as truth.
+
+
+
+
 
 \noindent \begin{itemize}
 
