@@ -349,7 +349,7 @@ Section~\ref{Sec_pd}, the \Quote{Problem~Description}.
   of the document is the purpose of the SRS, including communication, planning
   for the design stage, etc.}
 
-\subsection{Scope of Requirements}
+\subsection{Scope of Requirements}\label{sc:scope}
 
 In the late 1800's, several authors resolved problems
 concerning the characterization and analysis of singularities for power series. CC discuss
@@ -1171,7 +1171,59 @@ between the environment and the object (\si{\celsius}).
 
 \subsubsection{Data Definitions}\label{sec_datadef}
 
-\progname{f} does not rely on any Data Definitions at this time.
+We quoted from \cite{chang1982} in \SCref{scope}, the scope section, that,
+in general, the coefficients of a power series follow no patterns, so few theorems about truncated
+series can be proved. However, series which are real-valued on the real axis can have poles,
+logarithmic branch points, and essential singularities only on the real axis or in conjugate pairs.
+The sequence $\Setbg{c_n}$ is a subset of $\Rz$ under \ASref{real}.
+~\newline
+
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+\hline
+\rowcolor[gray]{0.9}
+Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{DD-order-of-singularity}\\
+\hline
+Label& \bf Order of singularity\\
+\hline
+Symbol &$\mu$\\
+\hline
+  Conditions &
+  Assume \ASref{real}.
+Further assume the real coefficients $\Setbg{c_n} \subset \Rz$ of the power series
+$\sum_{n=0}^{\infty} c_n (z-z_0)^n$ are obtained as a TS solution of an \ode and
+consider finding the order $\mu$ of the singularity from the graph
+of $\log_{10} | c_n |$ versus $n$.\\
+\hline
+  Observations &
+  \begin{minipage}[t]{0.8\textwidth} 
+The order $\mu$ is increased or decreased by term-by-term differentiation or
+integration, respectively. The upper envelope of the graph of
+$\log_{10} | c_n |$ versus $n$ will follow the following patterns:
+\begin{itemize}
+  \item If the order of the primary singularity, the closest singularity to $z_0$, is $\mu = 1$,
+    then the slope is $\log_{10} |z - z_0|/R_c$.
+    
+  \item If the order of the primary singularity $\mu \neq 1$, then the slope converges to
+    $\log_{10} |z - z_0|/R_c$ at a rate proportional to $1/n$.
+
+  \item If the order of the primary singularity $\mu \neq 1$, then the upper envelope is not linear.
+    For orders $\mu > 1$, the graph opens downward. The concavity approaches zero as
+    $1/n^2$ as $n \rightarrow \infty$. For orders $\mu < 1$, the graph is concave up which means
+    the slope underestimates $\log_{10} |z - z_0|/R_c$, and $R_c$ is overestimated.
+\end{itemize}
+  \end{minipage}\\
+  \hline
+Description &\\
+  \hline
+  Sources& Chang and Corliss \cite{chang1982}\\
+  \hline
+  Ref.\ By & \iref{ewat}\\
+  \hline
+\end{tabular}
+\end{minipage}\\
 
 \plt{The Data Definitions are definitions of symbols and equations that are
   given for the problem.  They are not derived; they are simply used by other
@@ -1237,6 +1289,12 @@ one which can be translated into software. We will define finite sequences
 and series to replace the infinite counterparts
 identified in Sections~\ref{sec_theoretical} and~\ref{sec_gendef}.
 
+A heuristically motivated top-line analysis produces a conservative estimate
+for the radius of convergence $R_c$ from the slope of a linear upper envelope
+of a graph of $\log_{10} | c_n |$ versus $n$ \cite{chang1982}. While no proof
+is given in this paper, the following argument justifies their claim that
+the slope approaches $\log_{10} |z - z_0|/R_c$ as $n \rightarrow \infty$.
+
 Given $\tol>0$ and any sequence $\Setbg{c_n}$, construct the power series
 $\sum_{n=0}^{\infty} c_n (z-z_0)^n$.
 Use \ASref{n} to obtain an integer $N$ such that,
@@ -1291,15 +1349,61 @@ Moreover \dref{GD-rc} says $R_c = 1/10^m$.
   Sources& The full details are my own contribution. However the ideas are inspired by conversations
   with G. Corliss and N. Nedialkov.\\
   \hline
-  Ref.\ By & Final product.\\
+  Ref.\ By & Final product and can be used in \iref{IM-order-of-singularity}\\
   \hline
 \end{tabular}
 \end{minipage}\\
 
+Let the conditions of Data Definition \ddref{DD-order-of-singularity} hold.
+Then the real coefficients $\Setbg{c_n} \subset \Rz$ of the power series
+$\sum_{n=0}^{\infty} c_n (z-z_0)^n$ are obtained as a TS solution of an \ode and
+consider finding the order $\mu$ of the singularity from the graph
+of $\log_{10} | c_n |$ versus $n$.
 
-Chang and Corliss \cite{chang1982} and ASref{real}. The sequence $\Setbg{c_n}$ is a subset of $\Rz$.
+The order $\mu$ is increased or decreased by term-by-term differentiation or
+integration, respectively. The upper envelope of the graph of
+$\log_{10} | c_n |$ versus $n$ is concave up for orders $\mu < 1$ which means
+the slope underestimates $\log_{10} |z - z_0|/R_c$, and $R_c$ is overestimated.
 
+To estimate $R_c$ and the order $\mu$ form the graph of $\log_{10} | c_n |$ versus $n$,
+shift the order of the series by repeated term-wise differentiation or integration. After
+each shift, a linear upper envelope is fit with \iref{IM-rc}. The singularity may occur with any order.
+However, it is unusual for a solution to a differential equation to have singularities whose 
+order lies beyond $| \mu - 1 | \leq 3$ \cite{chang1982}.
 
+~\newline
+
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+  \hline
+  \rowcolor[gray]{0.9}
+  Number& IM\refstepcounter{instnum}\theinstnum \label{IM-order-of-singularity}\\
+  \hline
+  Label& \bf Compute $\mu$ the order of singularity and underestimate $R_c$\\
+  \hline
+  Inputs & Tolerance \tol, $N$, and approximation points \eqref{approximation-points} \\
+  \hline
+  Output& $R_c$ and $\mu$\\
+  \hline
+  Description&
+Start with the series resulting from integration of the given series three times and
+fit the coefficients with \iref{IM-rc}. If that graph is linear, meaning the minimizer has norm less
+  than \tol, then the slope is accepted and the order of the singularity is 3. If the graph opens upward,
+then the series is differentiated term-wise to reduce the second derivative of the graph, and
+a new top-line fit is computed. This process is repeated, reducing $\mu$ by 1 each time,
+  until the graph opens downward or until
+seven term-wise differentiations have been tested. If seven term-wise differentiations have been
+tested and each result in turn proves unsatisfactory, then the final estimate for $R_c$ is reduced
+by 10 percent for a conservative estimate for $R_c$ and $\mu=-4$ is returned.\\
+  \hline
+  Sources& \cite{chang1982}\\
+  \hline
+  Ref.\ By & Final product.\\
+  \hline
+\end{tabular}
+\end{minipage}\\
 
 \plt{The motivation for this section is to reduce the problem defined in
   ``Physical System Description'' (Section~\ref{sec_phySystDescrip}) to one
