@@ -1591,7 +1591,7 @@ qualities that the software is expected to exhibit.
   project is expected to be independent of system constraints. However
   most TS methods are developed in \cpp or \fortran, the goto languages
   of scientific computing. Certainly a scripting language would not be
-  sufficient for large systems.
+  sufficient for large systems. \progname{f} should execute as fast as the CC software \rdcon.
 
 \item[R\refstepcounter{reqnum}\thereqnum \label{R_VerifyOutput}:] The radius of convergence $R_c$
   and the order of singularity $\mu$ output should reflect known cases:
@@ -1640,36 +1640,39 @@ qualities that the software is expected to exhibit.
 
 \subsection{Nonfunctional Requirements}
 
-Be as quick as rdcon, not become major computational challenge in TS method
+\progname{f} does not have nonfunctional requirements to state at this time.
 
-STOPPED
-
+\plt{
 \SCref{SecUserCharacteristics}
 This section summarizes the knowledge/skills expected of the user.
   Measuring usability, which is often a required non-function requirement,
   requires knowledge of a typical user. 
-
+}
 
 \plt{List your nonfunctional requirements.  You may consider using a fit
   criterion to make them verifiable.}
 
 \section{Likely Changes}    
 
-[Likely change] Error estimate. Sum the tail using linear model as truth.
+CC \cite{chang1982} discussed two additional estimators for $R_c$ of TS solutions to \ode under
+\ASref{real}. This should be implemented, if there is time.
 
-
-
-
-
+\plt
+{
 \noindent \begin{itemize}
 
 \item[LC\refstepcounter{lcnum}\thelcnum\label{LC_meaningfulLabel}:] \plt{Give
     the likely changes, with a reference to the related assumption (aref), as appropriate.}
 
 \end{itemize}
+}
 
-\section{Unlikely Changes}    
+\section{Unlikely Changes} 
 
+\progname{f} does not have unlikely changes to state at this time.
+
+\plt
+{
 \noindent \begin{itemize}
 
 \item[LC\refstepcounter{lcnum}\thelcnum\label{UC_meaningfulLabel}:] \plt{Give
@@ -1677,8 +1680,12 @@ This section summarizes the knowledge/skills expected of the user.
     not occur.}
 
 \end{itemize}
+}
 
 \section{Traceability Matrices and Graphs}
+
+STOPPED
+
 
 \plt{
 The purpose of the traceability matrices is to provide easy references on what
