@@ -1573,25 +1573,49 @@ qualities that the software is expected to exhibit.
 
 \subsection{Functional Requirements}
 
-STOPPED
+\progname{f} is the implementation of \iref{IM-rc} in the complex case or
+\iref{IM-order-of-singularity} in the real case for TS solutions of \ode.
 
-Positive.
+\noindent \begin{itemize}
 
-Chang and Corliss. Concave down. Envelope.
+\item[R\refstepcounter{reqnum}\thereqnum \label{R_Inputs}:] The inputs to
+  \iref{IM-rc} or \iref{IM-order-of-singularity} should be scaled to prevent
+    overflow/underflow. If this is not possible, \progname{f} will find
+    a scale. The inputs should satisfy the assumptions.
 
-Reflect known cases.
+%\item[R\refstepcounter{reqnum}\thereqnum \label{R_OutputInputs}:] \plt{It isn't
+%    always required, but often echoing the inputs as part of the output is a
+%    good idea.}
 
-Use top line analysis to estimate $R_c$ for three problems from real analysis where $R_c$ is known.
-Report on the accuracy of the result.
+\item[R\refstepcounter{reqnum}\thereqnum \label{R_Calculate}:] The method developed in this
+  project is expected to be independent of system constraints. However
+  most TS methods are developed in \cpp or \fortran, the goto languages
+  of scientific computing. Certainly a scripting language would not be
+  sufficient for large systems.
 
-Use top line analysis to estimate the order of a singularity as described in CC \cite[pp.~127--128]{chang1982}.
+\item[R\refstepcounter{reqnum}\thereqnum \label{R_VerifyOutput}:] The radius of convergence $R_c$
+  and the order of singularity $\mu$ output should reflect known cases:
 
-Use top line analysis to estimate $R_c$ while solving \ode \ivp by the TS method.
+  Compute the TS for the real valued function $1/(z-z_0)^{\mu}$.
+    The output of \iref{IM-order-of-singularity} as implemented in \progname{f}
+    should be the correct $R_c$ and order of singularity $\mu$.
 
-The method developed in this project is expected to be independent of system constraints. However
-most TS methods are developed in \cpp or \fortran, the goto languages of scientific computing.
-Certainly a scripting language would not be sufficient for large systems.
+  Compute the TS for the real valued function $1/(1 + 25*(z-z_0)^2)^{\mu}$.
+    The output of \iref{IM-order-of-singularity} as implemented in \progname{f}
+    should be the correct $R_c$ and order of singularity $\mu$.
 
+  Use top line analysis while solving \ode \ivp by the TS method. The recommended $R_c$ should
+    be greater than the stepsize recommended by the elementary controller.
+
+\item[R\refstepcounter{reqnum}\thereqnum \label{R_Output}:] We must not overestimate $R_c$.
+  If $R_c$ is overestimated, then the power-series is a divergence sum on the overestimation.
+
+  In \ode solving by TS methods, underestimating $R_c$ is acceptable as an underestimation
+  results in a slight increase in computational effort for solving an \ode \ivp.
+\end{itemize}
+
+\plt
+{
 \noindent \begin{itemize}
 
 \item[R\refstepcounter{reqnum}\thereqnum \label{R_Inputs}:] \plt{Requirements
@@ -1612,8 +1636,13 @@ Certainly a scripting language would not be sufficient for large systems.
     requirements.}
 
 \end{itemize}
+}
 
 \subsection{Nonfunctional Requirements}
+
+Be as quick as rdcon, not become major computational challenge in TS method
+
+STOPPED
 
 \SCref{SecUserCharacteristics}
 This section summarizes the knowledge/skills expected of the user.
