@@ -1684,10 +1684,6 @@ CC \cite{chang1982} discussed two additional estimators for $R_c$ of TS solution
 
 \section{Traceability Matrices and Graphs}
 
-STOPPED
-
-
-\plt{
 The purpose of the traceability matrices is to provide easy references on what
 has to be additionally modified if a certain component is changed.  Every time a
 component is changed, the items in the column of that component that are marked
@@ -1698,14 +1694,91 @@ dependencies of instance models, requirements, and data constraints on each
 other. Table~\ref{Table:A_trace} shows the dependencies of theoretical models,
 general definitions, data definitions, instance models, and likely changes on
 the assumptions.
+
+\afterpage{
+%\begin{landscape}
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+	& \aref{as:n}& \aref{as:approximate}& \aref{as:real} \\
+\hline
+\tref{TM-series-cauchy-condition}        &  &  &  \\ \hline
+\tref{TM-convergence-of-sequence}        &  &  &  \\ \hline
+\tref{TM-root-test}                      &  &  &  \\ \hline
+\tref{TM-ratio-test}                     &  &  &  \\ \hline
+\tref{TM-comparing-ratio-and-root}       &  &  &  \\ \hline
+\dref{GD-rc}                             &  &  &  \\ \hline
+\ddref{DD-order-of-singularity}          &  &  &  \\ \hline
+\iref{IM-rc}                             & x& x&  \\ \hline
+\iref{IM-order-of-singularity}           & x& x& x\\
+\hline
+\end{tabular}
+\caption{Traceability Matrix Showing the Connections\\ Between Assumptions and Other Items}
+\label{Table:A_trace}
+\end{table}
+%\end{landscape}
 }
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline        
+	& \tref{TM-series-cauchy-condition} & \tref{TM-convergence-of-sequence} & \tref{TM-root-test} &
+\tref{TM-ratio-test} & \tref{TM-comparing-ratio-and-root} & \dref{GD-rc} & \ddref{DD-order-of-singularity} &
+\iref{IM-rc} & \iref{IM-order-of-singularity} \\
+\hline
+\tref{TM-series-cauchy-condition}  &x& & & & & & &x& \\ \hline
+\tref{TM-convergence-of-sequence}  & &x& & & & & &x& \\ \hline
+\tref{TM-root-test}                & & &x& & &x& & & \\ \hline
+\tref{TM-ratio-test}               & & & &x& & & &x& \\ \hline
+\tref{TM-comparing-ratio-and-root} & & & & &x& & &x& \\ \hline
+\dref{GD-rc}                       & & & & & &x& &x& \\ \hline
+\ddref{DD-order-of-singularity}    & & & & & & &x& &x\\ \hline
+\iref{IM-rc}                       & & & & & & & &x&x\\ \hline
+\iref{IM-order-of-singularity}     & & & & & & & & &x\\
+\hline
+\end{tabular}
+\caption{Traceability Matrix Showing the Connections\\Between Items of Different Sections}
+\label{Table:trace}
+\end{table}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+	& \iref{IM-rc} & \iref{IM-order-of-singularity} & \rref{R_Inputs} & \rref{R_Calculate} & \rref{R_VerifyOutput} & \rref{R_Output} \\
+\hline
+\iref{IM-rc}                   &x&x&x&x&x&x \\ \hline
+\iref{IM-order-of-singularity} & &x&x&x&x&x \\ \hline
+\rref{R_Inputs}                & & &x& & &  \\ \hline
+\rref{R_Calculate}             & & & &x& &  \\ \hline
+\rref{R_VerifyOutput}          & & & & &x&  \\ \hline
+\rref{R_Output}                & & & & & &x \\
+\hline
+\end{tabular}
+\caption{Traceability Matrix Showing the Connections\\Between Requirements and Instance Models}
+\label{Table:R_trace}
+\end{table}
+
+\plt
+{
+The purpose of the traceability matrices is to provide easy references on what
+has to be additionally modified if a certain component is changed.  Every time a
+component is changed, the items in the column of that component that are marked
+with an ``X'' may have to be modified as well.  Table~\ref{Table:trace} shows the
+dependencies of theoretical models, general definitions, data definitions, and
+instance models with each other. Table~\ref{Table:R_trace} shows the
+dependencies of instance models, requirements, and data constraints on each
+other. Table~\ref{Table:A_trace} shows the dependencies of theoretical models,
+general definitions, data definitions, instance models, and likely changes on
+the assumptions.
 
 \plt{You will have to modify these tables for your problem.}
 
 \plt{The traceability matrix is challenging to maintain manually.  Please do
   your best.  In the future tools (like Drasil) will make this much easier.}
 
-\plt{
 \afterpage{
 \begin{landscape}
 \begin{table}[h!]
@@ -1803,26 +1876,29 @@ general definitions, data definitions, instance models, likely changes, and
 assumptions on each other. Figure~\ref{Fig_RTrace} shows the dependencies of
 instance models, requirements, and data constraints on each other.
 }
-% \begin{figure}[h!]
-% 	\begin{center}
-% 		%\rotatebox{-90}
-% 		{
-% 			\includegraphics[width=\textwidth]{ATrace.png}
-% 		}
-% 		\caption{\label{Fig_ATrace} Traceability Matrix Showing the Connections Between Items of Different Sections}
-% 	\end{center}
-% \end{figure}
+
+\plt{
+\begin{figure}[h!]
+	\begin{center}
+		%\rotatebox{-90}
+		{
+			\includegraphics[width=\textwidth]{ATrace.png}
+		}
+		\caption{\label{Fig_ATrace} Traceability Matrix Showing the Connections Between Items of Different Sections}
+	\end{center}
+\end{figure}
 
 
-% \begin{figure}[h!]
-% 	\begin{center}
-% 		%\rotatebox{-90}
-% 		{
-% 			\includegraphics[width=0.7\textwidth]{RTrace.png}
-% 		}
-% 		\caption{\label{Fig_RTrace} Traceability Matrix Showing the Connections Between Requirements, Instance Models, and Data Constraints}
-% 	\end{center}
-% \end{figure}
+\begin{figure}[h!]
+	\begin{center}
+		%\rotatebox{-90}
+		{
+			\includegraphics[width=0.7\textwidth]{RTrace.png}
+		}
+		\caption{\label{Fig_RTrace} Traceability Matrix Showing the Connections Between Requirements, Instance Models, and Data Constraints}
+	\end{center}
+\end{figure}
+}
 
 \section{Values of Auxiliary Constants}
 
@@ -1838,7 +1914,10 @@ Their values are defined in this section for easy maintenance.}
 \bibliographystyle {plainnat}
 \bibliography {../../refs/References}
 
+\plt
+{
 \newpage
+}
 
 \noindent \plt{The following is not part of the template, just some things to consider
   when filing in the template.}
