@@ -1476,7 +1476,13 @@ The goals \plt{reference your goals} are solved by \plt{reference your instance
 
 \subsubsection{Input Data Constraints} \label{sec_DataConstraints}    
 
-Properly scaled sequence.
+Given tolerance \tol, the number of terms of the sequence should be sufficient so that \ASref{n}
+  holds. We must know an integer $N$ such that, for all $m \geq n \geq N$,
+  $| \sum_{k=n}^{m} c_k | < \tol$. Moreover if this $N<30$, then set $N=30$ for a sufficient
+  number of terms to do analysis.
+
+As a second point, the terms in the sequence should not be near overflow/underflow. If this
+is the case, then the algorithm will properly scaled the sequence.
 
 \plt{
 
@@ -1530,6 +1536,8 @@ Table~\ref{TblSpecParams}.
 \subsubsection{Properties of a Correct Solution} \label{sec_CorrectSolution}
 
 Error tail.
+
+STOPPED
 
 \noindent
 A correct solution must exhibit \plt{fill in the details}.  \plt{These
