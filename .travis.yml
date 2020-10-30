@@ -1,0 +1,10 @@
+dist: focal
+sudo: false
+language: cpp
+
+script:
+  - mkdir -p build
+  - cd build
+  - cmake .. 
+  - make
+  - ctest
