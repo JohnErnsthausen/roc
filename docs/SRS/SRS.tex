@@ -3,45 +3,25 @@
 \usepackage{amsmath, mathtools}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xspace}
+
 \usepackage{graphicx}
 \usepackage{colortbl}
 \usepackage{xr}
-\usepackage{hyperref}
 \usepackage{longtable}
 \usepackage{xfrac}
-\usepackage{xspace}
-\usepackage{ifthen}
-\usepackage{tabularx}
 \usepackage{float}
 \usepackage{siunitx}
-\usepackage{booktabs}
 \usepackage{caption}
 \usepackage{pdflscape}
 \usepackage{afterpage}
 
+\usepackage{fullpage}
 \usepackage[round]{natbib}
-
 %\usepackage{refcheck}
-
 \usepackage{lipsum}
-\usepackage{filecontents}
-\usepackage[dvipsnames]{xcolor}
-\usepackage{hyperref}
-\usepackage{cleveref}
-
-\newcommand\myshade{85}
-\colorlet{mylinkcolor}{violet}
-\colorlet{mycitecolor}{YellowOrange}
-\colorlet{myurlcolor}{Aquamarine}
-
-\hypersetup{
-  bookmarks=true,         % show bookmarks bar?
-  colorlinks = true,
-  linkcolor  = mylinkcolor!\myshade!black,
-  citecolor  = mycitecolor!\myshade!black,
-  urlcolor   = myurlcolor!\myshade!black,
-  filecolor  = magenta,      % color of file links
-}
 
 \input{../Comments}
 \input{../Common}
@@ -85,8 +65,6 @@
 \newcounter{lcnum} %Likely change number
 \newcommand{\lthelcnum}{LC\thelcnum}
 \newcommand{\lcref}[1]{LC\ref{#1}}
-
-\usepackage{fullpage}
 
 \begin{document}
 

@@ -1,0 +1,103 @@
+\usepackage{listings}
+\usepackage{xcolor}
+
+
+\definecolor{myred}{rgb}{0.50, 0. 0.}
+\definecolor{keywordscolor}{rgb}{0,0,0.50}
+\newcommand\basicfont{\tt}
+
+
+% Solarized colour scheme for listings
+\definecolor{solarized@base03}{HTML}{002B36}
+\definecolor{solarized@base02}{HTML}{073642}
+\definecolor{solarized@base01}{HTML}{586e75}
+\definecolor{solarized@base00}{HTML}{657b83}
+\definecolor{solarized@base0}{HTML}{839496}
+\definecolor{solarized@base1}{HTML}{93a1a1}
+\definecolor{solarized@base2}{HTML}{EEE8D5}
+\definecolor{solarized@base3}{HTML}{FDF6E3}
+\definecolor{solarized@yellow}{HTML}{B58900}
+\definecolor{solarized@orange}{HTML}{CB4B16}
+\definecolor{solarized@red}{HTML}{DC322F}
+\definecolor{solarized@magenta}{HTML}{D33682}
+\definecolor{solarized@violet}{HTML}{6C71C4}
+\definecolor{solarized@blue}{HTML}{268BD2}
+\definecolor{solarized@cyan}{HTML}{2AA198}
+\definecolor{solarized@green}{HTML}{859900}
+
+% Define C++ syntax highlighting colour scheme
+\lstset{language=C++,
+        basicstyle=\ttfamily,
+       % numbers=left,
+        numberstyle=\footnotesize,
+        tabsize=2,
+        breaklines=true,
+        columns=flexible,
+        breaklines=true,
+  showstringspaces=false,
+  emptylines=0,
+  keepspaces=true,
+        escapeinside={@}{@},
+        numberstyle=\tiny\color{solarized@base01},
+        keywordstyle=\color{myred},
+        stringstyle=\color{solarized@cyan}\ttfamily,
+        identifierstyle=\color{solarized@blue},
+        commentstyle=\color{solarized@base01},
+        emphstyle=\color{solarized@red},
+        frame=single,
+        rulecolor=\color{solarized@base2},
+        rulesepcolor=\color{solarized@base2},
+        showstringspaces=false,
+        rangeprefix=/\*,
+       rangesuffix=\*/,
+       includerangemarker=false,
+       escapeinside={/*!}{!*/},
+       texcl=true,
+  %    literate={:=}{{$\gets$}}2 {<=}{{$\leq$}}1 {>=}{{$\geq$}}1 {<>}{{$\neq$}}1 {*}{$\cdot$}1
+}
+
+
+%\lstset{style=cpp}
+
+%in math or text mode \@xyz@ puts xyz in typewriter font
+\def\@#1@{{\basicfont\color{solarized@blue} #1}}
+%for typesetting strings
+\nc\sr[1]{\@{"#1"}@} 
+
+
+\nc{\inpcode}[2]{
+\vspace{\bigskipamount}
+\lstinputlisting[linerange=#1-#1,label={lst:#1}]{#2}{\index{\lstinline[language=bash]{#2}!\lstinline{#1}}}
+}
+
+
+\nc\lsref[1]{\hyperref[lst:#1]{\lstinline{#1}}}
+
+%parameters
+\newlist{parameters}{description}{1} 
+\setlist[parameters]{
+    itemsep = -1ex,
+    itemindent=-2ex,
+    topsep=1ex,
+    format=\parameterslabel,
+}
+\newcommand\parameterslabel[2][l]{\eqmakebox[listlabel@\EnumitemId][#1]{#2}}
+
+\def\begp{\begin{parameters}}
+\def\endp{\end{parameters}}
+
+%template  parameter
+\def\tps #1  {\item [\@<#1>@]}  
+%in parameter
+\def\ins #1 {\item [\@#1@] }        
+%out parameter
+\def\outs #1 {\item  [$\rightarrow$ {\@#1@}]}  
+\nc\return{\paragraph{Returns}}
+\nc\example{\paragraph{Example.}}
+\nc\result{\paragraph{Result.}}
+\nc\note{\paragraph{Note.}}
+
+
+
+
+
