@@ -470,147 +470,149 @@ In each test, the requirement supported by the test case is stated.
 
 \section{Unit Test Description}
 
-\wss{Reference your MIS and explain your overall philosophy for test case
-  selection.}  
-\wss{This section should not be filled in until after the MIS has
-  been completed.}
+This section should not be filled in until after the MIS has been completed.
 
-
-
-
-%  \item[R\refstepcounter{reqnum}\thereqnum \label{R_Inputs}:] The input
-%    sequence should be scaled by $h$ to prevent overflow/underflow.
-%    If this is not possible, \progname{f} will find a scale.
+%  \wss{Reference your MIS and explain your overall philosophy for test case
+%    selection.}  
+%  \wss{This section should not be filled in until after the MIS has
+%    been completed.}
 %  
-%  \item[R\refstepcounter{reqnum}\thereqnum \label{R_Calculate}:]
-%    \progname{f} should execute as fast as the CC software \rdcon.
 %  
-%  \item[R\refstepcounter{reqnum}\thereqnum \label{R_VerifyOutput}:]
-%    \progname{f} should estimate the radius of convergence $R_c$ and
-%      the order of singularity $\mu$ for the following cases where $R_c$ and $\mu$ are known.
 %  
-%    The real valued function $1/(z-z_0)^{\mu}$.
 %  
-%    The real valued function $1/(1 + 25*(z-z_0)^2)^{\mu}$.
+%  %  \item[R\refstepcounter{reqnum}\thereqnum \label{R_Inputs}:] The input
+%  %    sequence should be scaled by $h$ to prevent overflow/underflow.
+%  %    If this is not possible, \progname{f} will find a scale.
+%  %  
+%  %  \item[R\refstepcounter{reqnum}\thereqnum \label{R_Calculate}:]
+%  %    \progname{f} should execute as fast as the CC software \rdcon.
+%  %  
+%  %  \item[R\refstepcounter{reqnum}\thereqnum \label{R_VerifyOutput}:]
+%  %    \progname{f} should estimate the radius of convergence $R_c$ and
+%  %      the order of singularity $\mu$ for the following cases where $R_c$ and $\mu$ are known.
+%  %  
+%  %    The real valued function $1/(z-z_0)^{\mu}$.
+%  %  
+%  %    The real valued function $1/(1 + 25*(z-z_0)^2)^{\mu}$.
+%  %  
+%  %    Top line analysis while solving \dae \ivp by the TS method should verify
+%  %      the computed step is within the circle of convergence and compare
+%  %      with the CC algorithm \rdcon.
+%  %  
+%  %  \item[R\refstepcounter{reqnum}\thereqnum \label{R_Output}:] We must not overestimate $R_c$.
+%  %    If $R_c$ is overestimated, then the power-series is a divergence sum on the overestimation.
+%  %  
+%  %    In \ode solving by TS methods, underestimating $R_c$ is acceptable as an underestimation
+%  %    results in a slight increase in computational effort for solving an \ode \ivp.
+%  %  \end{itemize}
+%  \subsection{Unit Testing Scope}
 %  
-%    Top line analysis while solving \dae \ivp by the TS method should verify
-%      the computed step is within the circle of convergence and compare
-%      with the CC algorithm \rdcon.
+%  \wss{What modules are outside of the scope.  If there are modules that are
+%    developed by someone else, then you would say here if you aren't planning on
+%    verifying them.  There may also be modules that are part of your software, but
+%    have a lower priority for verification than others.  If this is the case,
+%    explain your rationale for the ranking of module importance.}
 %  
-%  \item[R\refstepcounter{reqnum}\thereqnum \label{R_Output}:] We must not overestimate $R_c$.
-%    If $R_c$ is overestimated, then the power-series is a divergence sum on the overestimation.
+%  \subsection{Tests for Functional Requirements}
 %  
-%    In \ode solving by TS methods, underestimating $R_c$ is acceptable as an underestimation
-%    results in a slight increase in computational effort for solving an \ode \ivp.
-%  \end{itemize}
-\subsection{Unit Testing Scope}
-
-\wss{What modules are outside of the scope.  If there are modules that are
-  developed by someone else, then you would say here if you aren't planning on
-  verifying them.  There may also be modules that are part of your software, but
-  have a lower priority for verification than others.  If this is the case,
-  explain your rationale for the ranking of module importance.}
-
-\subsection{Tests for Functional Requirements}
-
-\wss{Most of the verification will be through automated unit testing.  If
-  appropriate specific modules can be verified by a non-testing based
-  technique.  That can also be documented in this section.}
-
-\subsubsection{Module 1}
-
-\wss{Include a blurb here to explain why the subsections below cover the module.
-  References to the MIS would be good.  You will want tests from a black box
-  perspective and from a white box perspective.  Explain to the reader how the
-  tests were selected.}
-
-\begin{enumerate}
-
-\item{test-id1\\}
-
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
-
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
-
-How test will be performed: 
-					
-\item{test-id2\\}
-
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
-					
-Initial State: 
-					
-Input: 
-					
-Output: \wss{The expected result for the given inputs}
-
-Test Case Derivation: \wss{Justify the expected value given in the Output field}
-
-How test will be performed: 
-
-\item{...\\}
-    
-\end{enumerate}
-
-\subsubsection{Module 2}
-
-...
-
-\subsection{Tests for Nonfunctional Requirements}
-
-\wss{If there is a module that needs to be independently assessed for
-  performance, those test cases can go here.  In some projects, planning for
-  nonfunctional tests of units will not be that relevant.}
-
-\wss{These tests may involve collecting performance data from previously
-  mentioned functional tests.}
-
-\subsubsection{Module ?}
-		
-\begin{enumerate}
-
-\item{test-id1\\}
-
-Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
-  be automatic}
-					
-Initial State: 
-					
-Input/Condition: 
-					
-Output/Result: 
-					
-How test will be performed: 
-					
-\item{test-id2\\}
-
-Type: Functional, Dynamic, Manual, Static etc.
-					
-Initial State: 
-					
-Input: 
-					
-Output: 
-					
-How test will be performed: 
-
-\end{enumerate}
-
-\subsubsection{Module ?}
-
-...
-
-\subsection{Traceability Between Test Cases and Modules}
-
-\wss{Provide evidence that all of the modules have been considered.}
+%  \wss{Most of the verification will be through automated unit testing.  If
+%    appropriate specific modules can be verified by a non-testing based
+%    technique.  That can also be documented in this section.}
+%  
+%  \subsubsection{Module 1}
+%  
+%  \wss{Include a blurb here to explain why the subsections below cover the module.
+%    References to the MIS would be good.  You will want tests from a black box
+%    perspective and from a white box perspective.  Explain to the reader how the
+%    tests were selected.}
+%  
+%  \begin{enumerate}
+%  
+%  \item{test-id1\\}
+%  
+%  Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
+%    be automatic}
+%  					
+%  Initial State: 
+%  					
+%  Input: 
+%  					
+%  Output: \wss{The expected result for the given inputs}
+%  
+%  Test Case Derivation: \wss{Justify the expected value given in the Output field}
+%  
+%  How test will be performed: 
+%  					
+%  \item{test-id2\\}
+%  
+%  Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
+%    be automatic}
+%  					
+%  Initial State: 
+%  					
+%  Input: 
+%  					
+%  Output: \wss{The expected result for the given inputs}
+%  
+%  Test Case Derivation: \wss{Justify the expected value given in the Output field}
+%  
+%  How test will be performed: 
+%  
+%  \item{...\\}
+%      
+%  \end{enumerate}
+%  
+%  \subsubsection{Module 2}
+%  
+%  ...
+%  
+%  \subsection{Tests for Nonfunctional Requirements}
+%  
+%  \wss{If there is a module that needs to be independently assessed for
+%    performance, those test cases can go here.  In some projects, planning for
+%    nonfunctional tests of units will not be that relevant.}
+%  
+%  \wss{These tests may involve collecting performance data from previously
+%    mentioned functional tests.}
+%  
+%  \subsubsection{Module ?}
+%  		
+%  \begin{enumerate}
+%  
+%  \item{test-id1\\}
+%  
+%  Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
+%    be automatic}
+%  					
+%  Initial State: 
+%  					
+%  Input/Condition: 
+%  					
+%  Output/Result: 
+%  					
+%  How test will be performed: 
+%  					
+%  \item{test-id2\\}
+%  
+%  Type: Functional, Dynamic, Manual, Static etc.
+%  					
+%  Initial State: 
+%  					
+%  Input: 
+%  					
+%  Output: 
+%  					
+%  How test will be performed: 
+%  
+%  \end{enumerate}
+%  
+%  \subsubsection{Module ?}
+%  
+%  ...
+%  
+%  \subsection{Traceability Between Test Cases and Modules}
+%  
+%  \wss{Provide evidence that all of the modules have been considered.}
 				
 \bibliographystyle{plainnat}
 
