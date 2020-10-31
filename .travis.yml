@@ -1,8 +1,9 @@
 dist: focal
-sudo: false
+sudo: true
 language: cpp
 
 script:
+  - sudo apt-get install libgtest-dev
   - mkdir -p build
   - cd build
   - cmake .. 
