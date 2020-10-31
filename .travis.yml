@@ -2,6 +2,15 @@ dist: focal
 sudo: true
 language: cpp
 
+notifications:
+  email:
+    recipients:
+      - john@smartypixels.com
+      - john@johnernsthausen.com
+      - johnernsthausen@gmail.com
+    on_success: never # default: change
+    on_failure: always # default: always
+
 script:
   - sudo apt-get install libgtest-dev
   - mkdir -p build
