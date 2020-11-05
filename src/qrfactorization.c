@@ -4,7 +4,6 @@
 #include "dist.h"
 #include "mathext.h"
 #include "qrfactorization.h"
-#include "swap.h"
 
 #define map(i, j) ((j)-1) * lda + ((i)-1)
 #define a(i, j) a[ map(i, j) ]
@@ -14,6 +13,7 @@
 #define ipiv(i) ipiv[ map1(i) ]
 #define wrk(i) wrk[ map1(i) ]
 #define tau(i) tau[ map1(i) ]
+#define swap(T,x,y) {T tmp = (x); x = (y); y = tmp;}
 
 // Compute the QR factorization with column pivoting on all columns
 // of an M by N matrix A
@@ -119,9 +119,9 @@ int qrf(int m, int n, double *a, int lda, int *ipiv, double *tau, double *wrk,
       {
         for (int j = 1; j <= m; j++)
         {
-          dswap(a + map(j, imax), a + map(j, i));
+          swap(double, a(j, imax), a(j, i));
         }
-        iswap(ipiv + map1(imax), ipiv + map1(i));
+        swap(int, ipiv(imax), ipiv(i));
         tau(imax) = tau(i);
         wrk(imax) = wrk(i);
       }

@@ -1,7 +1,7 @@
 #include "dist.h"
 #include <tgmath.h>
 #include "mathext.h"
-#include "swap.h"
+#define swap(T,x,y) {T tmp = (x); x = (y); y = tmp;}
 
 #define map1(i) (i) - 1
 #define x(i) x[ map1(i) ]
@@ -127,7 +127,7 @@ double diff_avoids_subtractive_cancellation(double dx, double dy)
   }
   else
   {
-    if (fabs(dx) < fabs(dy)) dswap(&dx, &dy);
+    if (fabs(dx) < fabs(dy)) swap(double, dx, dy);
     if (dx == zer)
     {
       diff = zer;
