@@ -5,16 +5,34 @@ Date of project start: 17 September 2020
 
 ## Introduction
 
-Given a power series, this software computes its radius of convergence
-[(RC)](https://en.wikipedia.org/wiki/Radius_of_convergence#:~:text=The%20radius%20of%20convergence%20of%20a%20power%20series%20%C6%92%20centered,called%20the%20disk%20of%20convergence.). This software is written in c/cpp.
+This software estimates the radius of convergence [(RC)](https://en.wikipedia.org/wiki/Radius_of_convergence#:~:text=The%20radius%20of%20convergence%20of%20a%20power%20series%20%C6%92%20centered,called%20the%20disk%20of%20convergence.) of a real valued power series.
 
 ## Getting started
 
-Get started by installing the gnu c/cpp compiler on your system. While the following development tools
-are not required, they make development and evaluation easier. Software development is facilitated with
-the Ruby scripting language, make, cmake, clang-format, valgrind, git, and the Google unit testing suite
-GTest and GMock. An IDE such as VSCode will provide many tools for convenience. For the hard core developer,
-editors such as GVim provide an alternative to the perks and advantages of an IDE.
+You can build this software on a computer system equipped with the gnu c/cpp compiler. For a good
+tutorial, see [Barak Shoshany](http://baraksh.com/CSE701/notes.php#visual-studio-code).
+
+For convince and to run the test suite, additionally equip your system with
+
+1. [git](https://git-scm.com/downloads)
+1. [cmake](https://cmake.org/download)
+1. the Google unit testing suite [GTest and GMock](https://github.com/google/googletest)
+
+Properly integrate linting, code coverage, profiling, and performance testing by
+additionally equipping your system with the following development tools
+
+1. clang-check, clang-format, and clang-tidy aka [ClangTools](http://clang.llvm.org/docs/ClangTools.html)
+1. [valgrind](https://valgrind.org)
+1. gprof aka [Performance Analysis tools](https://en.wikipedia.org/wiki/List_of_performance_analysis_tools)
+1. [gcov](https://en.wikipedia.org/wiki/Gcov)
+
+We implement continuous integration and build testing through TravisCI.
+
+A Ruby Rakefile is offered for convenience for those users who can take advantage of it. Observe its
+functionality through the command `rake -T`.
+
+An IDE such as VSCode will provide many tools for convenience. Editors such as GVim
+provide an alternative to the perks and advantages offered through VSCode.
 
 With the software described above in place, there are two ways to compile the code. The standard way assumes
 the developer is in the top level directory roc/. Then
@@ -93,10 +111,9 @@ The software returns the RC and the best fit line slope/intercept coefficients.
 
 ## Algorithms used
 
-The software was built for numerical stability. Great care was taken to solve the linear
-least squares problem to best fit the power series coefficients. The QRFactorization
-was implemented and used to solve the Linear Least Squares problem, and great care for
-numerical stability was taken in the construction of the Householder transformations,
+The code solves the linear least squares problem to best fit the power series coefficients.
+The QRFactorization was implemented and used to solve the Linear Least Squares problem,
+and great care was taken in the construction of the Householder transformations,
 the two-norm, and the backward substitution used in solving the linear system.
 
 This software was build somewhat for speed. However there is room for improvement. The
