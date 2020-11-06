@@ -10,7 +10,8 @@ This software estimates the radius of convergence [(RC)](https://en.wikipedia.or
 ## Getting started
 
 You can build this software on a computer system equipped with the gnu c/cpp compiler. For a good
-tutorial, see [Barak Shoshany](http://baraksh.com/CSE701/notes.php#visual-studio-code).
+tutorial on equipping your system with this compiler, see
+[Barak Shoshany](http://baraksh.com/CSE701/notes.php#visual-studio-code).
 
 For convince and to run the test suite, additionally equip your system with
 
