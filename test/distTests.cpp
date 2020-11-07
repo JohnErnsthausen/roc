@@ -128,3 +128,75 @@ TEST_F(TestThatDDIST2, HasNoUnderflowNoOverflow)
   EXPECT_THAT(ddist2(n - 1, xvector, incx, yvector, incy, kvec),
               DOUBLE_NEAR(2.259252432376692e+19));
 }
+
+class TestThatDNRM2 : public Test
+{
+ public:
+  int n = 10, incx = 1;
+  double *xvector = NULL;
+
+  void SetUp() override
+  {
+    xvector = (double *)calloc((size_t)n, (size_t)sizeof(double));
+    if (xvector == NULL)
+    {
+      printf("Failed to allocate xvector memory!\n");
+      assert(xvector);
+    }
+  }
+
+  void TearDown() override
+  {
+    free(xvector);
+  }
+};
+
+TEST_F(TestThatDNRM2, ReturnsZeroWheneverTheDimensionNIsNotPositive)
+{
+  n = 0;
+  EXPECT_THAT(dnrm2(n, xvector, incx), DOUBLE_NEAR(0.0));
+  n = -1;
+  EXPECT_THAT(dnrm2(n, xvector, incx), DOUBLE_NEAR(0.0));
+  n = -10;
+  EXPECT_THAT(dnrm2(n, xvector, incx), DOUBLE_NEAR(0.0));
+}
+
+TEST_F(TestThatDNRM2, ReturnsZeroWheneverINCXEqualsZero)
+{
+  incx = 0;
+  EXPECT_THAT(dnrm2(n, xvector, incx), DOUBLE_NEAR(0.0));
+}
+
+TEST_F(TestThatDNRM2,
+       ReturnsZeroWheneverXVectorIsZeroAtDefaultInputs)
+{
+  EXPECT_THAT(dnrm2(n, xvector, incx), DOUBLE_NEAR(0.0));
+}
+
+TEST_F(TestThatDNRM2, ReturnsDistanceForSpecifiedXVector)
+{
+  xvector[ 2 ] = 3.0;
+  EXPECT_THAT(dnrm2(n, xvector, incx), DOUBLE_NEAR(3.0));
+
+  xvector[ 2 ] = 3.0;
+  xvector[ 7 ] = 3.0;
+  EXPECT_THAT(dnrm2(n, xvector, incx), DOUBLE_NEAR(4.242640687119286));
+}
+
+TEST_F(TestThatDNRM2, HasNoUnderflowNoOverflow)
+{
+  const double cutlo = 4.44089e-16;
+  const double cuthi = 1.30438e19;
+
+  xvector[ 0 ] = 1.0;
+  xvector[ 1 ] = 1.0;
+  xvector[ 2 ] = cutlo;
+  xvector[ 3 ] = 1.0;
+  xvector[ 4 ] = 1.0;
+  xvector[ 5 ] = cuthi;
+  xvector[ 6 ] = 1.0;
+  xvector[ 7 ] = cutlo;
+  xvector[ 8 ] = 1.0;
+
+  EXPECT_THAT(dnrm2(n-1, xvector, incx), DOUBLE_NEAR(1.30438e+19));
+}

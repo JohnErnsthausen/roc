@@ -83,7 +83,7 @@ int qrf(int m, int n, double *a, int lda, int *ipiv, double *tau, double *wrk,
   // Initialize column norms and pivot array
   for (int i = 1; i <= n; i++)
   {
-    cnrm = ddist2(m, a + map(1, i), 1, a + map(1, i), 1, 1);
+    cnrm = dnrm2(m, a + map(1, i), 1);
     tau(i) = cnrm;
     wrk(i) = cnrm;
     ipiv(i) = i;
@@ -169,7 +169,7 @@ int qrf(int m, int n, double *a, int lda, int *ipiv, double *tau, double *wrk,
             tmp2 = one + fact * tmp2 * tmp1 * tmp1;
             if (tmp2 == one)
             {
-              tau(j) = ddist2(m - i, a + map(ip1, j), 1, a + map(ip1, j), 1, 1);
+              tau(j) = dnrm2(m - i, a + map(ip1, j), 1);
               wrk(j) = tau(j);
             }
             else
@@ -401,7 +401,7 @@ int housg(int n, double *alpha, double *x, int incx, double *tau, double safmin)
   // Dimension of x
   nm1 = n - 1;
   // Norm of x
-  xnorm = ddist2(nm1, x, incx, x, incx, 1);
+  xnorm = dnrm2(nm1, x, incx);
 
   // H is the identity whenever xnorm=0 with alpha=beta and tau=0
   if (xnorm == zer)
@@ -468,7 +468,7 @@ int housg(int n, double *alpha, double *x, int incx, double *tau, double safmin)
     } while (fabs(beta) < safmin);
 
     // new beta satisfies safmin <= beta <= 1.0
-    xnorm = ddist2(nm1, x, incx, x, incx, 1);
+    xnorm = dnrm2(nm1, x, incx);
     a1 = xnorm;
     a2 = fabs(*alpha);
     if (a1 < a2)
