@@ -145,10 +145,7 @@ class TestThatDNRM2 : public Test
     }
   }
 
-  void TearDown() override
-  {
-    free(xvector);
-  }
+  void TearDown() override { free(xvector); }
 };
 
 TEST_F(TestThatDNRM2, ReturnsZeroWheneverTheDimensionNIsNotPositive)
@@ -167,8 +164,7 @@ TEST_F(TestThatDNRM2, ReturnsZeroWheneverINCXEqualsZero)
   EXPECT_THAT(dnrm2(n, xvector, incx), DOUBLE_NEAR(0.0));
 }
 
-TEST_F(TestThatDNRM2,
-       ReturnsZeroWheneverXVectorIsZeroAtDefaultInputs)
+TEST_F(TestThatDNRM2, ReturnsZeroWheneverXVectorIsZeroAtDefaultInputs)
 {
   EXPECT_THAT(dnrm2(n, xvector, incx), DOUBLE_NEAR(0.0));
 }
@@ -198,5 +194,5 @@ TEST_F(TestThatDNRM2, HasNoUnderflowNoOverflow)
   xvector[ 7 ] = cutlo;
   xvector[ 8 ] = 1.0;
 
-  EXPECT_THAT(dnrm2(n-1, xvector, incx), DOUBLE_NEAR(1.30438e+19));
+  EXPECT_THAT(dnrm2(n - 1, xvector, incx), DOUBLE_NEAR(1.30438e+19));
 }

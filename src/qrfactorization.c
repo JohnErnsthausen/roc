@@ -13,7 +13,12 @@
 #define ipiv(i) ipiv[ map1(i) ]
 #define wrk(i) wrk[ map1(i) ]
 #define tau(i) tau[ map1(i) ]
-#define swap(T,x,y) {T tmp = (x); x = (y); y = tmp;}
+#define swap(T, x, y) \
+  {                   \
+    T tmp = (x);      \
+    x = (y);          \
+    y = tmp;          \
+  }
 
 // Compute the QR factorization with column pivoting on all columns
 // of an M by N matrix A

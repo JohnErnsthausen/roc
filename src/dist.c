@@ -1,7 +1,12 @@
 #include "dist.h"
 #include <tgmath.h>
 #include "mathext.h"
-#define swap(T,x,y) {T tmp = (x); x = (y); y = tmp;}
+#define swap(T, x, y) \
+  {                   \
+    T tmp = (x);      \
+    x = (y);          \
+    y = tmp;          \
+  }
 
 #define map1(i) (i) - 1
 #define x(i) x[ map1(i) ]
@@ -111,7 +116,7 @@ double dnrm2(int n, double *x, int incx)
 
   // Define the norm2 to be zero whenever the dimension is not positive
   // or a storage incrementor is zero
-  if (n < 1 || incx==0) return zer;
+  if (n < 1 || incx == 0) return zer;
 
   // Initialize incrementors
   if (incx < 0) ix = (-n + 1) * incx + 1;
@@ -137,7 +142,7 @@ void add_next_element_squared(double xi, double *sum, double *scale)
   // because bar >= 0 implies that bar < 0 is always false.
   // However a quick return prohibits a wasted multiplication and sum.
   if (xi == zer) return;
-  
+
   absxi = fabs(xi);
   if (bar < absxi)
   {

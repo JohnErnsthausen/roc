@@ -15,7 +15,9 @@
 using namespace testing;
 using namespace std;
 
-class TestThatIO : public Test {};
+class TestThatIO : public Test
+{
+};
 
 TEST_F(TestThatIO, FindsROCSubdirectoryInCurrentWorkingDirectory)
 {
@@ -23,7 +25,9 @@ TEST_F(TestThatIO, FindsROCSubdirectoryInCurrentWorkingDirectory)
   ASSERT_NO_THROW(cwd_path_to(roc));
 }
 
-TEST_F(TestThatIO, ThrowsExceptionWhenItDoesNotFindGivenSubdirectoryInCurrentWorkingDirectory)
+TEST_F(
+    TestThatIO,
+    ThrowsExceptionWhenItDoesNotFindGivenSubdirectoryInCurrentWorkingDirectory)
 {
   string roc{"foo"};
   ASSERT_THROW(cwd_path_to(roc), pathException);
@@ -41,18 +45,18 @@ TEST_F(TestThatIO, ReadsData)
   {
     cout << e.what() << '\n';
   }
-  
+
   string filename{dn / "test" / "coeff.txt"};
   // cout << filename << "\n";
   EXPECT_THAT(filename, EndsWith(string("roc/test/coeff.txt")));
-  
+
   ifstream input{filename};
   if (!input)
   {
-      perror("Error opening input file");
-      //return -1;
+    perror("Error opening input file");
+    // return -1;
   }
-  
+
   vector<double> coeffs;
   double time{0};
   double scale{0};
@@ -69,13 +73,13 @@ TEST_F(TestThatIO, ReadsData)
     scale = coeffs.back();
     coeffs.pop_back();
 
-    //cout << coeffs;
-    //cout << "T     = " << time << '\n';
-    //cout << "Scale = " << scale << '\n';
-    //cout << "Size  = " << coeffs.size() << '\n';
+    // cout << coeffs;
+    // cout << "T     = " << time << '\n';
+    // cout << "Scale = " << scale << '\n';
+    // cout << "Size  = " << coeffs.size() << '\n';
     EXPECT_THAT(time, Ge(0.0));
     EXPECT_THAT(scale, Gt(0.0));
     EXPECT_THAT(coeffs.size(), Eq(31));
   }
-  input.close();    
+  input.close();
 }

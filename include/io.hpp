@@ -7,10 +7,10 @@
 #include <string>
 #include <vector>
 
-class pathException: public std::exception
+class pathException : public std::exception
 {
-public:
-  virtual const char* what() const throw()
+ public:
+  virtual const char *what() const throw()
   {
     return "Folder is not a subdirectory of the current path";
   }

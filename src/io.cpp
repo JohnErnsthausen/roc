@@ -15,9 +15,8 @@ ostream &operator<<(ostream &out, const vector<double> &v)
 {
   size_t s{v.size() - 1};
   out << "(";
-  for (size_t i{0}; i < s; i++)
-      out << v[i] << ", ";
-  out << v[s] << ")\n";
+  for (size_t i{0}; i < s; i++) out << v[ i ] << ", ";
+  out << v[ s ] << ")\n";
   return out;
 }
 
@@ -45,10 +44,10 @@ filesystem::path cwd_path_to(const string &name)
 {
   filesystem::path cwd = filesystem::current_path();
   filesystem::path dn;
-  for( auto it = cwd.begin(); it != cwd.end(); ++it )
+  for (auto it = cwd.begin(); it != cwd.end(); ++it)
   {
     dn /= *it;
-    if( *it == name ) return dn;
+    if (*it == name) return dn;
   }
   throw pathException();
 }
