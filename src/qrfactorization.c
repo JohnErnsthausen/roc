@@ -541,6 +541,8 @@ int housl(int m, int n, double *x, int incx, double tau, double *a, int lda,
   int ix = 0, kx = 0;
   double sum = 0.0, tmp = 0.0;
 
+  *ier = 0;
+
   // Valid data
   if ((m < 0) || (n < 0) || (incx == 0) || (lda < m))
   {
