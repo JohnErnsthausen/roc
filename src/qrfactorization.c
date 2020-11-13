@@ -7,6 +7,7 @@
 
 #define map(i, j) ((j)-1) * lda + ((i)-1)
 #define a(i, j) a[ map(i, j) ]
+#define q(i, j) q[ map(i, j) ]
 #define map1(i) (i) - 1
 #define x(i) x[ map1(i) ]
 #define y(i) y[ map1(i) ]
@@ -71,6 +72,9 @@ int qrf(int m, int n, double *a, int lda, int *ipiv, double *tau, double *wrk,
   double cnrm = 0.0, cnrmj = 0.0, taui = 0.0, tmp1 = 0.0, tmp2 = 0.0,
          tmp3 = 0.0;
 
+  // No error has occured
+  *ier = 0;
+
   // Validate input
   if ((m < 0) || (n < 0) || (lda < m))
   {
@@ -86,12 +90,12 @@ int qrf(int m, int n, double *a, int lda, int *ipiv, double *tau, double *wrk,
   }
 
   // Initialize column norms and pivot array
-  for (int i = 1; i <= n; i++)
+  for (int j = 1; j <= n; j++)
   {
-    cnrm = dnrm2(m, a + map(1, i), 1);
-    tau(i) = cnrm;
-    wrk(i) = cnrm;
-    ipiv(i) = i;
+    cnrm = dnrm2(m, a + map(1, j), 1);
+    tau(j) = cnrm;
+    wrk(j) = cnrm;
+    ipiv(j) = j;
   }
 
   mn = n;
@@ -179,7 +183,7 @@ int qrf(int m, int n, double *a, int lda, int *ipiv, double *tau, double *wrk,
             }
             else
             {
-              tau(j) = tau(j) * tmp3;
+              tau(j) *= tmp3;
             }
           }
         }
@@ -233,8 +237,8 @@ int qrs(int m, int n, double *a, int lda, double *tau, double *y, double *x,
         int *ier)
 {
   const double zer = 0.0;
-  int jm1, jp1;
-  double sum, t;
+  int jm1 = 0, jp1 = 0;
+  double sum = 0, t = 0;
 
   // Validate input: lda >= m >= 0 holds from these conditions
   if ((m < 0) || (n < 0) || (m < n) || (lda < m))
@@ -242,6 +246,8 @@ int qrs(int m, int n, double *a, int lda, double *tau, double *y, double *x,
     *ier = 1;
     return 1;
   }
+
+  *ier = 0;
 
   // Quick return: 0 = m >= n >= 0 implies m=n=0 so that lda >= 0.
   // If lda=0, then there is a quick return and matrix a is not accessed.
@@ -289,7 +295,7 @@ int qrs(int m, int n, double *a, int lda, double *tau, double *y, double *x,
     {
       for (int i = jp1; i <= m; i++)
       {
-        sum = sum + a(i, j) * y(i);  // v stored in lower triangle of A
+        sum += a(i, j) * y(i);  // v stored in lower triangle of A
       }
     }
 
@@ -297,12 +303,12 @@ int qrs(int m, int n, double *a, int lda, double *tau, double *y, double *x,
     if (sum != zer)  // v is not zero
     {
       t = -tau(j) * sum;
-      y(j) = y(j) + t;  // The first element of v is 1
+      y(j) += t;  // The first element of v is 1
       if (j < m)
       {
         for (int i = jp1; i <= m; i++)
         {
-          y(i) = y(i) + t * a(i, j);
+          y(i) += t * a(i, j);
         }
       }
     }
@@ -333,9 +339,103 @@ int qrs(int m, int n, double *a, int lda, double *tau, double *y, double *x,
       t = -x(j);
       for (int i = 1; i <= jm1; i++)
       {
-        x(i) = x(i) + t * a(i, j);
+        x(i) += t * a(i, j);
       }
     }
+  }
+  *ier = 0;
+  return *ier;
+}
+
+//  Generate an M by NQ real matrix Q with NQ = L - K + 1 orthonormal 
+//  columns formed as the product of N Householder reflectors 
+//  H(1),...,H(N) of order M >= N as returned in the columns of the 
+//  array A by QRF. 
+//
+//  Variables in the calling sequence:
+//  ----------------------------------
+//  
+//  M    I  IN   The number of rows of the matrix A. M >= 0.
+//  N    I  IN   The number of columns of the matrix A. M >= N >= 0.
+//  K    I  IN   The lower column index, M >= K >= 1
+//               K is set to 1 if K <= 0 
+//  L    I  IN   The higher column index, M >= L >= K >= 1
+//               L is set to M if L >= M 
+//  A    D  IN   Array of dimension (LDA,N)
+//               For IA = 1 the i-th column of A is assumed to contain
+//                   the vector defining the elementary reflector 
+//                   H(i), for i = 1,2,...,N, as returned by QRF 
+//               For IA = 2 the i-th row of A is assumed to contain
+//                   the vector defining the elementary reflector 
+//                   H(i), for i = 1,2,...,M, as returned by QRF 
+//  LDA  I  IN   The leading dimension of the array A, LDA >= max(1,M).
+//  TAU  D  IN   Array of dimension (K) where TAU(i) contains the 
+//               scalar factor of the elementary reflector H(i), as 
+//               returned by QRF.
+//  Q    D  OUT  The orthogonal matrix.
+//  LDQ  D  IN   The leading dimension of the array Q, LDQ >= max(1,M) 
+//  IER  I  OUT  Error indicator
+//               IER = 0  successful exit
+//               IER = 1  input-data error
+//               IER = 2  input-data error in HOUSL
+//
+//  NOTE: The arrays A and Q cannot be identified
+int qorg(int m, int n, int k, int l, double *a, int lda, double *tau,
+        double *q, int ldq, int *ier)
+{
+  const double zer = 0.0, one = 1.0;
+  int j2 = 0,km1 = 0,nl = 0,nq = 0;
+
+  // Validate input: lda >= m >= 0 holds from these conditions
+  if ((m < 0) || (n < 0) || (m < n) || (k > l) || (lda < m) || (ldq < 1) || (ldq < m))
+  {
+    *ier = 1;
+    return 1;
+  }
+
+  *ier = 0;
+
+  // Quick return: 0 = m >= n >= 0 implies m=n=0 so that lda >= 0.
+  // If lda=0, then there is a quick return and matrix a is not accessed.
+  if ((n == 0) || ((m == 0) && (n == 0)) || (k == 0))
+  {
+    *ier = 0;
+    return 0;
+  }
+
+  // Set defaults
+  if( k < 0) k = 1;
+  if( l > m) l = m;
+  
+  // Initialize Q
+  km1 = k - 1;
+  nq  = l - km1;
+  for( int j1=1; j1 <= nq; j1++)
+  {
+    for( int i=1; i <= m; i++)
+    {
+      q(i,j1) = zer;
+    }
+    q(j1+km1,j1) = one;
+  }
+
+  // Apply H(1)*...*H(NL)*Q
+  nl = l;
+  if( l > n) nl = l;
+  j2 = nq;
+  for( int j1=nl; j1 >= 1; j1--)
+  {
+    // Apply H(J1) to Q(J1:M,J1:NQ) from the left
+    housl(m - j1 + 1, nq - j2 + 1, a + map(j1, j1), 1, tau(j1),
+          q + map(j1, j2), ldq, ier);
+    if (*ier != 0)
+    {
+      printf("Message from QORG: Input-dimension error in housl\n");
+      *ier = 2;
+      return *ier;
+    }
+    j2 = j2 - 1;
+    if( j2 < 1 ) j2 = 1;
   }
   *ier = 0;
   return *ier;
@@ -575,21 +675,21 @@ int housl(int m, int n, double *x, int incx, double tau, double *a, int lda,
       ix = kx;
       for (int i = 2; i <= m; i++)
       {
-        ix = ix + incx;
-        sum = sum + a(i, j) * x(ix);
+        ix += incx;
+        sum += a(i, j) * x(ix);
       }
     }
     if (sum != zer)
     {
       tmp = -tau * sum;
-      a(1, j) = a(1, j) + tmp;
+      a(1, j) += tmp;
       if (m > 1)
       {
         ix = kx;
         for (int i = 2; i <= m; i++)
         {
-          ix = ix + incx;
-          a(i, j) = a(i, j) + x(ix) * tmp;
+          ix += incx;
+          a(i, j) += x(ix) * tmp;
         }
       }
     }
