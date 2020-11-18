@@ -28,7 +28,7 @@ using namespace std;
 int sixTerm(const vector<double> &coeff, const double &scale, double &rc,
             double &order)
 {
-  int m{4}, ldw{4}, n{4}, ier{0};
+  int m{4}, n{4}, ier{0};
   vector<int> ipiv(m, 0);
   vector<double> W(m*n, 0.0);
   vector<double> tau(m, 0.0);
@@ -56,9 +56,9 @@ int sixTerm(const vector<double> &coeff, const double &scale, double &rc,
     k++;
   }
 
-  qrf(m, n, &W[0], ldw, &ipiv[0], &tau[0], &wrk[0], safmin, &ier);
+  qrf(m, n, &W[0], m, &ipiv[0], &tau[0], &wrk[0], safmin, &ier);
   if ( ier != 0 ) printf( "Solver error go to top-line\n" );
-  qrs(m, n, &W[0], ldw, &tau[0], &b[0], &x[0], &ier);
+  qrs(m, n, &W[0], m, &tau[0], &b[0], &x[0], &ier);
   if ( ier != 0 ) printf( "Solver error go to top-line\n" );
   for(int i = 1; i <=n; i++) { b(i) = x(ipiv(i)); }
 
