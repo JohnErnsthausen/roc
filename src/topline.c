@@ -17,7 +17,7 @@
 //  error code 1 if less than 10 coefficients to estimate Rc
 
 int topline(int num_tc, double *tc, double scale, int kstart, double *rc,
-        double *slope, double *intercept)
+            double *slope, double *intercept)
 {
   if (num_tc - kstart < 11)
   {

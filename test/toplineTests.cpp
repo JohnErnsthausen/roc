@@ -37,7 +37,8 @@ class TestThatTopLine : public Test
 
 TEST_F(TestThatTopLine, CanAccessTheLeastSquaredSolutionMethod)
 {
-  EXPECT_THAT(topline(num_tc, tc, scale, kstart, &rc, &slope, &intercept), Eq(0));
+  EXPECT_THAT(topline(num_tc, tc, scale, kstart, &rc, &slope, &intercept),
+              Eq(0));
 }
 
 // Problem from
@@ -53,7 +54,8 @@ TEST_F(TestThatTopLine, WillComputeLeastSquarsSolution)
     tc[ k ] = pow(8, k + 1) / ((double)(k + 1));
   }
 
-  EXPECT_THAT(topline(num_tc, tc, scale, kstart, &rc, &slope, &intercept), Eq(0));
+  EXPECT_THAT(topline(num_tc, tc, scale, kstart, &rc, &slope, &intercept),
+              Eq(0));
   EXPECT_THAT(intercept, DOUBLE_NEAR_MULTIPLIER(-9.340358069665058e-01, 100.0));
   EXPECT_THAT(slope, DOUBLE_NEAR_MULTIPLIER(8.847241983085994e-01, 100.0));
   EXPECT_THAT(rc, DOUBLE_NEAR_MULTIPLIER(1.303994626296309e-01, 100.0));

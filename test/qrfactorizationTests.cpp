@@ -688,49 +688,37 @@ class TestThatQR : public Test
   vector<double> tau{0.0, 0.0, 0.0};
   vector<double> wrk{0.0, 0.0, 0.0};
   vector<double> x{0.0, 0.0, 0.0};
-  vector<double> y{-1.0,-1.0,-1.0};
+  vector<double> y{-1.0, -1.0, -1.0};
   double epmach{DBL_EPSILON};
   double safmin{DBL_MIN};
 
   vector<double> a_check{
-    2.4494897427831783,
-   -0.57979589711327117,
-    0.28989794855663559,
-   -1.6329931618554516,
-   -1.5275252316519461,
-   -0.39985928207919952,
-   -1.6329931618554518,
-   1.0910894511799623,
-   1.0690449676496974};
+      2.4494897427831783,  -0.57979589711327117, 0.28989794855663559,
+      -1.6329931618554516, -1.5275252316519461,  -0.39985928207919952,
+      -1.6329931618554518, 1.0910894511799623,   1.0690449676496974};
   vector<double> q_check{
-   -0.40824829046386291,
-    0.81649658092772592,
-   -0.40824829046386296,
-   -0.87287156094396945,
-   -0.21821789023599258,
-    0.43643578047198495,
-    0.26726124191242445,
-    0.53452248382484879,
-    0.80178372573727308};
+      -0.40824829046386291, 0.81649658092772592,  -0.40824829046386296,
+      -0.87287156094396945, -0.21821789023599258, 0.43643578047198495,
+      0.26726124191242445,  0.53452248382484879,  0.80178372573727308};
   vector<int> ipiv_check{2, 1, 3};
-  vector<double> x_check{-1.5, -2, -1.5};     
+  vector<double> x_check{-1.5, -2, -1.5};
 
   void SetUp() override { min_m_n = (m < n) ? m : n; }
 
   void TearDown() override {}
 };
 
-inline void EXPECT_DARRAY_EQ(const int n, double * expected, double * actual)
+inline void EXPECT_DARRAY_EQ(const int n, double *expected, double *actual)
 {
-  for(int i=0; i<n; i++)
+  for (int i = 0; i < n; i++)
   {
     EXPECT_THAT(*(actual + i), DOUBLE_NEAR_MULTIPLIER(*(expected + i), 100.0));
   }
 }
 
-inline void EXPECT_IARRAY_EQ(const int n, int * expected, int * actual)
+inline void EXPECT_IARRAY_EQ(const int n, int *expected, int *actual)
 {
-  for(int i=0; i<n; i++)
+  for (int i = 0; i < n; i++)
   {
     EXPECT_THAT(*(actual + i), Eq(*(expected + i)));
   }
@@ -738,25 +726,29 @@ inline void EXPECT_IARRAY_EQ(const int n, int * expected, int * actual)
 
 TEST_F(TestThatQR, WillFactorANDComputeSolutionForSquareSystem)
 {
-  EXPECT_THAT(qrf(m, n, &a[0], lda, &ipiv[0], &tau[0], &wrk[0], safmin, &ier), Eq(0));
-  EXPECT_THAT(ier, Eq(0));
-  
-  EXPECT_DARRAY_EQ(m*n, &a[0], &a_check[0]);
-  EXPECT_IARRAY_EQ(m, &ipiv[0], &ipiv_check[0]);
-  
-  EXPECT_THAT(qorg(m, n, 1, m, &a[0], lda, &tau[0], &q[0], ldq, &ier), Eq(0));
-  EXPECT_THAT(ier, Eq(0));
-  
-  EXPECT_DARRAY_EQ(m*n, &a[0], &a_check[0]);
-  EXPECT_DARRAY_EQ(m*n, &q[0], &q_check[0]);
-
-  EXPECT_THAT(qrs(m, n, &a[0], lda, &tau[0], &y[0], &x[0], &ier), Eq(0));
+  EXPECT_THAT(
+      qrf(m, n, &a[ 0 ], lda, &ipiv[ 0 ], &tau[ 0 ], &wrk[ 0 ], safmin, &ier),
+      Eq(0));
   EXPECT_THAT(ier, Eq(0));
 
-  EXPECT_DARRAY_EQ(m*n, &a[0], &a_check[0]);
-  for(int i=0; i<n; i++)
+  EXPECT_DARRAY_EQ(m * n, &a[ 0 ], &a_check[ 0 ]);
+  EXPECT_IARRAY_EQ(m, &ipiv[ 0 ], &ipiv_check[ 0 ]);
+
+  EXPECT_THAT(qorg(m, n, 1, m, &a[ 0 ], lda, &tau[ 0 ], &q[ 0 ], ldq, &ier),
+              Eq(0));
+  EXPECT_THAT(ier, Eq(0));
+
+  EXPECT_DARRAY_EQ(m * n, &a[ 0 ], &a_check[ 0 ]);
+  EXPECT_DARRAY_EQ(m * n, &q[ 0 ], &q_check[ 0 ]);
+
+  EXPECT_THAT(qrs(m, n, &a[ 0 ], lda, &tau[ 0 ], &y[ 0 ], &x[ 0 ], &ier),
+              Eq(0));
+  EXPECT_THAT(ier, Eq(0));
+
+  EXPECT_DARRAY_EQ(m * n, &a[ 0 ], &a_check[ 0 ]);
+  for (int i = 0; i < n; i++)
   {
-    EXPECT_THAT(x[ ipiv[i]-1 ], DOUBLE_NEAR_MULTIPLIER( x_check[ i ], 100.0));
+    EXPECT_THAT(x[ ipiv[ i ] - 1 ],
+                DOUBLE_NEAR_MULTIPLIER(x_check[ i ], 100.0));
   }
 }
-

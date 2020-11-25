@@ -7,9 +7,10 @@
 
 using namespace std;
 
-// The vector coeff is expected to have at least length MINTERMS (put to data.hpp)
+// The vector coeff is expected to have at least length MINTERMS (put to
+// data.hpp)
 int roc(const vector<double> &coeff, const double &scale, double &rc,
-              double &order)
+        double &order)
 {
   double hrc{0.0}, hrc_check{0.0};
 
@@ -34,4 +35,3 @@ int roc(const vector<double> &coeff, const double &scale, double &rc,
 
   return 1;
 }
-

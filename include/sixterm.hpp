@@ -3,7 +3,7 @@
 
 #include <vector>
 
-double sixterm(const std::vector<double> &coeff, const double &scale, double &rc,
-               double &order);
+double sixterm(const std::vector<double> &coeff, const double &scale,
+               double &rc, double &order);
 
 #endif

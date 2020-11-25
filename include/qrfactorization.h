@@ -9,7 +9,7 @@ int qrf(int m, int n, double *a, int lda, int *ipiv, double *tau, double *wrk,
         double safmin, int *ier);
 int qrs(int m, int n, double *a, int lda, double *tau, double *y, double *x,
         int *ier);
-int qorg(int m, int n, int k, int l, double *a, int lda, double *tau,
-        double *q, int ldq, int *ier);
+int qorg(int m, int n, int k, int l, double *a, int lda, double *tau, double *q,
+         int ldq, int *ier);
 
 #endif

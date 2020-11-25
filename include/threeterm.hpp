@@ -3,6 +3,7 @@
 
 #include <vector>
 
-double threeterm(const std::vector<double> &, const double &, double &, double &);
+double threeterm(const std::vector<double> &, const double &, double &,
+                 double &);
 
 #endif

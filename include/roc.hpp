@@ -7,7 +7,6 @@
 #define TOL 1e-10
 
 int roc(const std::vector<double> &coeff, const double &scale, double &rc,
-              double &order);
+        double &order);
 
 #endif
-

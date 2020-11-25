@@ -2,4 +2,3 @@
 
 #define SIXTERM_NUSE 4
 #define THREETERM_NUSE 7
-
