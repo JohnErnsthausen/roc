@@ -128,7 +128,7 @@ T<double> func(const T<double>& x)
 double x0{0.3}, hbar{1.0};
 ```
 
-Compile with
+Put this program into FADBAD++/examples and compile with
 
 > gcc -I.. GetTS.cpp -o ex.exe -lstdc++ -lm
 
