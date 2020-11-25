@@ -110,6 +110,33 @@ At the moment, this software can be used as in the example __roc/examples/e_calc
 
 The software returns the RC and the best fit line slope/intercept coefficients.
 
+## Obtain a Taylor Series of a function 
+
+Download [FADBAD++ 2.1](http://www.fadbad.com/fadbad.html)
+
+In the program GetTS.cpp in the top level directory alter the following to your function
+
+```bash
+T<double> func(const T<double>& x)
+{
+  T<double> y = 1.0 - x;
+  return 1.0/y;
+}
+```
+
+```bash
+double x0{0.3}, hbar{1.0};
+```
+
+Compile with
+
+> gcc -I.. GetTS.cpp -o ex.exe -lstdc++ -lm
+
+and run to obtain a 30 term Taylor Series output to STDOUT
+
+> ./ex.exe
+
+
 ## Algorithms used
 
 The code solves the linear least squares problem to best fit the power series coefficients.
