@@ -1,12 +1,11 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+#include <cmath>
+#include <cfloat>
 
-#include <vector>
 #include "threeterm.hpp"
 
-#define TOL 1.0e-1
-#define DOUBLE_NEAR(x) DoubleNear((x), TOL)
-
+#define epsilon DBL_EPSILON
 using namespace testing;
 using namespace std;
 
@@ -51,11 +50,11 @@ TEST(ThreeTermAnalysisOf,
                         9.3132257461548e-39};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(1.0));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(a - time, 9.68115e-14));
+  EXPECT_THAT(order, DoubleNear(1.0, 1.1887e-12));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -74,11 +73,11 @@ TEST(ThreeTermAnalysisOf,
                         1e-24, 1e-25, 1e-26, 1e-27, 1e-28,  1e-29};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(1.0));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(a - time, 4.44090e-16));
+  EXPECT_THAT(order, DoubleNear(1.0, 1.35448e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -123,11 +122,11 @@ TEST(ThreeTermAnalysisOf,
                         10.0000000000001};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(1.0));
+  EXPECT_THAT(err, DoubleNear(0.0, 8.52652e-14));
+  EXPECT_THAT(rc, DoubleNear(a - time, 8.52652e-14));
+  EXPECT_THAT(order, DoubleNear(1.0, 2.93099e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -153,11 +152,11 @@ TEST(ThreeTermAnalysisOf,
       1.00000000000308e+85,  -1.00000000000319e+88, 1.00000000000331e+91};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(1.0));
+  EXPECT_THAT(err, DoubleNear(0.0, 1.7213e+58));
+  EXPECT_THAT(rc, DoubleNear(a - time, epsilon));
+  EXPECT_THAT(order, DoubleNear(1.0, 8.03569e-12));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -183,11 +182,11 @@ TEST(ThreeTermAnalysisOf,
       1.91077581494999e-26,  -2.12308423883332e-27, 2.35898248759258e-28};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(1.0));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(a - time, 8.54872e-14));
+  EXPECT_THAT(order, DoubleNear(1.0, 2.19869e-12));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -231,11 +230,11 @@ TEST(ThreeTermAnalysisOf, TaylorSeriesAtThreePoleAtOneWithScalingTenthAlphaOne)
                         9.3132257461548e-39};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(1.0));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(a - time, 9.68115e-14));
+  EXPECT_THAT(order, DoubleNear(1.0, 1.1887e-12));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -261,11 +260,11 @@ TEST(ThreeTermAnalysisOf,
       3.725290298461914e-09, 1.862645149230957e-09, 9.313225746154785e-10};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(1.0));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(a - time, 1.06582e-14));
+  EXPECT_THAT(order, DoubleNear(1.0, 1.33005e-13));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -282,11 +281,11 @@ TEST(ThreeTermAnalysisOf,
                         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(1.0));
+  EXPECT_THAT(err, DoubleNear(0.0, 1.06582e-14));
+  EXPECT_THAT(rc, DoubleNear(a - time, 6.66134e-16));
+  EXPECT_THAT(order, DoubleNear(1.0, 2.4758e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -312,11 +311,11 @@ TEST(ThreeTermAnalysisOf,
       1.000000000000006e+28, 1.000000000000007e+29, 1.000000000000007e+30};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(1.0));
+  EXPECT_THAT(err, DoubleNear(0.0, 2.25486e+10));
+  EXPECT_THAT(rc, DoubleNear(a - time, 2.98373e-15));
+  EXPECT_THAT(order, DoubleNear(1.0, 8.77743e-13));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -342,11 +341,11 @@ TEST(ThreeTermAnalysisOf,
       1.000000000003083e+112,  -1.000000000003193e+116, 1.000000000003303e+120};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(1.0));
+  EXPECT_THAT(err, DoubleNear(0.0, 1.85268e+78));
+  EXPECT_THAT(rc, DoubleNear(a - time, epsilon));
+  EXPECT_THAT(order, DoubleNear(1.0, 1.5100e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -372,11 +371,11 @@ TEST(ThreeTermAnalysisOf,
       1.910775814949989e+01,  -2.123084238833321e+01, 2.358982487592579e+01};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(1.0));
+  EXPECT_THAT(err, DoubleNear(0.0, 1.98952e-13));
+  EXPECT_THAT(rc, DoubleNear(a - time, 9.99201e-16));
+  EXPECT_THAT(order, DoubleNear(1.0, 1.77636e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -401,11 +400,11 @@ TEST(ThreeTermAnalysisOf, TaylorSeriesAtThreePoleAtOneWithScalingOneAlphaOne)
       3.725290298461914e-09,  -1.862645149230957e-09, 9.313225746154785e-10};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(1.0));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(a - time, 1.06582e-14));
+  EXPECT_THAT(order, DoubleNear(1.0, 1.33005e-13));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -451,11 +450,11 @@ TEST(ThreeTermAnalysisOf,
                         1.39698386192322e-37};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(2.0));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(a - time, 2.0096e-13));
+  EXPECT_THAT(order, DoubleNear(2.0, 2.49401e-12));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -479,11 +478,11 @@ TEST(ThreeTermAnalysisOf, TaylorSeriesAtZeroPoleAtOneWithScalingTenthAlphaTwo)
                         2.8e-26, 2.9e-27, 3e-28};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(2.0));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(a - time, 3.77476e-15));
+  EXPECT_THAT(order, DoubleNear(2.0, 9.32588e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -527,11 +526,11 @@ TEST(ThreeTermAnalysisOf, TaylorSeriesAtPT9PoleAtOneWithScalingTenthAlphaTwo)
                         3000.00000000005};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(2.0));
+  EXPECT_THAT(err, DoubleNear(0.0, 2.03727e-10));
+  EXPECT_THAT(rc, DoubleNear(a - time, 2.77556e-16));
+  EXPECT_THAT(order, DoubleNear(2.0, 7.50511e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -557,11 +556,11 @@ TEST(ThreeTermAnalysisOf,
       5.215406417846680e-08, 2.700835466384888e-08, 1.396983861923218e-08};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(2.0));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(a - time, 6.66134e-15));
+  EXPECT_THAT(order, DoubleNear(2.0, 8.34888e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -578,11 +577,11 @@ TEST(ThreeTermAnalysisOf, TaylorSeriesAtZeroPoleAtOneWithScalingOneAlphaTwo)
                         21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(2.0));
+  EXPECT_THAT(err, DoubleNear(0.0, 3.97904e-13));
+  EXPECT_THAT(rc, DoubleNear(a - time, 1.11023e-15));
+  EXPECT_THAT(order, DoubleNear(2.0, 4.17444e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -607,10 +606,71 @@ TEST(ThreeTermAnalysisOf, TaylorSeriesAtPT9PoleAtOneWithScalingOneAlphaTwo)
       2.800000000000039e+30, 2.900000000000042e+31, 3.000000000000046e+32};
   double rc{0.0}, order{0.0};
 
-  int ier = threeTerm(coeffs, scale, rc, order);
+  double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(a - time));
-  EXPECT_THAT(order, DOUBLE_NEAR(2.0));
+  EXPECT_THAT(err, DoubleNear(0.0, 1.71799e+12));
+  EXPECT_THAT(rc, DoubleNear(a - time, 1.27676e-15));
+  EXPECT_THAT(order, DoubleNear(2.0, 3.61711e-13));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
+
+TEST(
+    ThreeTermAnalysisOf,
+    TaylorSeriesAtNegativePT3WithScalingTenthForComplexConjugatePolesAtPMOneFifthAlphaOne)
+{
+  // t =-0.3;
+  // x[0] = 1.0/(1.0+25.0*t*t);
+
+  double a{1.0/5.0};
+  double time{-0.3};
+  double scale{0.1};
+  vector<double> coeffs{
+    3.0769230769230771e-01,
+    1.4201183431952663e-01,
+    4.1875284478834776e-02,
+    8.4030671194986195e-03,
+    6.5716294139668780e-04,
+    -3.4308380547065328e-04,
+    -2.0889736724773902e-04,
+    -7.0023107539675438e-05,
+    -1.6249329076177969e-05,
+    -2.1132974551840289e-06,
+    2.7458033423644587e-07,
+    2.8929072773866954e-07,
+    1.1239723324581319e-07,
+    2.9622513210477662e-08,
+    5.0259881551579064e-09,
+    4.1031978497675339e-11,
+    -3.6767663724398882e-10,
+    -1.7285321553550831e-10,
+    -5.1495588920697002e-11,
+    -1.0470793691436441e-11,
+    -8.7147486368628090e-13,
+    4.0322650071682737e-13,
+    2.5314106676824962e-13,
+    8.5816915376359253e-14,
+    2.0135417345377379e-14,
+    2.6919683612234631e-15,
+    -3.0643132138743080e-16,
+    -3.4850432996523446e-16,
+    -1.3727651218492121e-16,
+    -3.6550364857253289e-17 
+  };
+  double rc{0.0}, order{0.0};
+
+  double err = threeterm(coeffs, scale, rc, order);
+
+  // Model is wrong, as it should be. However there are no difficulties
+  // executing this test case
+  EXPECT_THAT(err, DoubleNear(0.0, 1.54316e-12));
+  EXPECT_THAT(rc, DoubleNear(a - time, 0.545748));
+  EXPECT_THAT(order, DoubleNear(1.0, 26.5676));
+  EXPECT_THAT(coeffs.size(), Eq(30));
+}
+
+// WARNING Rc and order can be accurate, but backward error can be large near singularity
+// WARNING Error model wrong for complex-conjugate comparison
+//
+// Exceptions (Hard to think of a test)
+// Top-line comparison
+

@@ -1,178 +1,13 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
-
-#include <cfloat>
 #include <cmath>
-#include <vector>
-#include <iostream>
+#include <cfloat>
 
-extern "C"
-{
-#include "qrfactorization.h"
-}
-#include "io.hpp"
+#include "sixterm.hpp"
 
-#define TOL 1.0e-10
-#define DOUBLE_NEAR(x) DoubleNear((x), TOL)
-
+#define epsilon DBL_EPSILON
 using namespace testing;
 using namespace std;
-
-// The six-term-test of Chang and Corliss
-//
-// The vector coeff is expected to have at least length 10
-//
-// The method returns ier=0 if computation was successful. Otherwise
-// the method returns ier=1 whenever the algorithm detects that
-// the coefficients do not resemble a pole.
-int sixTerm(const vector<double> &coeff, const double &scale, double &rc,
-            double &order)
-{
-  int m{4}, n{4}, ier{0};
-  vector<int> ipiv(m, 0);
-  vector<double> W(m*n, 0.0);
-  vector<double> tau(m, 0.0);
-  vector<double> wrk(m, 0.0);
-  vector<double> x(m, 0.0);
-  vector<double> b(m, 0.0);
-  double safmin{DBL_MIN};
-
-#define map1(i) (i)-1
-#define b(i) b[ map1(i) ]
-#define x(i) x[ map1(i) ]
-#define ipiv(i) ipiv[ map1(i) ]
-#define coeff(i) coeff[ map1(i) ]
-#define map(i, j) ((j)-1) * m + ((i)-1)
-#define W(i, j) W[ map(i, j) ]
-  int nUse = 4;
-  int k = coeff.size() - nUse;
-  for(int i{1}; i<=nUse; i++)
-  {
-    b(i) = k * coeff(k+1);
-    W(i,1) = 2.0 * coeff(k);
-    W(i,2) = 2.0 * (k - 1) * coeff(k);
-    W(i,3) =-2.0 * coeff(k-1);
-    W(i,4) =-(k - 2) * coeff(k-1);
-    k++;
-  }
-
-  qrf(m, n, &W[0], m, &ipiv[0], &tau[0], &wrk[0], safmin, &ier);
-  if ( ier != 0 ) printf( "Solver error go to top-line\n" );
-  qrs(m, n, &W[0], m, &tau[0], &b[0], &x[0], &ier);
-  if ( ier != 0 ) printf( "Solver error go to top-line\n" );
-  for(int i = 1; i <=n; i++) { b(i) = x(ipiv(i)); }
-
-  double hOverRc{0.0}, cosTheta{0.0}, singularityOrder1{0.0}, singularityOrder2{0.0};
-
-  // cout.precision(16);
-  // cout << scientific;
-  // cout << " bet12 = " << b(2) << '\n';
-  // cout << " bet14 = " << b(4) << '\n';
-
-  if( b(4) < 0 )
-  {
-    printf( "Runtime error go to top-line: Sqrt of negative number\n" );
-    ier = 1;
-    return ier;
-  }
-
-  // TODO Should the case b(4) == 0 be separated out to mean Rc is Inf?
-  
-  hOverRc = sqrt(b(4));
-  rc  = scale / hOverRc;
-  cosTheta = b(2)/hOverRc;
-
-  // cout << " rc       = " << rc << '\n';
-  // cout << " cosTheta = " << cosTheta << '\n';
-
-  // Check -1 <= cosTheta <= 1
-  if( (cosTheta < -1.0) || (cosTheta > 1.0) )
-  {
-    printf( "Runtime error go to top-line: CosTheta range\n" );
-    ier = 1;
-    return ier;
-  }
-
-  // // s is zero case
-  // if( b(2) == 0 && b(4) == 0)
-  // {
-  //   order = 0.0;
-  // }
-
-  // // CosTheta can be zero
-  // if( b(2) == 0 && b(4) != 0)
-  // {
-  //   singularityOrder2 = b(3)/b(4);
-  //   order = singularityOrder2;
-  // }
-
-  // // cosTheta not zero and h/Rc not zero and b(4) is zero (Kind of strange)
-  // if( b(2) != 0 && b(4) == 0)
-  // {
-  //   if( b(3) == 0 )
-  //   {
-  //     singularityOrder2 = b(3)/b(4);
-  //     order = singularityOrder2;
-  //   }
-  //   else
-  //   {
-  //     printf( "Runtime error go to top-line\n" );
-  //     ier = 1;
-  //     return ier;
-  //   }
-  // }
-
-  singularityOrder1 = b(1)/b(2);
-  singularityOrder2 = b(3)/b(4);
-
-  // cout << " s1 = " << singularityOrder1 << '\n';
-  // cout << " s2 = " << singularityOrder2 << '\n';
-
-  if( isnan(singularityOrder1) && isnan(singularityOrder2) )
-  {
-     printf( "Runtime error go to top-line: Order\n" );
-     ier = 1;
-     return ier;
-  }
-  
-  if( isnan(singularityOrder1) && !isnan(singularityOrder2) )
-    order = singularityOrder2;
-
-  if( !isnan(singularityOrder1) && isnan(singularityOrder2) )
-    order = singularityOrder1;
-
-  if( !isnan(singularityOrder1) && !isnan(singularityOrder2) )
-    order = (singularityOrder1+singularityOrder2)/2.0;
-
-  // cout << " order = " << order << '\n';
-
-  // Compare order
-  // printf( "Abs of difference between two computations for order: [%22.16f]\n",
-  //     fabs(singularityOrder1-singularityOrder2));
-  
-  // Check for agreement between computations against TOL at
-  // previous W equation
-  //
-  // If no agreement (in backward error), check term analysis is said to have failed
-  // becuase the coefficients do not represent a complex conjugate pair of poles.
-  nUse++;
-  k = coeff.size() - nUse;
-  double check = k * coeff(k+1) - (
-        (2.0 * coeff(k))*b(1) +
-        (2.0 * (k - 1) * coeff(k))*b(2) +
-        (-2.0 * coeff(k-1))*b(3) +
-        (-(k - 2) * coeff(k-1))*b(4));
-  if (fabs(check) > TOL)
-  {
-    cout.precision(16);
-    cout << scientific;
-    cout << "|check equation| = " << fabs(check) << "\n";
-    ier = 1;
-    return ier;
-  }
-
-  return ier;
-}
 
 TEST(
     SixTermAnalysisOf,
@@ -218,11 +53,11 @@ TEST(
   };
   double rc{0.0}, order{0.0};
 
-  int ier = sixTerm(coeffs, scale, rc, order);
+  double err = sixterm(coeffs, scale, rc, order);
 
-  ASSERT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(sqrt(a*a+time*time)));
-  EXPECT_THAT(order, DOUBLE_NEAR(1.0));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a*a+time*time), 2.44250e-15));
+  EXPECT_THAT(order, DoubleNear(1.0, 2.6712e-13));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -270,11 +105,11 @@ TEST(
   };
   double rc{0.0}, order{0.0};
 
-  int ier = sixTerm(coeffs, scale, rc, order);
+  double err = sixterm(coeffs, scale, rc, order);
 
-  ASSERT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(sqrt(a*a+time*time)));
-  EXPECT_THAT(order, DOUBLE_NEAR(1.0));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a*a+time*time), epsilon));
+  EXPECT_THAT(order, DoubleNear(1.0, 1.78746e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -322,11 +157,11 @@ TEST(
   };
   double rc{0.0}, order{0.0};
 
-  int ier = sixTerm(coeffs, scale, rc, order);
+  double err = sixterm(coeffs, scale, rc, order);
 
-  ASSERT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(sqrt(a*a+time*time)));
-  EXPECT_THAT(order, DOUBLE_NEAR(1.0));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a*a+time*time), 2.44250e-15));
+  EXPECT_THAT(order, DoubleNear(1.0, 2.6712e-13));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -374,12 +209,8 @@ TEST(
   };
   double rc{0.0}, order{0.0};
 
-  int ier = sixTerm(coeffs, scale, rc, order);
-
-  ASSERT_THAT(ier, Eq(1));
-  //EXPECT_THAT(rc, DOUBLE_NEAR(sqrt(a*a+time*time)));
-  //EXPECT_THAT(order, DOUBLE_NEAR(1.0));
-  //EXPECT_THAT(coeffs.size(), Eq(30));
+  // Cos(Theta) = 5.063697
+  ASSERT_THROW(sixterm(coeffs, scale, rc, order), std::exception);
 }
 
 TEST(
@@ -426,12 +257,8 @@ TEST(
   };
   double rc{0.0}, order{0.0};
 
-  int ier = sixTerm(coeffs, scale, rc, order);
-
-  ASSERT_THAT(ier, Eq(1));
-  //EXPECT_THAT(rc, DOUBLE_NEAR(sqrt(a*a+time*time)));
-  //EXPECT_THAT(order, DOUBLE_NEAR(1.0));
-  //EXPECT_THAT(coeffs.size(), Eq(30));
+  // Cos(Theta) = 13934294.457978
+  ASSERT_THROW(sixterm(coeffs, scale, rc, order), std::exception);
 }
 
 TEST(
@@ -478,12 +305,8 @@ TEST(
   };
   double rc{0.0}, order{0.0};
 
-  int ier = sixTerm(coeffs, scale, rc, order);
-
-  ASSERT_THAT(ier, Eq(1));
-  //EXPECT_THAT(rc, DOUBLE_NEAR(sqrt(a*a+time*time)));
-  //EXPECT_THAT(order, DOUBLE_NEAR(1.0));
-  //EXPECT_THAT(coeffs.size(), Eq(30));
+  // Unconstrained optimization lead to Sqrt of negative number: -2.307692
+  ASSERT_THROW(sixterm(coeffs, scale, rc, order), std::exception);
 }
 
 TEST(
@@ -530,11 +353,11 @@ TEST(
   };
   double rc{0.0}, order{0.0};
 
-  int ier = sixTerm(coeffs, scale, rc, order);
+  double err = sixterm(coeffs, scale, rc, order);
 
-  ASSERT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(sqrt(a*a+time*time)));
-  EXPECT_THAT(order, DOUBLE_NEAR(3.1415E0));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a*a+time*time), 3.75922e-13));
+  EXPECT_THAT(order, DoubleNear(3.14159, 9.0000100000000000e-5));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -582,11 +405,11 @@ TEST(
   };
   double rc{0.0}, order{0.0};
 
-  int ier = sixTerm(coeffs, scale, rc, order);
+  double err = sixterm(coeffs, scale, rc, order);
 
-  ASSERT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(sqrt(a*a+time*time)));
-  EXPECT_THAT(order, DOUBLE_NEAR(3.1415E0));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a*a+time*time), 1.55432e-15));
+  EXPECT_THAT(order, DoubleNear(3.14159, 0.000089999999827));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -634,11 +457,11 @@ TEST(
   };
   double rc{0.0}, order{0.0};
 
-  int ier = sixTerm(coeffs, scale, rc, order);
+  double err = sixterm(coeffs, scale, rc, order);
 
-  ASSERT_THAT(ier, Eq(0));
-  EXPECT_THAT(rc, DOUBLE_NEAR(sqrt(a*a+time*time)));
-  EXPECT_THAT(order, DOUBLE_NEAR(3.1415E0));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a*a+time*time), 1.55432e-14));
+  EXPECT_THAT(order, DoubleNear(3.14159, 0.000090000003478));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -686,12 +509,8 @@ TEST(
   };
   double rc{0.0}, order{0.0};
 
-  int ier = sixTerm(coeffs, scale, rc, order);
-
-  ASSERT_THAT(ier, Eq(1));
-  //EXPECT_THAT(rc, DOUBLE_NEAR(sqrt(a*a+time*time)));
-  //EXPECT_THAT(order, DOUBLE_NEAR(3.1415E0));
-  //EXPECT_THAT(coeffs.size(), Eq(30));
+  // Cos(Theta) = 8.975037
+  ASSERT_THROW(sixterm(coeffs, scale, rc, order), std::exception);
 }
 
 TEST(
@@ -738,12 +557,8 @@ TEST(
   };
   double rc{0.0}, order{0.0};
 
-  int ier = sixTerm(coeffs, scale, rc, order);
-
-  ASSERT_THAT(ier, Eq(1));
-  //EXPECT_THAT(rc, DOUBLE_NEAR(sqrt(a*a+time*time)));
-  //EXPECT_THAT(order, DOUBLE_NEAR(3.1415E0));
-  //EXPECT_THAT(coeffs.size(), Eq(30));
+  // Unconstrained optimization lead to Sqrt of negative number: -0.00000
+  ASSERT_THROW(sixterm(coeffs, scale, rc, order), std::exception);
 }
 
 TEST(
@@ -790,11 +605,62 @@ TEST(
   };
   double rc{0.0}, order{0.0};
 
-  int ier = sixTerm(coeffs, scale, rc, order);
-
-  ASSERT_THAT(ier, Eq(1));
-  //EXPECT_THAT(rc, DOUBLE_NEAR(sqrt(a*a+time*time)));
-  //EXPECT_THAT(order, DOUBLE_NEAR(3.1415E0));
-  //EXPECT_THAT(coeffs.size(), Eq(30));
+  // Unconstrained optimization lead to Sqrt of negative number: -7.249615
+  ASSERT_THROW(sixterm(coeffs, scale, rc, order), std::exception);
 }
+
+// Test exception throws (Seems hard)
+// QRFactorization and QRSolve tested in the developement of these methods
+// SQRT tested above (by accident)
+// The radius of convergence is infinity, which is highly unlikely (NOT TESTED)
+// Unconstrained optimization lead to infinite CosTheta which is not in [-1, 1] (NOT TESTED)
+// Unconstrained optimization lead to CosTheta [" + to_string(cosTheta) + "] not in [-1, 1] (by accident)
+// Unconstrained optimization lead to NaN for Order of Singularity (NOT TESTED)
+// 
+// Test real pole, which should fail.
+TEST(SixTermAnalysisOf,
+    TaylorSeriesAtNegativeOneNearARealPoleAtOneWithScalingTenthAlphaOneExpectedToFail)
+{
+  // t =-1.0;
+  // x[0] = 1.0/(1.0-t);
+
+  //double a{1.0};
+  //double time{-1.0};
+  double scale{0.1};
+  vector<double> coeffs{0.5,
+                        0.025,
+                        0.00125,
+                        6.25e-05,
+                        3.125e-06,
+                        1.5625e-07,
+                        7.8125e-09,
+                        3.90625e-10,
+                        1.953125e-11,
+                        9.765625e-13,
+                        4.8828125e-14,
+                        2.44140625e-15,
+                        1.220703125e-16,
+                        6.103515625e-18,
+                        3.0517578125e-19,
+                        1.52587890625e-20,
+                        7.62939453125001e-22,
+                        3.814697265625e-23,
+                        1.9073486328125e-24,
+                        9.53674316406251e-26,
+                        4.76837158203126e-27,
+                        2.38418579101563e-28,
+                        1.19209289550781e-29,
+                        5.96046447753907e-31,
+                        2.98023223876954e-32,
+                        1.49011611938477e-33,
+                        7.45058059692384e-35,
+                        3.72529029846192e-36,
+                        1.86264514923096e-37,
+                        9.3132257461548e-39};
+  double rc{0.0}, order{0.0};
+
+  // Unconstrained optimization lead to Sqrt of negative number: -0.360944
+  ASSERT_THROW(sixterm(coeffs, scale, rc, order), std::exception);
+}
+
 
