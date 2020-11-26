@@ -7,6 +7,8 @@ project(ROC)
 
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(CMAKE_DISABLE_SOURCE_CHANGES  ON)
+option(BUILD_TESTS "Build test executable" ON)
+option(ENABLE_COVERAGE "Enable code coverage" OFF)
 
 if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
   message(SEND_ERROR "In-source builds are not allowed.")
@@ -43,18 +45,57 @@ file(GLOB all_SRCS
 add_library(roc SHARED ${all_SRCS})
 target_include_directories(roc PRIVATE ${PROJECT_SOURCE_DIR}/include)
 
-find_package(GTest REQUIRED)
-if(GTEST_FOUND)
-  set(Gtest_FOUND TRUE)
-endif()
-if(GTest_FOUND)
-  file(GLOB ROC_TESTS "${PROJECT_SOURCE_DIR}/test/*.cpp")
-  set(TEST_EXE_NAME run)
-  enable_testing()
-  include(GoogleTest)
-  add_executable(${TEST_EXE_NAME} ${ROC_TESTS})
-  target_include_directories(${TEST_EXE_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include)
-  target_link_libraries(${TEST_EXE_NAME} GTest::GTest)
-  target_link_libraries(${TEST_EXE_NAME} roc)
-  gtest_discover_tests(${TEST_EXE_NAME})
-endif()
+if(ENABLE_COVERAGE AND NOT CMAKE_CONFIGURATION_TYPES)
+  if(NOT BUILD_TESTS)
+    message(FATAL_ERROR "Tests must be enabled for code coverage!")
+  endif(NOT BUILD_TESTS)
+
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake") 
+  include(CodeCoverage)
+
+  append_coverage_compiler_flags()
+  set(COVERAGE_EXCLUDES
+      /usr/include/\\*
+      /usr/local/include/\\*
+      ${CMAKE_SOURCE_DIR}/test/\\*
+      # ${CMAKE_SOURCE_DIR}/examples/experimentation\\*
+      ${CMAKE_SOURCE_DIR}/examples/daets\\*
+      ${CMAKE_SOURCE_DIR}/examples/stiffdaets/\\*
+      ${CMAKE_SOURCE_DIR}/FADBAD++/\\*
+      ${CMAKE_SOURCE_DIR}/third_party/doctest/\\*
+      /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/\\*
+      /Library/Developer/CommandLineTools/usr/include/c++/v1/\\*)
+
+  setup_target_for_coverage(NAME coverage EXECUTABLE ctest DEPENDENCIES
+                            coverage)
+else(ENABLE_COVERAGE AND NOT CMAKE_CONFIGURATION_TYPES)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL
+                                              "GNU")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra ")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
+  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /WX")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /O2")
+  endif(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL
+                                                 "GNU")
+endif(ENABLE_COVERAGE AND NOT CMAKE_CONFIGURATION_TYPES)
+
+if(BUILD_TESTS)
+  find_package(GTest REQUIRED)
+  if(GTEST_FOUND)
+    set(Gtest_FOUND TRUE)
+  endif()
+  if(GTest_FOUND)
+    file(GLOB ROC_TESTS "${PROJECT_SOURCE_DIR}/test/*.cpp")
+    set(TEST_EXE_NAME run)
+    enable_testing()
+    include(GoogleTest)
+    add_executable(${TEST_EXE_NAME} ${ROC_TESTS})
+    target_include_directories(${TEST_EXE_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/include)
+    target_link_libraries(${TEST_EXE_NAME} GTest::GTest)
+    target_link_libraries(${TEST_EXE_NAME} roc)
+    gtest_discover_tests(${TEST_EXE_NAME})
+  endif()
+endif(BUILD_TESTS)
+

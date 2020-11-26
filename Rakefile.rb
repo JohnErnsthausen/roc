@@ -41,6 +41,11 @@ task :run => :make do |t|
   run "./run"
 end
 
+desc "run gcov"
+task :gcov  => BUILD_DIR do |t|
+  run "cmake ../ -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON; make -j 8"
+end
+
 desc "Identify swap files"
 task :swp do
   SWAP_FILES.each{|f| p f }
