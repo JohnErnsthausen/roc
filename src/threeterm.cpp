@@ -63,6 +63,6 @@ double threeterm(const vector<double> &coeff, const double &scale, double &rc,
   k = coeff.size() - nUse;
   double check =
       k * coeff(k + 1) - ((k - 1) * coeff(k) * beta(1) + coeff(k) * beta(2));
- 
+
   return fabs(check);
 }

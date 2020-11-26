@@ -1,7 +1,7 @@
 #include <cfloat>
+#include <iostream>
 #include <string>
 #include <vector>
-#include <iostream>
 
 extern "C"
 {
@@ -12,7 +12,8 @@ extern "C"
 
 using namespace std;
 
-int qr(const int m, const int n, vector<double> &W, vector<double> &b, vector<double> &x)
+int qr(const int m, const int n, vector<double> &W, vector<double> &b,
+       vector<double> &x)
 {
   int ier{0};
   string message;
@@ -40,13 +41,12 @@ int qr(const int m, const int n, vector<double> &W, vector<double> &b, vector<do
   // Multiply solution x by permutation and store it in x
   for (int i{0}; i < n; i++)
   {
-    tau[i] = x[ ipiv[i]-1 ];
+    tau[ i ] = x[ ipiv[ i ] - 1 ];
   }
   for (int i{0}; i < n; i++)
   {
-    x[i] = tau[ i ];
+    x[ i ] = tau[ i ];
   }
 
   return ier;
 }
-

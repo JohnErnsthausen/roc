@@ -28,17 +28,17 @@ class TestThatCPPQR : public Test
     b.assign(m, 0.0);
   }
 
-  void TearDown() override { }
+  void TearDown() override {}
 };
 
 TEST_F(TestThatCPPQR, CanAccessTheQRFactorizationMethod)
 {
-  a(1, 1) = 2.0, a(1, 2) =-1.0, a(1, 3) = 0.0;
-  a(2, 1) =-1.0, a(2, 2) = 2.0, a(2, 3) =-1.0;
-  a(3, 1) = 0.0, a(3, 2) =-1.0, a(3, 3) = 2.0;
-  b(1) =-1.0;
-  b(2) =-1.0;
-  b(3) =-1.0;
+  a(1, 1) = 2.0, a(1, 2) = -1.0, a(1, 3) = 0.0;
+  a(2, 1) = -1.0, a(2, 2) = 2.0, a(2, 3) = -1.0;
+  a(3, 1) = 0.0, a(3, 2) = -1.0, a(3, 3) = 2.0;
+  b(1) = -1.0;
+  b(2) = -1.0;
+  b(3) = -1.0;
   ASSERT_THAT(qr(m, n, a, b, x), Eq(0));
 }
 
@@ -57,15 +57,14 @@ TEST_F(TestThatCPPQR, WillThrowQRFactorizationErrorFromQRF)
 
 TEST_F(TestThatCPPQR, WillReturnACorrectSolution)
 {
-  a(1, 1) = 2.0, a(1, 2) =-1.0, a(1, 3) = 0.0;
-  a(2, 1) =-1.0, a(2, 2) = 2.0, a(2, 3) =-1.0;
-  a(3, 1) = 0.0, a(3, 2) =-1.0, a(3, 3) = 2.0;
-  b(1) =-1.0;
-  b(2) =-1.0;
-  b(3) =-1.0;
+  a(1, 1) = 2.0, a(1, 2) = -1.0, a(1, 3) = 0.0;
+  a(2, 1) = -1.0, a(2, 2) = 2.0, a(2, 3) = -1.0;
+  a(3, 1) = 0.0, a(3, 2) = -1.0, a(3, 3) = 2.0;
+  b(1) = -1.0;
+  b(2) = -1.0;
+  b(3) = -1.0;
   qr(m, n, a, b, x);
-  EXPECT_THAT(x[0], DoubleNear(-1.5,8.88179e-16));
-  EXPECT_THAT(x[1], DoubleNear(-2.0,epsilon));
-  EXPECT_THAT(x[2], DoubleNear(-1.5,8.88178e-16));
+  EXPECT_THAT(x[ 0 ], DoubleNear(-1.5, 8.88179e-16));
+  EXPECT_THAT(x[ 1 ], DoubleNear(-2.0, epsilon));
+  EXPECT_THAT(x[ 2 ], DoubleNear(-1.5, 8.88178e-16));
 }
-

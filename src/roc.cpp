@@ -24,12 +24,8 @@ int roc(const vector<double> &coeff, const double &scale, double &rc,
   int k = (int)coeff.size();
   if (k < MINTERMS)
   {
-    message =
-      "The number of coefficients ["
-      + to_string((int)coeff.size()) +
-      "] must be greater than ["
-      + to_string(MINTERMS) + 
-      "].\n";
+    message = "The number of coefficients [" + to_string((int)coeff.size()) +
+              "] must be greater than [" + to_string(MINTERMS) + "].\n";
     throw sayMessage(message);
   }
 

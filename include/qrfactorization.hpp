@@ -3,6 +3,7 @@
 
 #include <vector>
 
-int qr(const int, const int, std::vector<double> &, std::vector<double> &, std::vector<double> & );
+int qr(const int, const int, std::vector<double> &, std::vector<double> &,
+       std::vector<double> &);
 
 #endif
