@@ -1,16 +1,11 @@
-#include <cfloat>  // safemin
-#include <cmath>   // fabs
+#include <cmath>
 #include <string>
 #include <vector>
 
-extern "C"
-{
-#include "qrfactorization.h"
-}
 #include "data.hpp"
 #include "exceptions.hpp"
-
-#include "threeterm.hpp"
+#include "qrfactorization.hpp"
+#include "sixterm.hpp"
 
 using namespace std;
 
@@ -30,20 +25,15 @@ double sixterm(const vector<double> &coeff, const double &scale, double &rc,
                double &order)
 {
   int nUse = SIXTERM_NUSE;
-  int m{nUse}, n{4}, k{0}, ier{0};
+  int m{nUse}, n{4}, k{0};
   string message;
-  vector<int> ipiv(n, 0);
   vector<double> W(m * n, 0.0);
-  vector<double> tau(n, 0.0);
-  vector<double> wrk(m, 0.0);
-  vector<double> x(m, 0.0);
+  vector<double> beta(n, 0.0);
   vector<double> b(m, 0.0);
-  double safmin{DBL_MIN};
 
 #define map1(i) (i) - 1
 #define b(i) b[ map1(i) ]
-#define x(i) x[ map1(i) ]
-#define ipiv(i) ipiv[ map1(i) ]
+#define beta(i) beta[ map1(i) ]
 #define coeff(i) coeff[ map1(i) ]
 #define map(i, j) ((j)-1) * m + ((i)-1)
 #define W(i, j) W[ map(i, j) ]
@@ -58,38 +48,21 @@ double sixterm(const vector<double> &coeff, const double &scale, double &rc,
     k++;
   }
 
-  // Factor
-  qrf(m, n, &W[ 0 ], m, &ipiv[ 0 ], &tau[ 0 ], &wrk[ 0 ], safmin, &ier);
-  if (ier != 0)
-  {
-    message = "QRFactorization error with ier= " + to_string(ier) + " \n";
-    throw sayMessage(message);
-  }
-  // Solve
-  qrs(m, n, &W[ 0 ], m, &tau[ 0 ], &b[ 0 ], &x[ 0 ], &ier);
-  if (ier != 0)
-  {
-    message = "QRSolver error with ier= " + to_string(ier) + " \n";
-    throw sayMessage(message);
-  }
-  // Multiply by permutation
-  for (int i = 1; i <= n; i++)
-  {
-    b(i) = x(ipiv(i));
-  }
+  // Solve W beta = b for beta
+  qr(m, n, W, b, beta);
 
   // Interpret the variables found from Least Squares Optimization Problem
   double hOverRc{0.0}, cosTheta{0.0}, singularityOrder1{0.0},
       singularityOrder2{0.0};
 
   // Evaluate h/Rc
-  if (b(4) < 0)
+  if (beta(4) < 0)
   {
     message = "Unconstrained optimization lead to Sqrt of negative number: " +
               to_string(b(4)) + " \n";
     throw sayMessage(message);
   }
-  hOverRc = sqrt(b(4));
+  hOverRc = sqrt(beta(4));
 
   // Evaluate Rc
   rc = scale / hOverRc;
@@ -101,7 +74,7 @@ double sixterm(const vector<double> &coeff, const double &scale, double &rc,
   }
 
   // Evaluate Cos(Theta)
-  cosTheta = b(2) / hOverRc;
+  cosTheta = beta(2) / hOverRc;
   if (isnan(cosTheta))
   {
     message =
@@ -117,8 +90,8 @@ double sixterm(const vector<double> &coeff, const double &scale, double &rc,
   }
 
   // Evaluate Order of the Singularity
-  singularityOrder1 = b(1) / b(2);
-  singularityOrder2 = b(3) / b(4);
+  singularityOrder1 = beta(1) / beta(2);
+  singularityOrder2 = beta(3) / beta(4);
   if (isnan(singularityOrder1) && isnan(singularityOrder2))
   {
     message =
@@ -148,8 +121,8 @@ double sixterm(const vector<double> &coeff, const double &scale, double &rc,
   k = coeff.size() - nUse;
   double check =
       k * coeff(k + 1) -
-      ((2.0 * coeff(k)) * b(1) + (2.0 * (k - 1) * coeff(k)) * b(2) +
-       (-2.0 * coeff(k - 1)) * b(3) + (-(k - 2) * coeff(k - 1)) * b(4));
+      ((2.0 * coeff(k)) * beta(1) + (2.0 * (k - 1) * coeff(k)) * beta(2) +
+       (-2.0 * coeff(k - 1)) * beta(3) + (-(k - 2) * coeff(k - 1)) * beta(4));
 
   return fabs(check);
 }

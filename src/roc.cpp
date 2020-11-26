@@ -1,5 +1,6 @@
 #include <cmath>
 #include <iostream>
+#include <string>
 #include <vector>
 
 #include "exceptions.hpp"
@@ -12,6 +13,7 @@ using namespace std;
 int roc(const vector<double> &coeff, const double &scale, double &rc,
         double &order)
 {
+  string message;
   double hrc{0.0}, hrc_check{0.0};
 
   rc = 0.0;
@@ -20,7 +22,16 @@ int roc(const vector<double> &coeff, const double &scale, double &rc,
 
   // Check for sufficient data to perform three term analysis
   int k = (int)coeff.size();
-  if (k < MINTERMS) throw morecoefficients();
+  if (k < MINTERMS)
+  {
+    message =
+      "The number of coefficients ["
+      + to_string((int)coeff.size()) +
+      "] must be greater than ["
+      + to_string(MINTERMS) + 
+      "].\n";
+    throw sayMessage(message);
+  }
 
   // Check for agreement between computations against TOL
   //

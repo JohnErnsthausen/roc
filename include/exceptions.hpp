@@ -14,13 +14,4 @@ class sayMessage : public std::exception
   std::string message_;
 };
 
-class QRFactorization : public std::exception
-{
- public:
-  virtual const char *what() const throw()
-  {
-    return "Error from QRFactorization";
-  }
-};
-
 #endif
