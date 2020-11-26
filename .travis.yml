@@ -19,3 +19,5 @@ script:
   - cmake .. 
   - make
   - ctest
+  - cmake ../ -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON; make -j 8
+  - make coverage
