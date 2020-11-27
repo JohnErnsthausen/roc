@@ -12,12 +12,15 @@ notifications:
     on_failure: always # default: always
 
 script:
+  - sudo apt-get update -y
   - sudo apt-get install libgtest-dev
   - sudo apt-get install libgmock-dev
+  - sudo apt-get install -y lcov
   - mkdir -p build
   - cd build
   - cmake .. 
   - make
   - ctest
-  - cmake ../ -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON; make -j 8
+  - cmake ../ -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
+  - make -j 8
   - make coverage
