@@ -162,3 +162,12 @@ The folders and files for this project are as follows:
 3. src - Source code
 4. test - Test cases
 5. examples - Example use cases
+
+## This repo uses TravisCI
+
+[![Build Status](https://travis-ci.org/JohnErnsthausen/roc.svg?branch=master)](https://travis-ci.org/JohnErnsthausen/roc)
+
+## This repo usee coveralls
+
+[![Coverage Status](https://coveralls.io/repos/github/JohnErnsthausen/roc/badge.svg?branch=master)](https://coveralls.io/github/JohnErnsthausen/roc?branch=master)
+
