@@ -167,7 +167,7 @@ The folders and files for this project are as follows:
 
 [![Build Status](https://travis-ci.org/JohnErnsthausen/roc.svg?branch=master)](https://travis-ci.org/JohnErnsthausen/roc)
 
-## This repo usee coveralls
+## This repo uses coveralls
 
 [![Coverage Status](https://coveralls.io/repos/github/JohnErnsthausen/roc/badge.svg?branch=master)](https://coveralls.io/github/JohnErnsthausen/roc?branch=master)
 

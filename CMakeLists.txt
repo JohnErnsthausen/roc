@@ -55,16 +55,9 @@ if(ENABLE_COVERAGE AND NOT CMAKE_CONFIGURATION_TYPES)
 
   append_coverage_compiler_flags()
   set(COVERAGE_EXCLUDES
-      /usr/include/\\*
-      /usr/local/include/\\*
-      ${CMAKE_SOURCE_DIR}/test/\\*
-      # ${CMAKE_SOURCE_DIR}/examples/experimentation\\*
-      ${CMAKE_SOURCE_DIR}/examples/daets\\*
-      ${CMAKE_SOURCE_DIR}/examples/stiffdaets/\\*
-      ${CMAKE_SOURCE_DIR}/FADBAD++/\\*
-      ${CMAKE_SOURCE_DIR}/third_party/doctest/\\*
-      /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk/usr/include/\\*
-      /Library/Developer/CommandLineTools/usr/include/c++/v1/\\*)
+      ${CMAKE_SOURCE_DIR}/docs/\\*
+      ${CMAKE_SOURCE_DIR}/examples/\\*
+      ${CMAKE_SOURCE_DIR}/refs/\\*)
 
   setup_target_for_coverage(NAME coverage EXECUTABLE ctest DEPENDENCIES
                             coverage)
