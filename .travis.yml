@@ -5,9 +5,8 @@ language: cpp
 notifications:
   email:
     recipients:
+      - ernsthjm@mcmaster.ca
       - john@smartypixels.com
-      - john@johnernsthausen.com
-      - johnernsthausen@gmail.com
     on_success: never # default: change
     on_failure: always # default: always
 
