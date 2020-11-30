@@ -62,8 +62,8 @@ TEST_F(TestThatTopLine, WillComputeLeastSquarsSolution)
   EXPECT_THAT(rc, DOUBLE_NEAR_MULTIPLIER(1.303994626296309e-01, 100.0));
 }
 
-TEST_F(TestThatTopLine, WillFail)
-{
-  ASSERT_THAT(0, Eq(1));
-}
+// TEST_F(TestThatTopLine, WillFail)
+// {
+//   ASSERT_THAT(0, Eq(1));
+// }
 
