@@ -47,7 +47,6 @@ TEST_F(TestThatTopLine, CanAccessTheLeastSquaredSolutionMethod)
 //
 // We want to fit the tail of the Taylor series, ignore the first 17 terms of
 // the TCs.
-// This is a Really Looooooooooooooooooooooooooooooooooooooooooooooooooooooong line for a word processor.
 TEST_F(TestThatTopLine, WillComputeLeastSquarsSolution)
 {
   for (int k = 0; k < num_tc; k++)
@@ -61,9 +60,3 @@ TEST_F(TestThatTopLine, WillComputeLeastSquarsSolution)
   EXPECT_THAT(slope, DOUBLE_NEAR_MULTIPLIER(8.847241983085994e-01, 100.0));
   EXPECT_THAT(rc, DOUBLE_NEAR_MULTIPLIER(1.303994626296309e-01, 100.0));
 }
-
-// TEST_F(TestThatTopLine, WillFail)
-// {
-//   ASSERT_THAT(0, Eq(1));
-// }
-
