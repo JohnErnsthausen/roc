@@ -54,19 +54,20 @@ file(GLOB all_SRCS
         "${PROJECT_SOURCE_DIR}/src/*.cpp"
         "${PROJECT_SOURCE_DIR}/src/*.c"
         )
-file(GLOB all_INCLUDES
-        "${PROJECT_SOURCE_DIR}/include/*.hpp"
-        "${PROJECT_SOURCE_DIR}/include/*.h"
-        )
 add_library(roc SHARED ${all_SRCS})
 target_include_directories(roc PRIVATE ${PROJECT_SOURCE_DIR}/include)
 
 # Setup the coveralls target and tell it to gather
 # coverage data for all the lib sources.
 if (COVERALLS)
+  file(GLOB all_SRC_INC
+          "${PROJECT_SOURCE_DIR}/src/*.cpp"
+          "${PROJECT_SOURCE_DIR}/src/*.c"
+          "${PROJECT_SOURCE_DIR}/include/*.hpp"
+          "${PROJECT_SOURCE_DIR}/include/*.h"
+          )
 	coveralls_setup(
-       "${all_SRCS}" 
-       "${all_INCLUDES}" 
+    "${all_SRC_INC}" 
         ${COVERALLS_UPLOAD}                 
         "${PROJECT_SOURCE_DIR}/coveralls-cmake/cmake")
 endif()
