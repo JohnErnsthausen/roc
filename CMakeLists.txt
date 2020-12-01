@@ -7,20 +7,8 @@ project(ROC)
 
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(CMAKE_DISABLE_SOURCE_CHANGES  ON)
-
 option(BUILD_TESTS "Build test executable" ON)
 option(ENABLE_COVERAGE "Enable code coverage" OFF)
-
-option(COVERALLS "Turn on coveralls support" OFF)
-option(COVERALLS_UPLOAD "Upload the generated coveralls json" ON)
-
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} 
-	${PROJECT_SOURCE_DIR}/coveralls-cmake/cmake)
-
-if (COVERALLS)
-	include(Coveralls)
-	coveralls_turn_on_coverage()
-endif()
 
 if ("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
   message(SEND_ERROR "In-source builds are not allowed.")
@@ -56,21 +44,6 @@ file(GLOB all_SRCS
         )
 add_library(roc SHARED ${all_SRCS})
 target_include_directories(roc PRIVATE ${PROJECT_SOURCE_DIR}/include)
-
-# Setup the coveralls target and tell it to gather
-# coverage data for all the lib sources.
-if (COVERALLS)
-  file(GLOB all_SRC_INC
-          "${PROJECT_SOURCE_DIR}/src/*.cpp"
-          "${PROJECT_SOURCE_DIR}/src/*.c"
-          "${PROJECT_SOURCE_DIR}/include/*.hpp"
-          "${PROJECT_SOURCE_DIR}/include/*.h"
-          )
-	coveralls_setup(
-    "${all_SRC_INC}" 
-        ${COVERALLS_UPLOAD}                 
-        "${PROJECT_SOURCE_DIR}/coveralls-cmake/cmake")
-endif()
 
 if(ENABLE_COVERAGE AND NOT CMAKE_CONFIGURATION_TYPES)
   if(NOT BUILD_TESTS)

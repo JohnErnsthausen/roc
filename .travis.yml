@@ -25,10 +25,7 @@ script:
   - ctest
 
 after_success:
-  # - cmake ../ -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
-  # - make -j 1
-  # - make coverage
-  # - coveralls --gcov-options '\-lp'
-  - cmake -DCOVERALLS=ON -DCMAKE_BUILD_TYPE=Debug ..
-  - make
-  - make coveralls
+  - cmake ../ -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON
+  - make -j 1
+  - make coverage
+  - coveralls --include src -include include --gcov-options '\-lp'
