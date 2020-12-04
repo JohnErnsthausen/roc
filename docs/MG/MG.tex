@@ -20,27 +20,27 @@
 
 \usepackage{fullpage}
 \usepackage[round]{natbib}
+\usepackage{multirow}
 %\usepackage{refcheck}
 \usepackage{lipsum}
 
 \input{../Comments}
 \input{../Common}
 
-\newcounter{reqnum} %Requirement Number
-\newcommand{\rthereqnum}{P\thereqnum}
-\newcommand{\rref}[1]{R\ref{#1}}
-
 \newcounter{acnum}
 \newcommand{\actheacnum}{AC\theacnum}
 \newcommand{\acref}[1]{AC\ref{#1}}
+\newcommand{\aclabel}[1]{\refstepcounter{acnum} \actheacnum \label{#1}:}
 
 \newcounter{ucnum}
 \newcommand{\uctheucnum}{UC\theucnum}
 \newcommand{\uref}[1]{UC\ref{#1}}
+\newcommand{\uclabel}[1]{\refstepcounter{ucnum} \uctheucnum \label{#1}:}
 
 \newcounter{mnum}
 \newcommand{\mthemnum}{M\themnum}
 \newcommand{\mref}[1]{M\ref{#1}}
+\newcommand{\mlabel}[1]{\refstepcounter{mnum} \mthemnum \label{#1}:}
 
 \begin{document}
 
@@ -75,7 +75,7 @@ This section records information for easy reference.
   \textbf{symbol} & \textbf{description}\\
   \midrule 
   AC & Anticipated Change\\
-  DAG & Directed Acyclic Graph \\
+  LC & Likely change\\
   M & Module \\
   MG & Module Guide \\
   OS & Operating System \\
@@ -83,8 +83,7 @@ This section records information for easy reference.
   SC & Scientific Computing \\
   SRS & Software Requirements Specification\\
   \progname{n} & Explanation of program name\\
-  UC & Unlikely Change \\
-  \wss{etc.} & \wss{...}\\
+  UC & Unlikely Change\\
   \bottomrule
 \end{tabular}\\
 
@@ -102,6 +101,10 @@ This section records information for easy reference.
 
 \section{Introduction}
 
+This document follows the MG Template for our course CSE 741, Development
+of Scientific Computing Software, taught in the Fall of 2020 by Prof. Spencer Smith.
+We are permitted to freely use the content of the MG Template.
+
 Decomposing a system into modules is a commonly accepted approach to developing
 software.  A module is a work assignment for a programmer or programming
 team~\citep{ParnasEtAl1984}.  We advocate a decomposition
@@ -111,7 +114,7 @@ hides represent likely future changes.  Design for change is valuable in SC,
 where modifications are frequent, especially during initial development as the
 solution space is explored.  
 
-Our design follows the rules layed out by \citet{ParnasEtAl1984}, as follows:
+Our design follows the rules laid out by \citet{ParnasEtAl1984}, as follows:
 \begin{itemize}
 \item System details that are likely to change independently should be the
   secrets of separate modules.
@@ -159,78 +162,38 @@ categories. Anticipated changes are listed in Section \ref{SecAchange}, and
 unlikely changes are listed in Section \ref{SecUchange}.
 
 \subsection{Anticipated Changes} \label{SecAchange}
-%  \label{mInput}
-%  \label{mParams}
-%  \label{mControl}
-%  \label{mInput}
-%  \label{mParams}
-%  \label{mVerify}
-%  \label{mOutput}
-%  \label{mControl}
-%  \label{mOutput}
-%  \label{mODEs}
-%  \label{mControl}
-%  \label{mSeqDS}
-%  \label{mSolver}
-%  \label{mPlot}
-%  \label{mOutput}
-%  \label{mODEs}
-%  \label{mControl}
-%  \label{mSeqDS}
-%  \label{mSolver}
-%  \label{mPlot}
-%  \label{mOutput}
-%  \label{mEnergy}
-%  \label{mControl}
-%  \label{mSeqDS}
-%  \label{mPlot}
-%  \label{mOutput}
-%  \label{mEnergy}
-%  \label{mControl}
-%  \label{mSeqDS}
-%  \label{mPlot}
-%  \label{mVerifyOut}
-%  \label{mOutput}
-%  \label{mODEs}
-%  \label{mControl}
-%  \label{mOutput}
-%  \label{mODEs}
-%  \label{mEnergy}
-%  \label{mControl}
-%  \label{mInput}
-%  \label{acParams}
-%  \label{mParams}
-%  \label{acVerify}
-%  \label{mVerify}
-%  \label{acOutput}
-%  \label{mOutput}
-%  \label{acVerifyOut}
-%  \label{mVerifyOut}
-%  \label{acODEs}
-%  \label{mODEs}
-%  \label{acEnergy}
-%  \label{mEnergy}
-%  \label{acControl}
-%  \label{mControl}
-%  \label{acSeqDS}
-%  \label{mSeqDS}
-%  \label{acSolver}
-%  \label{mSolver}
-%  \label{acPlot}
-%  \label{mPlot}
 
 Anticipated changes are the source of the information that is to be hidden
 inside the modules. Ideally, changing one of the anticipated changes will only
 require changing the one module that hides the associated decision. The approach
-adapted here is called design for
-change.
+adapted here is called design for change. Anticipated changes are labeled by
+{\bf AC} followed by a number.
 
-  \begin{description}
-  \item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific
-  hardware on which the software is running.
-\item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of the
-  initial input data.
-\item ...
+\begin{description}
+  \item[\aclabel{acIN}] Handle input acquisition.
+    % \item[\aclabel{acIHardware}] Handle input acquisition via hardware.
+    % \item[\aclabel{acISoftware}] Handle input acquisition via software.
+    % \item[\aclabel{acIFormat}] Validate input format.
+    % \item[\aclabel{acIType}] Validate input type.
+  \item[\aclabel{acOUT}] Handle output.
+    % \item[\aclabel{acOHardware}] Handle output via hardware.
+    % \item[\aclabel{acOSoftware}] Handle output via software.
+    % \item[\aclabel{acOFormat}] Handle output format.
+    % \item[\aclabel{acOType}] Handle output type.
+  \item[\aclabel{acPARAM}] Handle parameter acquisition.
+    % \item[\aclabel{acPFormat}] Handle parameter format.
+    % \item[\aclabel{acPType}] Handle parameter type.
+    % \item[\aclabel{acPDistribution}] Handle parameter distribution.
+    % \item[\aclabel{acPConstraints}] Handle parameter constraints.
+  \item[\aclabel{acSOLVER}] Algorithms.
+    % \item[\aclabel{acPoleRealSolverAlgorithm}] Algorithm to find the distance to the nearest real pole.
+    % \item[\aclabel{acPoleComplexSolverAlgorithm}] Algorithm to find the distance to the nearest complex conjugate pair of poles.
+    % \item[\aclabel{acPoleComplicatedAlgorithm}] Algorithm to find the distance to the nearest pole in hard to resolve case.
+  \item[\aclabel{acPoleRealSolver}] Find the distance to the nearest real pole.
+  \item[\aclabel{acPoleComplexSolver}] Find the distance to the nearest complex conjugate pair of poles.
+  \item[\aclabel{acPoleTopLine}] Find the distance to the nearest pole in hard to resolve case.
+  \item[\aclabel{acROC}] Pole identification, distinguish a real pole from a complex conjugate pair of poles
+    from a complicated situation.
 \end{description}
 
 \subsection{Unlikely Changes} \label{SecUchange}
@@ -240,66 +203,75 @@ more complex. Sometimes this complexity is not necessary. Fixing some design
 decisions at the system architecture stage can simplify the software design. If
 these decision should later need to be changed, then many parts of the design
 will potentially need to be modified. Hence, it is not intended that these
-decisions will be changed.
+decisions will be changed. Unlikely changes are labeled by {\bf UC} followed by a number.
 
 \begin{description}
-\item[\refstepcounter{ucnum} \uctheucnum \label{ucIO}:] Input/Output devices
-  (Input: File and/or Keyboard, Output: File, Memory, and/or Screen).
-\item ...
+  \item[\uclabel{ucHardware}] The hardware architecture is assumed to be a common personal
+    computer running Ubuntu 20.04 or Windows 2010. The author does not have access
+    to a personal computer running Mac OS, so Mac OS is excluded as well. However, the codes
+    should not be written to exclude the Mac OS hardware architecture.
+    We are not writing for graphic card architectures or other high performance computing clusters. 
+
+  \item[\uclabel{ucAnalytic}] We assume that the inputs do not represent entire functions
+    such as the exponential function.
 \end{description}
 
 \section{Module Hierarchy} \label{SecMH}
 
 This section provides an overview of the module design. Modules are summarized
-in a hierarchy decomposed by secrets in 
-%  Table \ref{TblMH}
-. The modules listed
+in a hierarchy decomposed by secrets in \TBref{module}. The modules listed
 below, which are leaves in the hierarchy tree, are the modules that will
-actually be implemented.
+actually be implemented. Modules are labeled by {\bf M} followed by a number.
+
 
 \begin{description}
-\item [\refstepcounter{mnum} \mthemnum \label{mHH}:] Hardware-Hiding Module
-\item ...
+  \item[\mlabel{mIN}] Input module.
+  \item[\mlabel{mOUT}] Output module.
+  \item[\mlabel{mPARAM}] Parameter module.
+  \item[\mlabel{mSOLVER}] Solver module.
+  \item[\mlabel{mPoleRealSolver}] Real pole module.
+  \item[\mlabel{mPoleComplexSolver}] Complex conjugate pair of poles module.
+  \item[\mlabel{mPoleTopLineSolver}] Resolve nearest pole in hard to resolve case module.
+  \item[\mlabel{mROC}] Pole identification module.
 \end{description}
 
 
-%  \begin{table}[h!]
-%  \centering
-%  \begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
-%  \toprule
-%  \textbf{Level 1} & \textbf{Level 2}\\
-%  \midrule
-%  
-%  {Hardware-Hiding Module} & ~ \\
-%  \midrule
-%  
-%  \multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & ?\\
-%  & ?\\
-%  & ?\\
-%  & ?\\
-%  & ?\\
-%  & ?\\
-%  & ?\\ 
-%  & ?\\
-%  \midrule
-%  
-%  \multirow{3}{0.3\textwidth}{Software Decision Module} & {?}\\
-%  & ?\\
-%  & ?\\
-%  \bottomrule
-%  
-%  \end{tabular}
-%  \caption{Module Hierarchy}
-%  \label{TblMH}
-%  \end{table}
+\begin{table}[h!]
+\centering
+\begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
+\toprule
+\textbf{Level 1} & \textbf{Level 2}\\
+\midrule
+
+\multirow{2}{0.3\textwidth}{Hardware-Hiding Module}
+  & Input Format Module\\
+  & Output Format Module \\
+
+\midrule
+
+\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module}
+  & Input Format Module\\
+  & Output Format Module \\
+  & Parameters Module\\
+  & Real pole module\\
+  & Complex conjugate pair of poles module\\ 
+  & Resolve nearest pole in hard to resolve case module\\
+  & Pole identification module\\
+\midrule
+
+{Software Decision Module} & Solver Module\\
+\bottomrule
+
+\end{tabular}
+\caption{Module Hierarchy}
+\label{tb:module}
+\end{table}
 
 \section{Connection Between Requirements and Design} \label{SecConnection}
 
 The design of the system is intended to satisfy the requirements developed in
 the SRS. In this stage, the system is decomposed into modules. The connection
-between requirements and modules is listed in
-%  Table \ref{TblRT}
-.
+between requirements and modules is listed in \TBref{TblRT}.
 
 \wss{The intention of this section is to document decisions that are made
   ``between'' the requirements and the design.  To satisfy some requirements,
@@ -319,118 +291,181 @@ module. The \emph{Services} field specifies \emph{what} the module will do
 without documenting \emph{how} to do it. For each module, a suggestion for the
 implementing software is given under the \emph{Implemented By} title. If the
 entry is \emph{OS}, this means that the module is provided by the operating
-system or by standard programming language libraries.  \emph{\progname{}} means the
-module will be implemented by the \progname{} software.
+system or by standard programming language libraries.  \emph{\progname{f}} means the
+module will be implemented by the \progname{f} software.
 
 Only the leaf modules in the hierarchy have to be implemented. If a dash
 (\emph{--}) is shown, this means that the module is not a leaf and will not have
 to be implemented.
 
-\subsection{Hardware Hiding Modules (\mref{mHH})}
+\subsection{Hardware Hiding Modules}
+
+\subsubsection{Input Format Module (\mref{mIN})}
 
 \begin{description}
-\item[Secrets:]The data structure and algorithm used to implement the virtual
-  hardware.
-\item[Services:]Serves as a virtual hardware used by the rest of the
-  system. This module provides the interface between the hardware and the
-  software. So, the system can use it to display outputs or to accept inputs.
+\item[Secrets:] Handle input acquisition via hardware.
+\item[Services:] Read files from hard drive.
+  This module provides the interface between the hardware and the
+  software. So, the system can use it to accept inputs.
+\item[Implemented By:] OS
+\end{description}
+
+\subsubsection{Output Format Module (\mref{mOUT})}
+
+\begin{description}
+\item[Secrets:] Handle output via hardware.
+\item[Services:] Write files to hard drive.
+  This module provides the interface between the hardware and the
+  software. So, the system can use it to display and save outputs.
 \item[Implemented By:] OS
 \end{description}
 
 \subsection{Behaviour-Hiding Module}
 
+\subsubsection{Input Format Module (\mref{mIN})}
+
 \begin{description}
-\item[Secrets:]The contents of the required behaviours.
-\item[Services:]Includes programs that provide externally visible behaviour of
-  the system as specified in the software requirements specification (SRS)
-  documents. This module serves as a communication layer between the
-  hardware-hiding module and the software decision module. The programs in this
-  module will need to change if there are changes in the SRS.
-\item[Implemented By:] --
+\item[Secrets:] The format and structure of the input data.
+\item[Services:] Validate input format. Validate input type. Handle input acquisition via software.
+\item[Implemented By:] \progname{f}
+\item[Type of Module:] Library
 \end{description}
 
-\subsubsection{Input Format Module} % (\mref{mInput})}
+\subsubsection{Output Format Module (\mref{mOUT})}
 
 \begin{description}
-\item[Secrets:]The format and structure of the input data.
-\item[Services:]Converts the input data into the data structure used by the
-  input parameters module.
-\item[Implemented By:] [Your Program Name Here]
-\item[Type of Module:] [Record, Library, Abstract Object, or Abstract Data Type]
-  [Information to include for leaf modules in the decomposition by secrets tree.]
+\item[Secrets:] The format and structure of the output.
+\item[Services:] Handle output format. Handle output type. Handle output via software.
+\item[Implemented By:] \progname{f}
+\item[Type of Module:] Library
 \end{description}
 
-\subsubsection{Etc.}
-
-
-\subsection{Software Decision Module}
+\subsubsection{Parameters Module (\mref{mPARAM})}
 
 \begin{description}
-\item[Secrets:] The design decision based on mathematical theorems, physical
-  facts, or programming considerations. The secrets of this module are
-  \emph{not} described in the SRS.
+\item[Secrets:] Handle all aspects of parameters.
+\item[Services:] This module handles parameter acquisition, format, type, distribution, and constraints.
+\item[Implemented By:] \progname{f}
+\item[Type of Module:] Record
+\end{description}
+
+\subsubsection{Real pole module (\mref{mPoleRealSolver})}
+
+\begin{description}
+\item[Secrets:] Implements solver for real poles.
+\item[Services:] Computes $R_c$ and $\mu$ for real poles.
+\item[Implemented By:] \progname{f}
+\item[Type of Module:] Library
+\end{description}
+
+\subsubsection{Complex conjugate pair of poles module (\mref{mPoleComplexSolver})}
+
+\begin{description}
+\item[Secrets:] Implements solver for complex conjugate pair of poles.
+\item[Services:] Computes $R_c$ and $\mu$ for complex conjugate pair of poles.
+\item[Implemented By:] \progname{f}
+\item[Type of Module:] Library
+\end{description}
+
+\subsubsection{Resolve nearest pole in hard to resolve case module (\mref{mPoleTopLineSolver})}
+
+\begin{description}
+\item[Secrets:] Implements solver to find the distance to the nearest pole in hard to resolve case.
+\item[Services:] Computes $R_c$ for hard to resolve case.
+\item[Implemented By:] \progname{f}
+\item[Type of Module:] Library
+\end{description}
+
+\subsubsection{Pole identification module (\mref{mROC})}
+
+\begin{description}
+\item[Secrets:] Implements pole identification that distinguishes a real pole from
+  a complex conjugate pair of poles from a complicated situation.
+\item[Services:] Decides which solver is best suited to resolve the inputs.
+\item[Implemented By:] \progname{f}
+\item[Type of Module:] Library
+\end{description}
+
+\subsection{Software Decision Module (\mref{mSOLVER})}
+
+\begin{description}
+\item[Secrets:] Algorithms.
 \item[Services:] Includes data structure and algorithms used in the system that
-  do not provide direct interaction with the user. 
+  do not provide direct interaction with the user.
+  Algorithm to find the distance to the nearest real pole.
+  Algorithm to find the distance to the nearest complex conjugate pair of poles.
+  Algorithm to find the distance to the nearest pole in hard to resolve case.
   % Changes in these modules are more likely to be motivated by a desire to
   % improve performance than by externally imposed changes.
-\item[Implemented By:] --
+\item[Implemented By:] \progname{f}
+\item[Type of Module:] Library
 \end{description}
-
-\subsubsection{Etc.}
 
 \section{Traceability Matrix} \label{SecTM}
 
 This section shows two traceability matrices: between the modules and the
 requirements and between the modules and the anticipated changes.
 
-%  % the table should use mref, the requirements should be named, use something
-%  % like fref
-%  \begin{table}[H]
-%  \centering
-%  \begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
-%  \toprule
-%  \textbf{Req.} & \textbf{Modules}\\
-%  \midrule
-%  R1 & \mref{mHH}, \mref{mInput}, \mref{mParams}, \mref{mControl}\\
-%  R2 & \mref{mInput}, \mref{mParams}\\
-%  R3 & \mref{mVerify}\\
-%  R4 & \mref{mOutput}, \mref{mControl}\\
-%  R5 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-%  R6 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-%  R7 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-%  R8 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-%  R9 & \mref{mVerifyOut}\\
-%  R10 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}\\
-%  R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
-%  \bottomrule
-%  \end{tabular}
-%  \caption{Trace Between Requirements and Modules}
-%  \label{TblRT}
-%  \end{table}
-%  
-%  \begin{table}[H]
-%  \centering
-%  \begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
-%  \toprule
-%  \textbf{AC} & \textbf{Modules}\\
-%  \midrule
-%  \acref{acHardware} & \mref{mHH}\\
-%  \acref{acInput} & \mref{mInput}\\
-%  \acref{acParams} & \mref{mParams}\\
-%  \acref{acVerify} & \mref{mVerify}\\
-%  \acref{acOutput} & \mref{mOutput}\\
-%  \acref{acVerifyOut} & \mref{mVerifyOut}\\
-%  \acref{acODEs} & \mref{mODEs}\\
-%  \acref{acEnergy} & \mref{mEnergy}\\
-%  \acref{acControl} & \mref{mControl}\\
-%  \acref{acSeqDS} & \mref{mSeqDS}\\
-%  \acref{acSolver} & \mref{mSolver}\\
-%  \acref{acPlot} & \mref{mPlot}\\
-%  \bottomrule
-%  \end{tabular}
-%  \caption{Trace Between Anticipated Changes and Modules}
-%  \label{TblACT}
-%  \end{table}
+% the table should use mref, the requirements should be named, use something
+% like fref
+\begin{table}[H]
+\centering
+\begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
+\toprule
+\textbf{Req.} & \textbf{Modules}\\
+\midrule
+  R1  & \mref{mIN}\\
+  R2  & \mref{mIN}\\
+  R3  & \mref{mIN}\\
+  R4  & \mref{mIN}\\
+  R5  & \mref{mIN}\\
+  R6  & \mref{mIN}\\
+  R7  & \mref{mOUT}\\
+  R8  & \mref{mOUT}\\
+  R9  & \mref{mOUT}\\
+  R10 & \mref{mOUT}\\
+  R11 & \mref{mPARAM}\\
+  R12 & \mref{mPARAM}\\
+  R13 & \mref{mPARAM}\\
+  R14 & \mref{mPARAM}\\
+  R15 & \mref{mPARAM}\\
+  R16 & \mref{mSOLVER}\\
+  R17 & \mref{mSOLVER}\\
+  R18 & \mref{mSOLVER}\\
+  R19 & \mref{mIN}, \mref{mOUT}, \mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleRealSolver}, \mref{mROC}\\
+  R20 & \mref{mIN}, \mref{mOUT}, \mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleComplexSolver}, \mref{mROC}\\
+  R21 & \mref{mIN}, \mref{mOUT}, \mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleTopLineSolver}, \mref{mROC}\\
+  R22 & \mref{mIN}, \mref{mOUT}, \mref{mROC}\\
+  R23 & \mref{mIN}, \mref{mOUT},\mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleRealSolver}, \mref{mPoleComplexSolver}, \mref{mPoleTopLineSolver}, \mref{mROC}\\
+  R24 & \mref{mIN}, \mref{mOUT}, \mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleRealSolver}, \mref{mROC}\\
+  R25 & \mref{mIN}, \mref{mOUT}, \mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleComplexSolver}, \mref{mROC}\\
+  R26 & \mref{mIN}, \mref{mOUT}, \mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleTopLineSolver}, \mref{mROC}\\
+  R27 & \mref{mSOLVER}\\
+\bottomrule
+\end{tabular}
+\caption{Trace Between Requirements and Modules}
+\label{tb:TblRT}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{0.2\textwidth} p{0.6\textwidth}}
+\toprule
+\textbf{AC} & \textbf{Modules}\\
+\midrule
+  \acref{acIN} & \mref{mIN}\\
+  \acref{acOUT} & \mref{mOUT}\\
+  \acref{acPARAM} & \mref{mPARAM}\\
+  \acref{acSOLVER} & \mref{mSOLVER}\\
+  \acref{acPoleRealSolver} & \mref{mPoleRealSolver}\\
+  \acref{acPoleComplexSolver} & \mref{mPoleComplexSolver}\\
+  \acref{acPoleTopLine} & \mref{mPoleTopLineSolver}\\
+  \acref{acROC} & \mref{mROC}\\
+\bottomrule
+\end{tabular}
+\caption{Trace Between Anticipated Changes and Modules}
+\label{TblACT}
+\end{table}
 
 \section{Use Hierarchy Between Modules} \label{SecUse}
 

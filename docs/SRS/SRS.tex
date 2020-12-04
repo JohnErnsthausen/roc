@@ -59,9 +59,12 @@
 \newcounter{instnum} %Instance Number
 \newcommand{\itheinstnum}{IM\theinstnum}
 \newcommand{\iref}[1]{IM\ref{#1}}
+
 \newcounter{reqnum} %Requirement Number
-\newcommand{\rthereqnum}{P\thereqnum}
+\newcommand{\rthereqnum}{R\thereqnum}
 \newcommand{\rref}[1]{R\ref{#1}}
+\newcommand{\rlabel}[1]{\refstepcounter{reqnum} \rthereqnum \label{#1}:}
+
 \newcounter{lcnum} %Likely change number
 \newcommand{\lthelcnum}{LC\thelcnum}
 \newcommand{\lcref}[1]{LC\ref{#1}}
@@ -1556,42 +1559,63 @@ qualities that the software is expected to exhibit.
 \progname{f} is the implementation of \iref{IM-rc} in the complex case or
 \iref{IM-order-of-singularity} in the real case for TS solutions of \ode.
 
-\noindent \begin{itemize}
+\begin{itemize}
+  \item[\rlabel{rIHardware}] Input acquisition via hardware.
+  \item[\rlabel{rISoftware}] Input acquisition via software.
+  \item[\rlabel{rIFormat}] Validate input format.
+  \item[\rlabel{rIType}] Validate input type.
 
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_Inputs}:] The inputs to
-  \iref{IM-rc} or \iref{IM-order-of-singularity} should be scaled to prevent
-    overflow/underflow. If this is not possible, \progname{f} will find
-    a scale. The inputs should satisfy the assumptions.
+  \item[\rlabel{rAssumptions}] Inputs should satisfy the assumptions.
+  \item[\rlabel{R_Inputs}] Inputs should be scaled to prevent overflow/underflow.
+  
+  \item[\rlabel{rOHardware}] Output via hardware.
+  \item[\rlabel{rOSoftware}] Output via software.
+  \item[\rlabel{rOFormat}] Output format.
+  \item[\rlabel{rOType}] Output type.
+  \item[\rlabel{rPARAM}] Parameter acquisition.
+  \item[\rlabel{rPFormat}] Parameter format.
+  \item[\rlabel{rPType}] Parameter type.
+  \item[\rlabel{rPDistribution}] Parameter distribution.
+  \item[\rlabel{rPConstraints}] Parameter constraints.
+  \item[\rlabel{rPoleRealSolverAlgorithm}] Algorithm to find the distance to the nearest real pole.
+  \item[\rlabel{rPoleComplexSolverAlgorithm}] Algorithm to find the distance to the nearest complex conjugate pair of poles.
+  \item[\rlabel{rPoleComplicatedAlgorithm}] Algorithm to find the distance to the nearest pole in hard to resolve case.
+  \item[\rlabel{rPoleRealSolver}] Find the distance to the nearest real pole.
+  \item[\rlabel{rPoleComplexSolver}] Find the distance to the nearest complex conjugate pair of poles.
+  \item[\rlabel{rPoleTopLine}] Find the distance to the nearest pole in hard to resolve case.
+  \item[\rlabel{rROC}] Pole identification, distinguish a real pole from a complex conjugate pair of poles
+    from a complicated situation.
 
-%\item[R\refstepcounter{reqnum}\thereqnum \label{R_OutputInputs}:] \plt{It isn't
-%    always required, but often echoing the inputs as part of the output is a
-%    good idea.}
+  \item[\rlabel{R_Calculate}] \progname{f} should be developed in \cpp.
 
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_Calculate}:] The method developed in this
-  project is expected to be independent of system constraints. However
-  most TS methods are developed in \cpp or \fortran, the goto languages
-  of scientific computing. Certainly a scripting language would not be
-  sufficient for large systems. \progname{f} should execute as fast as the CC software \rdcon.
+    \progname{f} should execute as fast as the CC software \rdcon. The method developed in this
+    project is expected to be independent of system constraints. However
+    most TS methods are developed in \cpp or \fortran, the goto languages
+    of scientific computing. Certainly a scripting language would not be
+    sufficient for large systems.
+  
+  \item[\rlabel{R_VerifyRealOutput}] Compute the TS for the real valued
+    function $1/(z-z_0)^{\mu}$ at $x_c$. The radius of convergence $R_c$
+    and the order of singularity $\mu$ computed by \progname{f} should
+    be $R_c = | x_c - z_0 |$ and order of singularity $\mu$.
+  
+ \item[\rlabel{R_VerifyComplexOutput}] Compute the TS for the real valued function
+   $1/(1 + 25*(z-z_0)^2)^{\mu}$ at $x_c$. The radius of convergence $R_c$
+    and the order of singularity $\mu$ computed by \progname{f} should
+    be $R_c = \sqrt( x_c^2 + (1/5)^2 |$ and order of singularity $\mu$.
+  
+ \item[\rlabel{R_VerifyOutput}] Compute the TS for the real valued function
+   $1/(1 + 25*(z-z_0)^2)^{\mu}$ at $x_0$. The radius of convergence $R_c$
+    and the order of singularity $\mu$ computed by \progname{f} should
+    require top line analysis and top line analysis should compute
+    $R_c$. Top line analysis doesn't compute an order of singularity.
 
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_VerifyOutput}:] The radius of convergence $R_c$
-  and the order of singularity $\mu$ output should reflect known cases:
-
-  Compute the TS for the real valued function $1/(z-z_0)^{\mu}$.
-    The output of \iref{IM-order-of-singularity} as implemented in \progname{f}
-    should be the correct $R_c$ and order of singularity $\mu$.
-
-  Compute the TS for the real valued function $1/(1 + 25*(z-z_0)^2)^{\mu}$.
-    The output of \iref{IM-order-of-singularity} as implemented in \progname{f}
-    should be the correct $R_c$ and order of singularity $\mu$.
-
-  Use top line analysis while solving \ode \ivp by the TS method. The recommended $R_c$ should
-    be greater than the stepsize recommended by the elementary controller.
-
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_Output}:] We must not overestimate $R_c$.
-  If $R_c$ is overestimated, then the power-series is a divergence sum on the overestimation.
-
-  In \ode solving by TS methods, underestimating $R_c$ is acceptable as an underestimation
-  results in a slight increase in computational effort for solving an \ode \ivp.
+  \item[\rlabel{R_Output}] We must not overestimate $R_c$.
+    
+    If $R_c$ is overestimated, then the power-series is a divergence sum on the overestimation.
+  
+    In \ode solving by TS methods, underestimating $R_c$ is acceptable as an underestimation
+    results in a slight increase in computational effort for solving an \ode \ivp.
 \end{itemize}
 
 \plt
