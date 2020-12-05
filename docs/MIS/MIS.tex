@@ -1,47 +1,57 @@
 \documentclass[12pt, titlepage]{article}
 
 \usepackage{amsmath, mathtools}
-
-\usepackage[round]{natbib}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xspace}
+
 \usepackage{graphicx}
 \usepackage{colortbl}
 \usepackage{xr}
-\usepackage{hyperref}
 \usepackage{longtable}
 \usepackage{xfrac}
-\usepackage{tabularx}
 \usepackage{float}
 \usepackage{siunitx}
-\usepackage{booktabs}
-\usepackage{multirow}
-\usepackage[section]{placeins}
 \usepackage{caption}
+\usepackage{pdflscape}
+\usepackage{afterpage}
+
 \usepackage{fullpage}
+\usepackage[round]{natbib}
+\usepackage{multirow}
+%\usepackage{refcheck}
+\usepackage{lipsum}
 
-\hypersetup{
-bookmarks=true,     % show bookmarks bar?
-colorlinks=true,       % false: boxed links; true: colored links
-linkcolor=red,          % color of internal links (change box color with linkbordercolor)
-citecolor=blue,      % color of links to bibliography
-filecolor=magenta,  % color of file links
-urlcolor=cyan          % color of external links
-}
-
+\usepackage[section]{placeins}
 \usepackage{array}
 
-\externaldocument{../../SRS/SRS}
+\input{../Comments}
+\input{../Common}
 
-\input{../../Comments}
-\input{../../Common}
+\makeatletter
+\newcommand*{\addFileDependency}[1]{% argument=file name and extension
+  \typeout{(#1)}
+  \@addtofilelist{#1}
+  \IfFileExists{#1}{}{\typeout{No file #1.}}
+}
+\makeatother
+
+\newcommand*{\myexternaldocument}[1]{%
+    \externaldocument{#1}%
+    \addFileDependency{#1.tex}%
+    \addFileDependency{#1.aux}%
+}
+
+\externaldocument{../SRS/SRS}
+
+\newcommand{\rref}[1]{(R\ref{#1})}
 
 \begin{document}
 
-\title{Module Interface Specification for \progname{}}
-
-\author{Author Name}
-
+\title{Module Interface Specification for \progname{L}}
+\author{John M Ernsthausen}
 \date{\today}
 
 \maketitle
@@ -50,21 +60,20 @@ urlcolor=cyan          % color of external links
 
 \section{Revision History}
 
-\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
+\begin{tabularx}{\textwidth}{p{3.5cm}p{2cm}X}
 \toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+  22 November 2020 & 1.0 & First submission\\
 \bottomrule
 \end{tabularx}
 
-~\newpage
+\newpage
 
 \section{Symbols, Abbreviations and Acronyms}
 
-See SRS Documentation at \wss{give url}
+See SRS Documentation at
 
-\wss{Also add any additional symbols, abbreviations or acronyms}
+\noindent \url{https://github.com/JohnErnsthausen/roc/blob/master/docs/SRS/SRS.pdf}.
 
 \newpage
 
@@ -76,12 +85,14 @@ See SRS Documentation at \wss{give url}
 
 \section{Introduction}
 
-The following document details the Module Interface Specifications for
-\wss{Fill in your project name and description}
+The following document details the Module Interface Specifications for the implemented
+modules in library software \progname{f} estimating the radius of convergence of a power series.
+It is intended to ease navigation through the program for design and maintenance purposes.
 
-Complementary documents include the System Requirement Specifications
-and Module Guide.  The full documentation and implementation can be
-found at \url{...}.  \wss{provide the url for your repo}
+Complementary documents include the System Requirement Specifications and Module Guide.
+The full documentation and implementation can be found at
+
+\noindent \url{https://github.com/JohnErnsthausen/roc}.
 
 \section{Notation}
 
@@ -95,7 +106,7 @@ with the addition that template modules have been adapted from
 multiple assignment statement and conditional rules follow the form $(c_1
 \Rightarrow r_1 | c_2 \Rightarrow r_2 | ... | c_n \Rightarrow r_n )$.
 
-The following table summarizes the primitive data types used by \progname. 
+The following table summarizes the primitive data types used by \progname{f}. 
 
 \begin{center}
 \renewcommand{\arraystretch}{1.2}
@@ -113,10 +124,10 @@ real & $\mathbb{R}$ & any number in (-$\infty$, $\infty$)\\
 \end{center}
 
 \noindent
-The specification of \progname \ uses some derived data types: sequences, strings, and
+The specification of \progname{f} uses some derived data types: sequences, strings, and
 tuples. Sequences are lists filled with elements of the same data type. Strings
 are sequences of characters. Tuples contain a list of values, potentially of
-different types. In addition, \progname \ uses functions, which
+different types. In addition, \progname{f} uses functions, which
 are defined by the data types of their inputs and outputs. Local functions are
 described by giving their type signature followed by their specification.
 
@@ -131,111 +142,271 @@ The following table is taken directly from the Module Guide document for this pr
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
 
-{Hardware-Hiding} & ~ \\
+\multirow{2}{0.3\textwidth}{Hardware-Hiding Module}
+  & Input Format Module\\
+  & Output Format Module \\
+
 \midrule
 
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding} & Input Parameters\\
-& Output Format\\
-& Output Verification\\
-& Temperature ODEs\\
-& Energy Equations\\ 
-& Control Module\\
-& Specification Parameters Module\\
+\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module}
+  & Input Format Module\\
+  & Output Format Module \\
+  & Parameters Module\\
+  & Real pole module\\
+  & Complex conjugate pair of poles module\\ 
+  & Resolve nearest pole in hard to resolve case module\\
+  & Pole identification module\\
 \midrule
 
-\multirow{3}{0.3\textwidth}{Software Decision} & {Sequence Data Structure}\\
-& ODE Solver\\
-& Plotting\\
+{Software Decision Module} & Solver Module\\
 \bottomrule
 
 \end{tabular}
 \caption{Module Hierarchy}
-\label{TblMH}
+\label{tb:module}
 \end{table}
 
-\newpage
-~\newpage
+\section{MIS of Input Format Module} \label{sc:MIS_IN}
 
-\section{MIS of \wss{Module Name}} \label{Module} \wss{Use labels for
-  cross-referencing}
-
-\wss{You can reference SRS labels, such as R\ref{R_Inputs}.}
-
-\wss{It is also possible to use \LaTeX for hypperlinks to external documents.}
+The secrets of this module are
+ input acquisition via hardware \rref{rIHardware},
+ input acquisition via software \rref{rISoftware},
+ validate input format \rref{rIFormat},
+ validate input type \rref{rIType},
+ inputs should satisfy the assumptions \rref{rAssumptions}, and
+ inputs should be scaled to prevent overflow/underflow \rref{R_Inputs}.
+This module handles the data structure for input coefficients and the scaling of
+ the input coefficients, how the values are input (software/hardware),
+ and how the values are verified (OS).
+The load and verify secrets are isolated to their own methods.
 
 \subsection{Module}
 
-\wss{Short name for the module}
+IN
 
 \subsection{Uses}
 
+None
 
 \subsection{Syntax}
 
-\subsubsection{Exported Constants}
-
-\subsubsection{Exported Access Programs}
-
-\begin{center}
-\begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
-\hline
+\begin{tabular}{p{3cm} p{2cm} p{4cm} >{\raggedright\arraybackslash}p{9cm}}
+\toprule
 \textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
-\hline
-\wss{accessProg} & - & - & - \\
-\hline
+\midrule
+load\_coeffs & string & vector<double> &  FileError \\
+verify\_coeffs & - & - & FileError \\
+\bottomrule
 \end{tabular}
-\end{center}
 
 \subsection{Semantics}
 
-\subsubsection{State Variables}
-
-\wss{Not all modules will have state variables.  State variables give the module
-  a memory.}
-
 \subsubsection{Environment Variables}
 
-\wss{This section is not necessary for all modules.  Its purpose is to capture
-  when the module has external interaction with the environment, such as for a
-  device driver, screen interface, keyboard, file, etc.}
+inputFile: sequence of string \#\textit{f[i] is the ith string in the comma separated value text file f}\\ 
 
 \subsubsection{Assumptions}
 
-\wss{Try to minimize assumptions and anticipate programmer errors via
-  exceptions, but for practical purposes assumptions are sometimes appropriate.}
+The coefficients must be ordered according to the convention from lowest order to highest order.
+The number of coefficients follows. Finally the scaling follows.
 
 \subsubsection{Access Routine Semantics}
 
-\noindent \wss{accessProg}():
+\noindent load\_coeffs($s$):
 \begin{itemize}
-\item transition: \wss{if appropriate} 
-\item output: \wss{if appropriate} 
-\item exception: \wss{if appropriate} 
+\item transition: The filename $s$ is first associated with the file f.  {inputFile} is used to
+  modify a coefficients vector of type double, size variable of type integer, and a scaling variable
+  of type double. This file can be processed by \progname{f} as each line is read.
+  In this way, the option of input by software and input by hardware are handled identically.
+\item verify\_coeffs() is handled by the OS plus a validation that the coefficients vector has the
+  expected size.
+\item exception: exc := a file name $s$ cannot be found OR the format of
+  inputFile is incorrect $\Rightarrow$  FileError
 \end{itemize}
 
-\wss{A module without environment variables or state variables is unlikely to
-  have a state transition.  In this case a state transition can only occur if
-  the module is changing the state of another module.}
+\section{MIS of Output Format Module} \label{sc:MIS_OUT}
 
-\wss{Modules rarely have both a transition and an output.  In most cases you
-  will have one or the other.}
+The secrets of this module are
+ output via hardware \rref{rOHardware},
+ output via software \rref{rOSoftware},
+ validate input format \rref{rOFormat},
+ validate input type \rref{rOType},
+This module handles the data structure for output coefficients,
+ how the values are output (software/hardware),
+ and how the values are verified (OS).
 
-\subsubsection{Local Functions}
+\subsection{Module}
 
-\wss{As appropriate} \wss{These functions are for the purpose of specification.
-  They are not necessarily something that is going to be implemented
-  explicitly.  Even if they are implemented, they are not exported; they only
-  have local scope.}
+OUT
 
-\newpage
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+
+\begin{tabular}{p{3cm} p{2cm} p{4cm} >{\raggedright\arraybackslash}p{9cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+write\_out & double & hardware/software &  FileError \\
+\bottomrule
+\end{tabular}
+
+\subsection{Semantics}
+
+\subsubsection{Environment Variables}
+
+outputFile: sequence of string \#\textit{f[i] is the ith string in the comma separated value text file f}\\ 
+
+\subsubsection{Assumptions}
+
+The radius of convergence $R_c$ and order of singularity $\mu$ must be ordered according to a convention.
+
+\subsubsection{Access Routine Semantics}
+
+\noindent write\_out($s$):
+\begin{itemize}
+\item transition: The filename $s$ is first associated with the file f.  {outputFile}. This file
+  can be appended by \progname{f} as each line is read.
+  In this way, the option of output by software and output by hardware are handled identically.
+\item verify\_out() is handled by the OS.
+\item exception: exc := a file name $s$ cannot be found $\Rightarrow$  FileError
+\end{itemize}
+
+\section{MIS of Parameters Module} \label{sc:MIS_PARAM}
+
+The secrets of this module are parameter acquisition, format, type, distribution, and constraints.
+The author is thinking of constants in a header file.
+
+\subsection{Module}
+
+PARAM
+
+\subsection{Uses}
+
+None
+
+\subsubsection{Exported Constants}
+
+\noindent $THREETERM\_NUSE$ of type integer. $THREETERM\_NUSE$ must be less than the size of the coefficient vector minus 10.
+
+\noindent $SIXTERM\_NUSE$ of type integer. $SIXTERM\_NUSE$ must be less than the size of the coefficient vector minus 10.
+
+\section{MIS of Solver Module} \label{sc:MIS_SOLVER}
+
+Algorithm to find the distance to the
+ nearest real pole \rref{rPoleRealSolverAlgorithm},
+ nearest complex conjugate pair of poles \rref{rPoleComplexSolverAlgorithm}, and
+ nearest pole in hard to resolve case \rref{rPoleComplicatedAlgorithm}.
+This solver is required to solve the linear least squares problem.
+
+\subsection{Module}
+
+SOLVER
+
+\subsection{Uses}
+
+The RealPoleModule discussed in \SCref{MIS_POLEREALSOLVERMODULE},
+ ComplexConjugatePoleModule discussed in \SCref{MIS_POLECOMPLEXSOLVERMODULE}, and
+ the hard to resolve case module discussed in \SCref{MIS_POLETOPLINEMODULE}
+ set up their respective problem for this module to resolve.
+
+\subsection{Syntax}
+
+The syntax depends on the pole to resolve and the algorithm used, the linear least squares
+solver is the QRFactorization in all cases.
+
+\section{MIS of Real Pole Module} \label{sc:MIS_POLEREALSOLVERMODULE}
+
+Find the distance to the nearest real pole \rref{rPoleRealSolverAlgorithm}.
+
+\subsection{Module}
+
+REALPOLE
+
+\subsection{Uses}
+
+IN \SCref{MIS_IN}, OUT \SCref{MIS_OUT}, PARAM \SCref{MIS_PARAM}, SOLVER \SCref{MIS_SOLVER}
+
+\subsection{Syntax}
+
+\begin{tabular}{p{3cm} p{5cm} p{3cm} >{\raggedright\arraybackslash}p{5cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+  REALPOLE & vector<double>, size, scale &  $R_c$, $\mu$, error & SOLVER\_EXCEPTION \\
+\bottomrule
+\end{tabular}
+
+\section{MIS of Complex Poles Module} \label{sc:MIS_POLECOMPLEXSOLVERMODULE}
+
+Find the distance to the nearest complex conjugate pair of poles \rref{rPoleComplexSolverAlgorithm}.
+
+\subsection{Module}
+
+COMPLEXPOLES
+
+\subsection{Uses}
+
+IN \SCref{MIS_IN}, OUT \SCref{MIS_OUT}, PARAM \SCref{MIS_PARAM}, SOLVER \SCref{MIS_SOLVER}
+
+\subsection{Syntax}
+
+\begin{tabular}{p{3.5cm} p{5cm} p{3cm} >{\raggedright\arraybackslash}p{5cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+  COMPLEXPOLES & vector<double>, size, scale &  $R_c$, $\mu$, error & SOLVER\_EXCEPTION \\
+\bottomrule
+\end{tabular}
+
+\section{MIS of Top-Line Module} \label{sc:MIS_POLETOPLINEMODULE}
+
+Find the distance to the nearest complicated pole \rref{rPoleComplicatedAlgorithm}.
+
+\subsection{Module}
+
+TOPLINEANALYSIS
+
+\subsection{Uses}
+
+IN \SCref{MIS_IN}, OUT \SCref{MIS_OUT}, PARAM \SCref{MIS_PARAM}, SOLVER \SCref{MIS_SOLVER}
+
+\subsection{Syntax}
+
+\begin{tabular}{p{4cm} p{5cm} p{3cm} >{\raggedright\arraybackslash}p{5cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+  TOPLINEANALYSIS & vector<double>, size, scale &  $R_c$, error & SOLVER\_EXCEPTION \\
+\bottomrule
+\end{tabular}
+
+\section{MIS of ROC Module} \label{sc:MIS_ROC}
+
+Find the Radius of convergence $R_c$ and order of singularity $\mu$.
+
+\subsection{Module}
+
+ROC
+
+\subsection{Uses}
+
+REALPOLE \SCref{MIS_POLEREALSOLVERMODULE},
+COMPLEXPOLES \SCref{MIS_POLECOMPLEXSOLVERMODULE},
+TOPLINEANALYSIS \SCref{MIS_POLETOPLINEMODULE}
+
+\subsection{Syntax}
+
+\begin{tabular}{p{3cm} p{5cm} p{3cm} >{\raggedright\arraybackslash}p{5cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+  ROC & vector<double>, size, scale &  $R_c$, $\mu$, error & ROC\_EXCEPTION \\
+\bottomrule
+\end{tabular}
 
 \bibliographystyle {plainnat}
-\bibliography {../../../refs/References}
-
-\newpage
-
-\section{Appendix} \label{Appendix}
-
-\wss{Extra information if required}
-
+\bibliography {../../refs/References}
 \end{document}
