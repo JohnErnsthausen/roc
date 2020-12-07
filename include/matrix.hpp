@@ -1,7 +1,9 @@
 #include <cstring>
+#include <initializer_list>
 #include <iomanip>
 #include <iostream>
 #include <memory>
+#include <vector>
 #include "exceptions.hpp"
 
 // ============
@@ -19,6 +21,28 @@ public:
     // First argument: number of rows
     // Second argument: number of columns
     matrix(const size_t &, const size_t &);
+
+    // Constructor to create a diagonal matrix
+    // Argument: a vector containing the elements on the diagonal
+    // Number of rows and columns is inferred automatically
+    matrix(const std::vector<T> &);
+
+    // Constructor to create a diagonal matrix
+    // Argument: an initializer_list containing the elements on the diagonal
+    // Number of rows and columns is inferred automatically
+    matrix(const std::initializer_list<T> &);
+
+    // Constructor to create a matrix and initialize it to the given elements
+    // First argument: number of rows
+    // Second argument: number of columns
+    // Third argument: a vector containing the elements (flattened)
+    matrix(const size_t &, const size_t &, const std::vector<T> &);
+
+    // Constructor to create a matrix and initialize it to the given elements
+    // First argument: number of rows
+    // Second argument: number of columns
+    // Third argument: an initializer_list containing the elements (flattened)
+    matrix(const size_t &, const size_t &, const std::initializer_list<T> &);
 
     // Copy constructor to create a new matrix with the same elements as an existing matrix
     matrix(const matrix &);
@@ -41,12 +65,12 @@ public:
     size_t get_cols() const;
 
     // Overloaded operator () used to access matrix elements WITHOUT range checking
-    // The indices start from 0: m(0, 1) would be the element at row 1, column 2
+    // The indices start from 1: m(1, 2) would be the element at row 1, column 2
     // First version: returns a reference, thus allows modification of the element
     T &operator()(const size_t &, const size_t &);
 
     // Overloaded operator () used to access matrix elements WITHOUT range checking
-    // The indices start from 0: m(0, 1) would be the element at row 1, column 2
+    // The indices start from 1: m(1, 2) would be the element at row 1, column 2
     // Second version: does not return a reference and declared as const,
     // does not allow modification of the element
     T operator()(const size_t &, const size_t &) const;
@@ -98,6 +122,45 @@ matrix<T>::matrix(const size_t &input_rows, const size_t &input_cols)
     smart.reset(new T[rows * cols]);
     elements = smart.get();
 }
+
+// Diagonal matrix initialized with vector
+template <typename T>
+matrix<T>::matrix(const std::vector<T> &input_diagonal)
+    : rows(input_diagonal.size()), cols(input_diagonal.size())
+{
+    if (rows == 0)
+      throw sayMessage{"Dimentions of matrix must be positive.\n"};
+    smart.reset(new T[rows * cols]);
+    elements = smart.get();
+    for (size_t i{0}; i < rows; i++)
+        for (size_t j{0}; j < cols; j++)
+            elements[(cols * i) + j] = ((i == j) ? input_diagonal[i] : 0);
+}
+
+// Diagonal matrix initialized with initializer_list
+template <typename T>
+matrix<T>::matrix(const std::initializer_list<T> &input_diagonal)
+    : matrix(std::vector<T>{input_diagonal}) {}
+
+// Full matrix initialized with vector
+template <typename T>
+matrix<T>::matrix(const size_t &input_rows, const size_t &input_cols, const std::vector<T> &input_elements)
+    : rows(input_rows), cols(input_cols)
+{
+    if (rows == 0 or cols == 0)
+      throw sayMessage{"Dimentions of matrix must be positive.\n"};
+    if (input_elements.size() != rows * cols)
+      throw sayMessage{"Size of vector must equal rows*cols.\n"};
+    smart.reset(new T[rows * cols]);
+    elements = smart.get();
+    for (size_t i{0}; i < rows * cols; i++)
+        elements[i] = input_elements[i];
+}
+
+// Full matrix initialized with initializer_list
+template <typename T>
+matrix<T>::matrix(const size_t &input_rows, const size_t &input_cols, const std::initializer_list<T> &input_elements)
+    : matrix(input_rows, input_cols, std::vector<T>{input_elements}) {}
 
 // Copy constructor
 template <typename T>
@@ -171,14 +234,14 @@ inline size_t matrix<T>::get_cols() const
 template <typename T>
 inline T &matrix<T>::operator()(const size_t &row, const size_t &col)
 {
-    return elements[(cols * row) + col];
+    return elements[(cols * (row-1)) + (col-1)];
 }
 
 // No reference
 template <typename T>
 inline T matrix<T>::operator()(const size_t &row, const size_t &col) const
 {
-    return elements[(cols * row) + col];
+    return elements[(cols * (row-1)) + (col-1)];
 }
 
 // For pretty printing
