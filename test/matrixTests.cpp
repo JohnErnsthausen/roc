@@ -81,7 +81,7 @@ TEST_F(TestThatMatrix, CanConstructAnUninitializedMatrixSepcifyingRowsColsANDIni
     for(size_t i{1}; i <= M.get_rows(); i++)
       EXPECT_THAT(M(i,j), Eq(M.get_rows()*(j-1) + i) );
 
-  // Printing verification does work
+  // // Printing verification does work
   // cout << "M =\n"
   //      << M << '\n';
 }

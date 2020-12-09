@@ -260,10 +260,10 @@ std::ostream &operator<<(std::ostream &out, const matrix<T> &m)
         out << "()\n";
     else
     {
-        for (size_t i{0}; i < m.rows; i++)
+        for (size_t i{1}; i <= m.rows; i++)
         {
             out << "( ";
-            for (size_t j{0}; j < m.cols; j++)
+            for (size_t j{1}; j <= m.cols; j++)
                 out << std::setw(m.output_width) << m(i, j) << ' ';
             out << ")\n";
         }
