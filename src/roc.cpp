@@ -32,7 +32,7 @@ int roc(const vector<double> &coeff, const double &scale, double &rc,
   // Check for agreement between computations against TOL
   //
   // If no agreement, three term analysis is said to have failed
-  // becuase the coefficients do not represent a pole.
+  // because the coefficients do not represent a pole.
   if (fabs(hrc - hrc_check) > TOL)
   {
     cout.precision(16);
