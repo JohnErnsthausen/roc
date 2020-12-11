@@ -1,45 +1,29 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
-#include <cassert>
+
 #include <cfloat>
-
-extern "C"
-{
-#include "topline.h"
-}
-
-#define DOUBLE_NEAR(x) DoubleNear((x), 4.0 * DBL_EPSILON)
-#define DOUBLE_NEAR_MULTIPLIER(x, multiplier) \
-  DoubleNear((x), (multiplier)*DBL_EPSILON)
+#include "topline.hpp"
 
 using namespace testing;
+using std::vector;
 
 class TestThatTopLine : public Test
 {
  public:
-  int num_tc = 30, kstart = 18;
+  const int num_tc{30};
+  int kstart = 10;
   double scale = 1.0;
-  double rc = 0.0, slope = 0.0, intercept = 0.0;
-  double *tc = NULL;
+  double rc = 0.0, order = 0.0;
+  vector<double> tc;
+  double epsilon{DBL_EPSILON};
 
   void SetUp() override
   {
-    tc = (double *)calloc((size_t)(num_tc), (size_t)sizeof(double));
-    if (tc == NULL)
-    {
-      printf("Failed to allocate memory for Taylor coefficients!\n");
-      assert(tc);
-    }
+    tc = vector<double>(num_tc);
   }
 
-  void TearDown() override { free(tc); }
+  void TearDown() override { }
 };
-
-TEST_F(TestThatTopLine, CanAccessTheLeastSquaredSolutionMethod)
-{
-  EXPECT_THAT(topline(num_tc, tc, scale, kstart, &rc, &slope, &intercept),
-              Eq(0));
-}
 
 // Problem from
 // https://tutorial.math.lamar.edu/Classes/CalcII/PowerSeries.aspx
@@ -54,9 +38,6 @@ TEST_F(TestThatTopLine, WillComputeLeastSquarsSolution)
     tc[ k ] = pow(8, k + 1) / ((double)(k + 1));
   }
 
-  EXPECT_THAT(topline(num_tc, tc, scale, kstart, &rc, &slope, &intercept),
-              Eq(0));
-  EXPECT_THAT(intercept, DOUBLE_NEAR_MULTIPLIER(-9.340358069665058e-01, 100.0));
-  EXPECT_THAT(slope, DOUBLE_NEAR_MULTIPLIER(8.847241983085994e-01, 100.0));
-  EXPECT_THAT(rc, DOUBLE_NEAR_MULTIPLIER(1.303994626296309e-01, 100.0));
+  EXPECT_THAT(topline(tc, scale, rc, order), Eq(0));
+  EXPECT_THAT(rc, DoubleNear(1.315873989428502e-01, epsilon));
 }

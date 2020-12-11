@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cstring>
 #include <initializer_list>
 #include <iomanip>
@@ -234,14 +236,14 @@ inline size_t matrix<T>::get_cols() const
 template <typename T>
 inline T &matrix<T>::operator()(const size_t &row, const size_t &col)
 {
-    return elements[(cols * (row-1)) + (col-1)];
+    return elements[(rows * (col-1)) + (row-1)];
 }
 
 // No reference
 template <typename T>
 inline T matrix<T>::operator()(const size_t &row, const size_t &col) const
 {
-    return elements[(cols * (row-1)) + (col-1)];
+    return elements[(rows * (col-1)) + (row-1)];
 }
 
 // For pretty printing

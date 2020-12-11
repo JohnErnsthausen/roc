@@ -347,10 +347,10 @@ TEST_F(TestThatMatrix, HasFullMatrixConstructorWithVector)
   EXPECT_THAT(M.get_rows(), Eq(2) );
 
   EXPECT_THAT(M(1,1), Eq(1) );
-  EXPECT_THAT(M(1,2), Eq(2) );
-  EXPECT_THAT(M(1,3), Eq(3) );
-  EXPECT_THAT(M(2,1), Eq(4) );
-  EXPECT_THAT(M(2,2), Eq(5) );
+  EXPECT_THAT(M(1,2), Eq(3) );
+  EXPECT_THAT(M(1,3), Eq(5) );
+  EXPECT_THAT(M(2,1), Eq(2) );
+  EXPECT_THAT(M(2,2), Eq(4) );
   EXPECT_THAT(M(2,3), Eq(6) );
 }
 
@@ -362,8 +362,8 @@ TEST_F(TestThatMatrix, HasFullMatrixConstructorWithInitializerList)
   EXPECT_THAT(M.get_rows(), Eq(2) );
 
   EXPECT_THAT(M(1,1), Eq(1) );
-  EXPECT_THAT(M(1,2), Eq(2) );
-  EXPECT_THAT(M(2,1), Eq(3) );
+  EXPECT_THAT(M(1,2), Eq(3) );
+  EXPECT_THAT(M(2,1), Eq(2) );
   EXPECT_THAT(M(2,2), Eq(4) );
 }
 
