@@ -7,6 +7,7 @@
 
 int qr(const int, const int, std::vector<double> &, std::vector<double> &,
        std::vector<double> &);
-int qr(const int, const int, matrix<double> &, vectorf<double> &, vectorf<double> &);
+int qr(const int, const int, matrix<double> &, vectorf<double> &,
+       vectorf<double> &);
 
 #endif

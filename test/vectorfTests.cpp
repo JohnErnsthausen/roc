@@ -41,10 +41,11 @@ TEST_F(TestThatVectorF, get_sizeWorks)
   EXPECT_THAT(v.get_size(), Eq(4));
 }
 
-TEST_F(TestThatVectorF, CanConstructAnUninitializedVectorSepcifyingSizeANDInitialiseIt)
+TEST_F(TestThatVectorF,
+       CanConstructAnUninitializedVectorSepcifyingSizeANDInitialiseIt)
 {
   vectorf<int> v(4);
-  
+
   // Must be able to modify the element to do this
   v(1) = 1;
   v(2) = 2;
@@ -54,8 +55,7 @@ TEST_F(TestThatVectorF, CanConstructAnUninitializedVectorSepcifyingSizeANDInitia
   EXPECT_THAT(v.get_size(), Eq(4));
 
   // Must be able to access, but not modify, the element to do this
-  for(size_t i{1}; i <= v.get_size(); i++)
-    EXPECT_THAT(v(i), Eq(i) );
+  for (size_t i{1}; i <= v.get_size(); i++) EXPECT_THAT(v(i), Eq(i));
 
   // // Printing verification does work
   // std::cout << "v =\n"
@@ -71,38 +71,33 @@ TEST_F(TestThatVectorF, ImplementsCopyConstructorCorrectly)
   v1(3) = 3;
   v1(4) = 4;
 
-  // Test that vector inputed and retrieved correctly 
-  for(size_t i{1}; i <= v1.get_size(); i++)
-    EXPECT_THAT(v1(i), Eq(i) );
+  // Test that vector inputed and retrieved correctly
+  for (size_t i{1}; i <= v1.get_size(); i++) EXPECT_THAT(v1(i), Eq(i));
 
   // Test the copy constructor
   vectorf<int> v2(v1);
 
   // Test that vector v1 hasn't changed
-  for(size_t i{1}; i <= v1.get_size(); i++)
-    EXPECT_THAT(v1(i), Eq(i) );
+  for (size_t i{1}; i <= v1.get_size(); i++) EXPECT_THAT(v1(i), Eq(i));
 
   // Test that vector v2 equals v1 (Copy performed correctly)
-  for(size_t i{1}; i <= v2.get_size(); i++)
-    EXPECT_THAT(v2(i), Eq(i) );
-
+  for (size_t i{1}; i <= v2.get_size(); i++) EXPECT_THAT(v2(i), Eq(i));
 
   // Test that copies are independent, the default copy constructor overridden
   v2(1) = 3;
-  
+
   // Test that vector v1 hasn't changed
-  for(size_t i{1}; i <= v1.get_size(); i++)
-    EXPECT_THAT(v1(i), Eq(i) );
+  for (size_t i{1}; i <= v1.get_size(); i++) EXPECT_THAT(v1(i), Eq(i));
 
   // Test that v2 has 3 in correct position
-  for(size_t i{1}; i <= v2.get_size(); i++)
-    if( i==1)
+  for (size_t i{1}; i <= v2.get_size(); i++)
+    if (i == 1)
     {
-      EXPECT_THAT(v2(i), Eq(3) );
+      EXPECT_THAT(v2(i), Eq(3));
     }
     else
     {
-      EXPECT_THAT(v2(i), Eq(i) );
+      EXPECT_THAT(v2(i), Eq(i));
     }
 }
 
@@ -115,46 +110,41 @@ TEST_F(TestThatVectorF, ImplementsCopyAssignmentCorrectly)
   v1(3) = 3;
   v1(4) = 4;
 
-  // Test that vector inputed and retrieved correctly 
-  for(size_t i{1}; i <= v1.get_size(); i++)
-    EXPECT_THAT(v1(i), Eq(i) );
+  // Test that vector inputed and retrieved correctly
+  for (size_t i{1}; i <= v1.get_size(); i++) EXPECT_THAT(v1(i), Eq(i));
 
   // Test the copy constructor
   vectorf<int> v2(v1);
 
-  // If quick return doesn't work, them no code coverage! No Idea how else to test this.
+  // If quick return doesn't work, them no code coverage! No Idea how else to
+  // test this.
   v1 = v1;
 
-  for(size_t i{1}; i <= v1.get_size(); i++)
-    EXPECT_THAT(v1(i), Eq(i) );
+  for (size_t i{1}; i <= v1.get_size(); i++) EXPECT_THAT(v1(i), Eq(i));
 
   v2 = v1;
 
   // Test that vector v1 hasn't changed
-  for(size_t i{1}; i <= v1.get_size(); i++)
-    EXPECT_THAT(v1(i), Eq(i) );
+  for (size_t i{1}; i <= v1.get_size(); i++) EXPECT_THAT(v1(i), Eq(i));
 
   // Test that vector v2 equals v1 (Copy performed correctly)
-  for(size_t i{1}; i <= v2.get_size(); i++)
-    EXPECT_THAT(v2(i), Eq(i) );
-
+  for (size_t i{1}; i <= v2.get_size(); i++) EXPECT_THAT(v2(i), Eq(i));
 
   // Test that copies are independent, the default copy constructor overridden
   v2(2) = 4;
-  
+
   // Test that vector v1 hasn't changed
-  for(size_t i{1}; i <= v1.get_size(); i++)
-    EXPECT_THAT(v1(i), Eq(i) );
+  for (size_t i{1}; i <= v1.get_size(); i++) EXPECT_THAT(v1(i), Eq(i));
 
   // Test that v2 has 3 in correct position
-  for(size_t i{1}; i <= v2.get_size(); i++)
-    if( i==2)
+  for (size_t i{1}; i <= v2.get_size(); i++)
+    if (i == 2)
     {
-      EXPECT_THAT(v2(i), Eq(4) );
+      EXPECT_THAT(v2(i), Eq(4));
     }
     else
     {
-      EXPECT_THAT(v2(i), Eq(i) );
+      EXPECT_THAT(v2(i), Eq(i));
     }
 }
 
@@ -167,9 +157,8 @@ TEST_F(TestThatVectorF, ImplementsMoveConstructorCorrectly)
   v1(3) = 3;
   v1(4) = 4;
 
-  // Test that vector inputed and retrieved correctly 
-  for(size_t i{1}; i <= v1.get_size(); i++)
-    EXPECT_THAT(v1(i), Eq(i) );
+  // Test that vector inputed and retrieved correctly
+  for (size_t i{1}; i <= v1.get_size(); i++) EXPECT_THAT(v1(i), Eq(i));
 
   // Test the copy constructor
   vectorf<int> v2 = move(v1);
@@ -179,22 +168,20 @@ TEST_F(TestThatVectorF, ImplementsMoveConstructorCorrectly)
   EXPECT_EQ(&v1(1), nullptr);
 
   // Test that vector v2 equals old v1 (Copy performed correctly)
-  for(size_t i{1}; i <= v2.get_size(); i++)
-    EXPECT_THAT(v2(i), Eq(i) );
-
+  for (size_t i{1}; i <= v2.get_size(); i++) EXPECT_THAT(v2(i), Eq(i));
 
   // Test that copies are independent, the default copy constructor overridden
   v2(1) = 5;
-  
+
   // Test that v2 has 5 in correct position
-  for(size_t i{1}; i <= v2.get_size(); i++)
-    if( i==1 )
+  for (size_t i{1}; i <= v2.get_size(); i++)
+    if (i == 1)
     {
-      EXPECT_THAT(v2(i), Eq(5) );
+      EXPECT_THAT(v2(i), Eq(5));
     }
     else
     {
-      EXPECT_THAT(v2(i), Eq(i) );
+      EXPECT_THAT(v2(i), Eq(i));
     }
 }
 
@@ -207,19 +194,18 @@ TEST_F(TestThatVectorF, ImplementsMoveAssignmentCorrectly)
   v1(3) = 3;
   v1(4) = 4;
 
-  // Test that vector inputed and retrieved correctly 
-  for(size_t i{1}; i <= v1.get_size(); i++)
-    EXPECT_THAT(v1(i), Eq(i) );
+  // Test that vector inputed and retrieved correctly
+  for (size_t i{1}; i <= v1.get_size(); i++) EXPECT_THAT(v1(i), Eq(i));
 
   // Test the move assignment
   vectorf<int> v2(4);
- 
-  // If quick return doesn't work, them matrix erases itself and this test cannot pass.
+
+  // If quick return doesn't work, them matrix erases itself and this test
+  // cannot pass.
   v1 = move(v1);
 
-  // Test that matrix inputed and retrieved correctly 
-  for(size_t i{1}; i <= v1.get_size(); i++)
-    EXPECT_THAT(v1(i), Eq(i) );
+  // Test that matrix inputed and retrieved correctly
+  for (size_t i{1}; i <= v1.get_size(); i++) EXPECT_THAT(v1(i), Eq(i));
 
   v2 = move(v1);
 
@@ -228,22 +214,20 @@ TEST_F(TestThatVectorF, ImplementsMoveAssignmentCorrectly)
   EXPECT_EQ(&v1(1), nullptr);
 
   // Test that vector v2 equals old v1 (Copy performed correctly)
-  for(size_t i{1}; i <= v2.get_size(); i++)
-    EXPECT_THAT(v2(i), Eq(i) );
-
+  for (size_t i{1}; i <= v2.get_size(); i++) EXPECT_THAT(v2(i), Eq(i));
 
   // Test that copies are independent, the default copy constructor overridden
   v2(1) = 5;
-  
+
   // Test that v2 has 5 in correct position
-  for(size_t i{1}; i <= v2.get_size(); i++)
-    if( i==1 )
+  for (size_t i{1}; i <= v2.get_size(); i++)
+    if (i == 1)
     {
-      EXPECT_THAT(v2(i), Eq(5) );
+      EXPECT_THAT(v2(i), Eq(5));
     }
     else
     {
-      EXPECT_THAT(v2(i), Eq(i) );
+      EXPECT_THAT(v2(i), Eq(i));
     }
 }
 
@@ -262,5 +246,3 @@ TEST_F(TestThatVectorF, CannotDoMoveAssignmentWheneverSizesDonotAgree)
 
   ASSERT_THROW(v1 = move(v2), std::exception);
 }
-
-

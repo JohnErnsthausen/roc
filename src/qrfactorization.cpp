@@ -64,7 +64,7 @@ int qr(const int m, const int n, matrix<double> &W, vectorf<double> &b,
   double safmin{DBL_MIN};
 
   // Factor
-  qrf(m, n, &W(1,1), m, &ipiv[ 0 ], &tau[ 0 ], &wrk[ 0 ], safmin, &ier);
+  qrf(m, n, &W(1, 1), m, &ipiv[ 0 ], &tau[ 0 ], &wrk[ 0 ], safmin, &ier);
   if (ier != 0)
   {
     message = "QRFactorization error with ier= " + to_string(ier) + " \n";
@@ -72,7 +72,7 @@ int qr(const int m, const int n, matrix<double> &W, vectorf<double> &b,
     return ier;
   }
   // Solve
-  qrs(m, n, &W(1,1), m, &tau[ 0 ], &b(1), &x(1), &ier);
+  qrs(m, n, &W(1, 1), m, &tau[ 0 ], &b(1), &x(1), &ier);
   if (ier != 0)
   {
     message = "QRSolver error with ier= " + to_string(ier) + " \n";
