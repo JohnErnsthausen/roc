@@ -43,7 +43,7 @@ end
 
 desc "run gcov"
 task :gcov  => BUILD_DIR do |t|
-  run "cmake ../ -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON; make -j 8"
+  run "cmake ../ -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON; make -j8;make coverage"
 end
 
 desc "Identify swap files"

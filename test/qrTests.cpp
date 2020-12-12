@@ -8,24 +8,15 @@
 using namespace std;
 using namespace testing;
 
-#define map(i, j) ((j)-1) * m + ((i)-1)
-#define a(i, j) a[ map(i, j) ]
-#define map1(i) (i) - 1
-#define b(i) b[ map1(i) ]
 class TestThatCPPQR : public Test
 {
  public:
   int m{3}, n{3};
   double epsilon{DBL_EPSILON};
-  vector<double> a;
-  vector<double> x;
-  vector<double> b;
 
   void SetUp() override
   {
-    a.assign(m * n, 0.0);
-    x.assign(n, 0.0);
-    b.assign(m, 0.0);
+
   }
 
   void TearDown() override {}
@@ -33,6 +24,9 @@ class TestThatCPPQR : public Test
 
 TEST_F(TestThatCPPQR, CanAccessTheQRFactorizationMethod)
 {
+  matrix<double> a(m, n);
+  vectorf<double> x(n);
+  vectorf<double> b(m);
   a(1, 1) = 2.0, a(1, 2) = -1.0, a(1, 3) = 0.0;
   a(2, 1) = -1.0, a(2, 2) = 2.0, a(2, 3) = -1.0;
   a(3, 1) = 0.0, a(3, 2) = -1.0, a(3, 3) = 2.0;
@@ -44,6 +38,9 @@ TEST_F(TestThatCPPQR, CanAccessTheQRFactorizationMethod)
 
 TEST_F(TestThatCPPQR, WillThrowQRFactorizationErrorFromQRF)
 {
+  matrix<double> a(m, n, vector<double>(m*n, 0.0));
+  vectorf<double> x(n);
+  vectorf<double> b(m);
   // This throw comes from qrf finding a zero pivot
   //
   // Once there is a zero pivot found in qrf, the method qr
@@ -57,6 +54,9 @@ TEST_F(TestThatCPPQR, WillThrowQRFactorizationErrorFromQRF)
 
 TEST_F(TestThatCPPQR, WillReturnACorrectSolution)
 {
+  matrix<double> a(m, n);
+  vectorf<double> x(n);
+  vectorf<double> b(m);
   a(1, 1) = 2.0, a(1, 2) = -1.0, a(1, 3) = 0.0;
   a(2, 1) = -1.0, a(2, 2) = 2.0, a(2, 3) = -1.0;
   a(3, 1) = 0.0, a(3, 2) = -1.0, a(3, 3) = 2.0;
@@ -64,7 +64,7 @@ TEST_F(TestThatCPPQR, WillReturnACorrectSolution)
   b(2) = -1.0;
   b(3) = -1.0;
   qr(m, n, a, b, x);
-  EXPECT_THAT(x[ 0 ], DoubleNear(-1.5, 8.88179e-16));
-  EXPECT_THAT(x[ 1 ], DoubleNear(-2.0, epsilon));
-  EXPECT_THAT(x[ 2 ], DoubleNear(-1.5, 8.88178e-16));
+  EXPECT_THAT(x(1), DoubleNear(-1.5, 8.88179e-16));
+  EXPECT_THAT(x(2), DoubleNear(-2.0, epsilon));
+  EXPECT_THAT(x(3), DoubleNear(-1.5, 8.88178e-16));
 }

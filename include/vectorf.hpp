@@ -20,6 +20,11 @@ class vectorf
   // elements! First argument: number of elements
   vectorf(const size_t &);
 
+  // Constructor to create an initialized vectorf
+  // Argument: a vector containing the elements of vectorf
+  // Number of elements is inferred automatically
+  vectorf(const std::vector<T> &);
+
   // Copy constructor to create a new vector with the same elements as an
   // existing vector
   vectorf(const vectorf &);
@@ -93,6 +98,15 @@ vectorf<T>::vectorf(const size_t &input_size) : size(input_size)
   if (size == 0) throw sayMessage{"Size of vector must be positive.\n"};
   smart.reset(new T[ size ]);
   elements = smart.get();
+}
+
+template <typename T>
+vectorf<T>::vectorf(const std::vector<T> &v)
+{
+  size = v.size();
+  smart.reset(new T[ size ]);
+  elements = smart.get();
+  std::memcpy(elements, &v[0], size * sizeof(T));
 }
 
 // Copy constructor

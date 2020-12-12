@@ -246,3 +246,19 @@ TEST_F(TestThatVectorF, CannotDoMoveAssignmentWheneverSizesDonotAgree)
 
   ASSERT_THROW(v1 = move(v2), std::exception);
 }
+
+TEST_F(TestThatVectorF, HasConstructorWithVector)
+{
+  vector<int> vec{1, 2, 3, 4, 5, 6};
+  vectorf<int> v(vec);
+
+  EXPECT_THAT(v.get_size(), Eq(6));
+
+  EXPECT_THAT(v(1), Eq(1));
+  EXPECT_THAT(v(2), Eq(2));
+  EXPECT_THAT(v(3), Eq(3));
+  EXPECT_THAT(v(4), Eq(4));
+  EXPECT_THAT(v(5), Eq(5));
+  EXPECT_THAT(v(6), Eq(6));
+}
+
