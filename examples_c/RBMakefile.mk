@@ -3,11 +3,10 @@ CPPOBJS = $(patsubst %.cpp, %.cpp.o, $(CPPSRCS))
 CPPDEPS = $(patsubst %.cpp, %.cpp.d, $(CPPSRCS))
 
 CSRCS  = ##MYEXAMPLE##.c \
-   ../src/swap.c \
    ../src/dist.c \
    ../src/mathext.c \
    ../src/qrfactorization.c \
-   ../src/roc.c
+	 ../src/roc.c
 
 COBJS  = $(patsubst %.c, %.c.o, $(CSRCS))
 CDEPS  = $(patsubst %.c, %.c.d, $(CSRCS))

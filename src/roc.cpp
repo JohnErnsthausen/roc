@@ -1,44 +1,80 @@
 #include <cmath>
+#include <exception>
+#include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
 
+#include "data.hpp"
 #include "exceptions.hpp"
-#include "roc.hpp"
+#include "io.hpp"
+#include "sixterm.hpp"
+#include "threeterm.hpp"
+#include "topline.hpp"
 
-using namespace std;
+bool convergence(double err)
+{
+  if (err > TOL)
+  {
+    std::cout.precision(16);
+    std::cout << std::scientific;
+    std::cout << "err = " << err << "\n";
+  }
 
-// The vector coeff is expected to have at least length MINTERMS (put to
-// data.hpp)
-int roc(const vector<double> &coeff, const double &scale, double &rc,
+  return err < TOL;
+}
+
+int roc(const std::vector<double> &coeffs, const double &scale, double &rc,
         double &order)
 {
-  string message;
-  double hrc{0.0}, hrc_check{0.0};
+  double err;
 
-  rc = 0.0;
-  rc *= scale;
-  order = 0.0;
-
-  // Check for sufficient data to perform three term analysis
-  int k = (int)coeff.size();
+  // Check for sufficient data to perform analysis
+  int k = (int)coeffs.size();
   if (k < MINTERMS)
   {
-    message = "The number of coefficients [" + to_string((int)coeff.size()) +
-              "] must be greater than [" + to_string(MINTERMS) + "].\n";
+    std::string message =
+        "The number of coefficients [" + std::to_string((int)coeffs.size()) +
+        "] must be greater than [" + std::to_string(MINTERMS) + "].\n";
     throw sayMessage(message);
   }
 
-  // Check for agreement between computations against TOL
-  //
-  // If no agreement, three term analysis is said to have failed
-  // because the coefficients do not represent a pole.
-  if (fabs(hrc - hrc_check) > TOL)
+  // Output format
+  std::cout.precision(16);
+  std::cout << std::scientific;
+
+  // Analyse coefficients with all three analysis
+  try
   {
-    cout.precision(16);
-    cout << scientific;
-    cout << "|hrc - hrc_check| = " << fabs(hrc - hrc_check) << "\n";
+    err = threeterm(coeffs, scale, rc, order);
+    std::cout << "3TA rc[" << rc << "] order [" << order << "] err [" << err
+              << "]\n";
+  }
+  catch (const std::exception &e)
+  {
+    std::cout << e.what() << '\n';
+  }
+  try
+  {
+    err = sixterm(coeffs, scale, rc, order);
+    std::cout << "6TA rc[" << rc << "] order [" << order << "] err [" << err
+              << "]\n";
+  }
+  catch (const std::exception &e)
+  {
+    std::cout << e.what() << '\n';
+  }
+  try
+  {
+    err = topline(coeffs, scale, rc, order);
+    std::cout << "TLA rc[" << rc << "] order [" << order << "] err [" << err
+              << "]\n";
+  }
+  catch (const std::exception &e)
+  {
+    std::cout << e.what() << '\n';
   }
 
-  return 1;
+  return 0;
 }

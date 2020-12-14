@@ -8,8 +8,6 @@
 #include "qrfactorization.hpp"
 #include "vectorf.hpp"
 
-using namespace std;
-
 void constructSixTermSystem(const vectorf<double> &coeff, const int nUse,
                             matrix<double> &W, vectorf<double> &b)
 {
@@ -31,14 +29,14 @@ void testBeta4(double beta4)
   {
     std::string message =
         "Unconstrained optimization lead to Sqrt of negative number: " +
-        to_string(beta4) + " \n";
+        std::to_string(beta4) + " \n";
     throw sayMessage(message);
   }
 }
 
 void testRCSix(double rc)
 {
-  if (isnan(rc))
+  if (std::isnan(rc))
   {
     std::string message =
         "The radius of convergence is infinity, which is highly unlikely\n";
@@ -48,7 +46,7 @@ void testRCSix(double rc)
 
 void testCosTheta(double cosTheta)
 {
-  if (isnan(cosTheta))
+  if (std::isnan(cosTheta))
   {
     std::string message =
         "Unconstrained optimization lead to infinite CosTheta which is not in "
@@ -58,7 +56,7 @@ void testCosTheta(double cosTheta)
   if ((cosTheta < -1.0) || (cosTheta > 1.0))
   {
     std::string message = "Unconstrained optimization lead to CosTheta [" +
-                          to_string(cosTheta) + "] not in [-1, 1]\n";
+                          std::to_string(cosTheta) + "] not in [-1, 1]\n";
     throw sayMessage(message);
   }
 }
@@ -66,20 +64,20 @@ void testCosTheta(double cosTheta)
 double testSingularityOrder(double singularityOrder1, double singularityOrder2)
 {
   double order{0.0};
-  if (isnan(singularityOrder1) && isnan(singularityOrder2))
+  if (std::isnan(singularityOrder1) && std::isnan(singularityOrder2))
   {
     std::string message =
         "Unconstrained optimization lead to NaN for Order of Singularity\n";
     throw sayMessage(message);
   }
 
-  if (isnan(singularityOrder1) && !isnan(singularityOrder2))
+  if (std::isnan(singularityOrder1) && !std::isnan(singularityOrder2))
     order = singularityOrder2;
 
-  if (!isnan(singularityOrder1) && isnan(singularityOrder2))
+  if (!std::isnan(singularityOrder1) && std::isnan(singularityOrder2))
     order = singularityOrder1;
 
-  if (!isnan(singularityOrder1) && !isnan(singularityOrder2))
+  if (!std::isnan(singularityOrder1) && !std::isnan(singularityOrder2))
     order = (singularityOrder1 + singularityOrder2) / 2.0;
 
   return order;
@@ -97,8 +95,8 @@ double testSingularityOrder(double singularityOrder1, double singularityOrder2)
 //
 // The calling subroutine should maintain the invarient that coeff.size()
 // must be sufficiently large, say 10.
-double sixterm(const vector<double> &coeff, const double &scale, double &rc,
-               double &order)
+double sixterm(const std::vector<double> &coeff, const double &scale,
+               double &rc, double &order)
 {
   int nUse = SIXTERM_NUSE;
   int m{nUse}, n{4};

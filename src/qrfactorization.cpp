@@ -12,13 +12,10 @@ extern "C"
 #include "qrfactorization.hpp"
 #include "vectorf.hpp"
 
-using namespace std;
-
 int qr(const int m, const int n, matrix<double> &W, vectorf<double> &b,
        vectorf<double> &x)
 {
   int ier{0};
-  string message;
   vectorf<int> ipiv(n);
   vectorf<double> tau(n);
 
@@ -42,7 +39,7 @@ int factor(const int m, const int n, matrix<double> &W, vectorf<double> &tau,
   if (ier != 0)
   {
     std::string message =
-        "This QRFactorization error with ier= " + to_string(ier) + " \n";
+        "This QRFactorization error with ier= " + std::to_string(ier) + " \n";
     throw sayMessage(message);
   }
   return ier;
@@ -55,7 +52,8 @@ int solve(const int m, const int n, matrix<double> &W, vectorf<double> &tau,
   qrs(m, n, &W(1, 1), m, &tau(1), &b(1), &x(1), &ier);
   if (ier != 0)
   {
-    std::string message = "QRSolver error with ier= " + to_string(ier) + " \n";
+    std::string message =
+        "QRSolver error with ier= " + std::to_string(ier) + " \n";
     throw sayMessage(message);
   }
   return ier;

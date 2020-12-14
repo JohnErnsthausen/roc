@@ -3,6 +3,11 @@
 Developer(s) Name: John Ernsthausen<br>
 Date of project start: 17 September 2020
 
+## This repo uses
+
+[![Build Status](https://travis-ci.org/JohnErnsthausen/roc.svg?branch=master)](https://travis-ci.org/JohnErnsthausen/roc)
+[![Coverage Status](https://coveralls.io/repos/github/JohnErnsthausen/roc/badge.svg?branch=master)](https://coveralls.io/github/JohnErnsthausen/roc?branch=master)
+
 ## Introduction
 
 This software estimates the radius of convergence [(RC)](https://en.wikipedia.org/wiki/Radius_of_convergence#:~:text=The%20radius%20of%20convergence%20of%20a%20power%20series%20%C6%92%20centered,called%20the%20disk%20of%20convergence.) of a real valued power series.
@@ -89,6 +94,32 @@ To remove the Makefile, type
 
 > rake clobber
 
+## Plain C example
+
+We present an example form [a calculus tutorial](https://tutorial.math.lamar.edu/Classes/CalcII/PowerSeries.aspx)
+and analyse
+
+```
+f(x) = sum_0^{infty} \frac{2^n}{n} (4 x -8)^n on 15/8 <= x < 17/8 has Rc=1/8.
+```
+
+We want to fit the tail of the Taylor series, ignore the first 17 terms of the TCs. From roc directory
+
+1. cd examples_c
+2. make
+3. ./e_calculus
+4. make clean
+
+## CPP example
+
+We present an example with Taylor series data from the solution of a Differential Algebraic Equation. From roc directory 
+
+1. cd examples_cpp
+2. make
+3. ./e_sevenbody
+4. gprof e_sevenbody gmon.out > gprof_output.txt
+4. make clean
+
 ## Documentation for coders
 
 The unit tests are living documentation for the functionality of this software. Read the __test-name.test-case__
@@ -163,11 +194,4 @@ The folders and files for this project are as follows:
 4. test - Test cases
 5. examples - Example use cases
 
-## This repo uses TravisCI
-
-[![Build Status](https://travis-ci.org/JohnErnsthausen/roc.svg?branch=master)](https://travis-ci.org/JohnErnsthausen/roc)
-
-## This repo uses coveralls
-
-[![Coverage Status](https://coveralls.io/repos/github/JohnErnsthausen/roc/badge.svg?branch=master)](https://coveralls.io/github/JohnErnsthausen/roc?branch=master)
 
