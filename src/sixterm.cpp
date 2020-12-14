@@ -4,10 +4,26 @@
 
 #include "data.hpp"
 #include "exceptions.hpp"
+#include "matrix.hpp"
 #include "qrfactorization.hpp"
-#include "sixterm.hpp"
+#include "vectorf.hpp"
 
 using namespace std;
+
+void constructSixTermSystem(const vectorf<double> &coeff, const int nUse,
+                            matrix<double> &W, vectorf<double> &b)
+{
+  // TODO Check coeff.get_size, nUse, and W.get_rows are compatible?
+
+  for (int i{1}, k{(int)coeff.get_size() - nUse}; i <= nUse; i++, k++)
+  {
+    W(i, 1) = 2.0 * coeff(k);
+    W(i, 2) = 2.0 * (k - 1) * coeff(k);
+    W(i, 3) = -2.0 * coeff(k - 1);
+    W(i, 4) = -(k - 2) * coeff(k - 1);
+    b(i) = k * coeff(k + 1);
+  }
+}
 
 void testBeta4(double beta4)
 {
@@ -91,14 +107,7 @@ double sixterm(const vector<double> &coeff, const double &scale, double &rc,
   vectorf<double> b(m);
   vectorf<double> tc(coeff);
 
-  for (int i{1}, k{(int)coeff.size() - nUse}; i <= nUse; i++, k++)
-  {
-    W(i, 1) = 2.0 * tc(k);
-    W(i, 2) = 2.0 * (k - 1) * tc(k);
-    W(i, 3) = -2.0 * tc(k - 1);
-    W(i, 4) = -(k - 2) * tc(k - 1);
-    b(i) = k * tc(k + 1);
-  }
+  constructSixTermSystem(tc, nUse, W, b);
 
   // Solve W beta = b for beta
   qr(m, n, W, b, beta);
