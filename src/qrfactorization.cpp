@@ -27,12 +27,13 @@ int qr(const int m, const int n, matrix<double> &W, vectorf<double> &b,
   // Solve
   solve(m, n, W, tau, b, x);
   // Multiply solution x by permutation and store it in x
-  permute(n,x,ipiv,tau);
-  
+  permute(n, x, ipiv, tau);
+
   return ier;
 }
 
-int factor(const int m, const int n, matrix<double> &W, vectorf<double> &tau, vectorf<int> &ipiv)
+int factor(const int m, const int n, matrix<double> &W, vectorf<double> &tau,
+           vectorf<int> &ipiv)
 {
   int ier{0};
   double safmin{DBL_MIN};
@@ -40,14 +41,15 @@ int factor(const int m, const int n, matrix<double> &W, vectorf<double> &tau, ve
   qrf(m, n, &W(1, 1), m, &ipiv(1), &tau(1), &wrk(1), safmin, &ier);
   if (ier != 0)
   {
-    std::string message = "This QRFactorization error with ier= " + to_string(ier) + " \n";
+    std::string message =
+        "This QRFactorization error with ier= " + to_string(ier) + " \n";
     throw sayMessage(message);
   }
   return ier;
 }
 
 int solve(const int m, const int n, matrix<double> &W, vectorf<double> &tau,
-    vectorf<double> &b, vectorf<double> &x)
+          vectorf<double> &b, vectorf<double> &x)
 {
   int ier{0};
   qrs(m, n, &W(1, 1), m, &tau(1), &b(1), &x(1), &ier);
@@ -59,12 +61,13 @@ int solve(const int m, const int n, matrix<double> &W, vectorf<double> &tau,
   return ier;
 }
 
-int permute(const int n, vectorf<double> &x, vectorf<int> &ipiv, vectorf<double> &wrk)
+int permute(const int n, vectorf<double> &x, vectorf<int> &ipiv,
+            vectorf<double> &wrk)
 {
   int ier{0};
   for (int i{1}; i <= n; i++)
   {
-    wrk(i) = x( ipiv(i) );
+    wrk(i) = x(ipiv(i));
   }
   for (int i{1}; i <= n; i++)
   {

@@ -261,4 +261,3 @@ TEST_F(TestThatVectorF, HasConstructorWithVector)
   EXPECT_THAT(v(5), Eq(5));
   EXPECT_THAT(v(6), Eq(6));
 }
-

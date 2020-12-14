@@ -7,7 +7,7 @@
 class sayMessage : public std::exception
 {
  public:
-  explicit sayMessage(const std::string &message) : message_(message){};
+  explicit sayMessage(const std::string& message) : message_(message){};
   virtual const char* what() const noexcept { return message_.c_str(); }
 
  private:

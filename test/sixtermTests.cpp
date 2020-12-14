@@ -430,6 +430,12 @@ TEST(
   ASSERT_THROW(sixterm(coeffs, scale, rc, order), std::exception);
 }
 
+TEST(SixTermAnalysisOf, TestBeta4)
+{
+  double beta4 = -1.0;
+  EXPECT_THROW(testBeta4(beta4), std::exception);
+}
+
 TEST(SixTermAnalysisOf, TestRCSix)
 {
   double rc = std::numeric_limits<double>::quiet_NaN();
@@ -459,31 +465,37 @@ TEST(SixTermAnalysisOf, TestSingularityOrderBothNAN)
   double singularityOrder1 = std::numeric_limits<double>::quiet_NaN();
   double singularityOrder2 = std::numeric_limits<double>::quiet_NaN();
 
-  EXPECT_THROW(testSingularityOrder(singularityOrder1, singularityOrder2), std::exception);
+  EXPECT_THROW(testSingularityOrder(singularityOrder1, singularityOrder2),
+               std::exception);
 }
 
-TEST(SixTermAnalysisOf, TestSingularityOrderSingularityOrderOneIsNANSingularityOrderTwoIsOne)
+TEST(SixTermAnalysisOf,
+     TestSingularityOrderSingularityOrderOneIsNANSingularityOrderTwoIsOne)
 {
   double singularityOrder1 = std::numeric_limits<double>::quiet_NaN();
   double singularityOrder2 = 1.0;
 
-  EXPECT_THAT(testSingularityOrder(singularityOrder1, singularityOrder2), DoubleNear(1.0, epsilon));
+  EXPECT_THAT(testSingularityOrder(singularityOrder1, singularityOrder2),
+              DoubleNear(1.0, epsilon));
 }
 
-TEST(SixTermAnalysisOf, TestSingularityOrderSingularityOrderOneIsOneSingularityOrderTwoIsNAN)
+TEST(SixTermAnalysisOf,
+     TestSingularityOrderSingularityOrderOneIsOneSingularityOrderTwoIsNAN)
 {
   double singularityOrder1 = 1.0;
   double singularityOrder2 = std::numeric_limits<double>::quiet_NaN();
 
-  EXPECT_THAT(testSingularityOrder(singularityOrder1, singularityOrder2), DoubleNear(1.0, epsilon));
+  EXPECT_THAT(testSingularityOrder(singularityOrder1, singularityOrder2),
+              DoubleNear(1.0, epsilon));
 }
 
-TEST(SixTermAnalysisOf, TestSingularityOrderSingularityOrderOneIsOneSingularityOrderTwoIsThreeOrderIsAverage)
+TEST(
+    SixTermAnalysisOf,
+    TestSingularityOrderSingularityOrderOneIsOneSingularityOrderTwoIsThreeOrderIsAverage)
 {
   double singularityOrder1 = 1.0;
   double singularityOrder2 = 3.0;
 
-  EXPECT_THAT(testSingularityOrder(singularityOrder1, singularityOrder2), DoubleNear(2.0, epsilon));
+  EXPECT_THAT(testSingularityOrder(singularityOrder1, singularityOrder2),
+              DoubleNear(2.0, epsilon));
 }
-
-

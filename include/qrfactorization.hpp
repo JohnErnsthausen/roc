@@ -7,9 +7,10 @@
 
 int qr(const int, const int, matrix<double> &, vectorf<double> &,
        vectorf<double> &);
-int factor(const int, const int, matrix<double> &, vectorf<double> &, vectorf<int> &);
+int factor(const int, const int, matrix<double> &, vectorf<double> &,
+           vectorf<int> &);
 int solve(const int, const int, matrix<double> &, vectorf<double> &,
-    vectorf<double> &, vectorf<double> &);
+          vectorf<double> &, vectorf<double> &);
 int permute(const int, vectorf<double> &, vectorf<int> &, vectorf<double> &);
 
 #endif

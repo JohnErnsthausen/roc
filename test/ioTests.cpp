@@ -36,12 +36,12 @@ TEST_F(
 TEST_F(TestThatIO, ReadsData)
 {
   filesystem::path dn;
-  //try
+  // try
   //{
-    string roc{"roc"};
-    dn = cwd_path_to(roc);
+  string roc{"roc"};
+  dn = cwd_path_to(roc);
   //}
-  //catch (const std::exception& e)
+  // catch (const std::exception& e)
   //{
   //  cout << e.what() << '\n';
   //}
@@ -51,7 +51,7 @@ TEST_F(TestThatIO, ReadsData)
   EXPECT_THAT(filename, EndsWith(string("roc/test/coeff.txt")));
 
   ifstream input{filename};
-  //if (!input)
+  // if (!input)
   //{
   //  perror("Error opening input file");
   //  // return -1;
@@ -75,7 +75,7 @@ TEST_F(TestThatIO, ReadsData)
     coeffs.pop_back();
 
     // For testing exercise output operator << on first line read
-    if(i==0)
+    if (i == 0)
     {
       cout << coeffs;
       cout << "T     = " << time << '\n';

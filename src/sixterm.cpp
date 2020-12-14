@@ -9,6 +9,17 @@
 
 using namespace std;
 
+void testBeta4(double beta4)
+{
+  if (beta4 < 0)
+  {
+    std::string message =
+        "Unconstrained optimization lead to Sqrt of negative number: " +
+        to_string(beta4) + " \n";
+    throw sayMessage(message);
+  }
+}
+
 void testRCSix(double rc)
 {
   if (isnan(rc))
@@ -31,7 +42,7 @@ void testCosTheta(double cosTheta)
   if ((cosTheta < -1.0) || (cosTheta > 1.0))
   {
     std::string message = "Unconstrained optimization lead to CosTheta [" +
-              to_string(cosTheta) + "] not in [-1, 1]\n";
+                          to_string(cosTheta) + "] not in [-1, 1]\n";
     throw sayMessage(message);
   }
 }
@@ -97,12 +108,7 @@ double sixterm(const vector<double> &coeff, const double &scale, double &rc,
       singularityOrder2{0.0};
 
   // Evaluate h/Rc
-  if (beta(4) < 0)
-  {
-    std::string message = "Unconstrained optimization lead to Sqrt of negative number: " +
-              to_string(b(4)) + " \n";
-    throw sayMessage(message);
-  }
+  testBeta4(beta(4));
   hOverRc = sqrt(beta(4));
 
   // Evaluate Rc

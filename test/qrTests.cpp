@@ -14,10 +14,7 @@ class TestThatCPPQR : public Test
   int m{3}, n{3};
   double epsilon{DBL_EPSILON};
 
-  void SetUp() override
-  {
-
-  }
+  void SetUp() override {}
 
   void TearDown() override {}
 };
@@ -38,7 +35,7 @@ TEST_F(TestThatCPPQR, CanAccessTheQRFactorizationMethod)
 
 TEST_F(TestThatCPPQR, WillThrowQRFactorizationErrorFromQRF)
 {
-  matrix<double> a(m, n, vector<double>(m*n, 0.0));
+  matrix<double> a(m, n, vector<double>(m * n, 0.0));
   vectorf<double> x(n);
   vectorf<double> b(m);
   // This throw comes from qrf finding a zero pivot
@@ -78,7 +75,7 @@ TEST_F(TestThatCPPQR, QRCanResolveAOneDimensionalSystem)
   b(1) = -1.0;
 
   qr(1, 1, a, b, x);
-  
+
   ASSERT_THAT(x(1), DoubleNear(-0.5, epsilon));
 }
 
@@ -95,7 +92,7 @@ TEST_F(TestThatCPPQR, QRFailsOnSingularOneDimensionalSystem)
 
 TEST_F(TestThatCPPQR, FactorFailsOnSingularOneDimensionalSystem)
 {
-  matrix<double> a(1, 1, vector<double> {0.0});
+  matrix<double> a(1, 1, vector<double>{0.0});
   vectorf<double> tau(1);
   vectorf<int> ipiv(1);
 
@@ -116,7 +113,7 @@ TEST_F(TestThatCPPQR, FactorFailsOnSingularMultiDimensionalSystem)
 
 TEST_F(TestThatCPPQR, SolveFailsOnSingularOneDimensionalSystem)
 {
-  matrix<double> a(1, 1, vector<double> {0.0});
+  matrix<double> a(1, 1, vector<double>{0.0});
   vectorf<double> tau(1);
   vectorf<double> b(1);
   vectorf<double> x(1);
@@ -148,13 +145,9 @@ TEST_F(TestThatCPPQR, PermutesASolutionNVector)
   x(1) = 2.0;
   x(2) = 3.0;
   x(3) = 1.0;
-  
-  permute(3,x,ipiv,wrk);
+
+  permute(3, x, ipiv, wrk);
   EXPECT_THAT(x(1), DoubleNear(1.0, epsilon));
   EXPECT_THAT(x(2), DoubleNear(2.0, epsilon));
   EXPECT_THAT(x(3), DoubleNear(3.0, epsilon));
 }
-
-
-
-

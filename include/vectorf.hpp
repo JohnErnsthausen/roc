@@ -106,7 +106,7 @@ vectorf<T>::vectorf(const std::vector<T> &v)
   size = v.size();
   smart.reset(new T[ size ]);
   elements = smart.get();
-  std::memcpy(elements, &v[0], size * sizeof(T));
+  std::memcpy(elements, &v[ 0 ], size * sizeof(T));
 }
 
 // Copy constructor

@@ -17,4 +17,3 @@ TEST(TestExceptions, HandleWhatMethodOfBaseClassException)
     ASSERT_STREQ(e.what(), "I am a message");
   }
 }
-
