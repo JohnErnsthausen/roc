@@ -9,10 +9,42 @@
 #include "qrfactorization.hpp"
 #include "vectorf.hpp"
 
-using namespace std;
+void constructThreeTermSystem(const vectorf<double> &coeff,
+                              const int nUse, matrix<double> &W,
+                              vectorf<double> &b)
+{
+  // TODO Check coeff.get_size, nUse, and W.get_rows are compatible?
+
+  for (int i{1}, k{(int)coeff.get_size() - nUse}; i <= nUse; i++, k++)
+  {
+    W(i, 1) = (k - 1) * coeff(k);
+    W(i, 2) = coeff(k);
+    b(i) = k * coeff(k+1);
+  }
+}
+
+void testRCThree(double rc)
+{
+  if (std::isnan(rc))
+  {
+    std::string message =
+        "Unconstrained optimization lead to NaN for Radius of Convergence\n";
+    throw sayMessage(message);
+  }
+}
+
+void testOrder(double order)
+{
+  if (std::isnan(order))
+  {
+    std::string message =
+        "Unconstrained optimization lead to NaN for Order of Singularity\n";
+    throw sayMessage(message);
+  }
+}
 
 // The three-term-test of Chang and Corliss
-double threeterm(const vector<double> &coeff, const double &scale, double &rc,
+double threeterm(const std::vector<double> &coeff, const double &scale, double &rc,
                  double &order)
 {
   int nUse = THREETERM_NUSE;
@@ -22,12 +54,7 @@ double threeterm(const vector<double> &coeff, const double &scale, double &rc,
   vectorf<double> b(m);
   vectorf<double> tc(coeff);
 
-  for (int i{1}, k{(int)coeff.size() - nUse}; i <= nUse; i++, k++)
-  {
-    W(i, 1) = (k - 1) * tc(k);
-    W(i, 2) = tc(k);
-    b(i) = k * tc(k+1);
-  }
+  constructThreeTermSystem(tc, nUse, W, b);
 
   // Solve W beta = b for beta
   qr(m, n, W, b, beta);
@@ -35,24 +62,16 @@ double threeterm(const vector<double> &coeff, const double &scale, double &rc,
   // Interpret the variables found from Least Squares Optimization Problem
   double hOverRc = beta(1);
   rc = scale / hOverRc;
-  if (isnan(rc))
-  {
-    std::string message =
-        "Unconstrained optimization lead to NaN for Radius of Convergence\n";
-    throw sayMessage(message);
-  }
+  testRCThree(rc);
 
   order = beta(2) / beta(1);
-  if (isnan(order))
-  {
-    std::string message =
-        "Unconstrained optimization lead to NaN for Order of Singularity\n";
-    throw sayMessage(message);
-  }
+  testOrder(order);
 
   // Evaluate previous W equation at the solution of the least squares
   // optimization problem. Return the backward error, the absolute value of this
   // evaluation.
+  //
+  // TODO Use all equations?
   nUse++;
   int k = coeff.size() - nUse;
   double check =
@@ -60,3 +79,4 @@ double threeterm(const vector<double> &coeff, const double &scale, double &rc,
 
   return fabs(check);
 }
+

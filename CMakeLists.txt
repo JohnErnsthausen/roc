@@ -57,7 +57,8 @@ if(ENABLE_COVERAGE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(COVERAGE_EXCLUDES
       ${CMAKE_SOURCE_DIR}/docs/\\*
       ${CMAKE_SOURCE_DIR}/examples/\\*
-      ${CMAKE_SOURCE_DIR}/refs/\\*)
+      ${CMAKE_SOURCE_DIR}/refs/\\*
+      /usr/\\*)
 
   setup_target_for_coverage(NAME coverage EXECUTABLE ctest DEPENDENCIES
                             coverage)

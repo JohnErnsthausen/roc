@@ -30,32 +30,32 @@ TEST_F(
     ThrowsExceptionWhenItDoesNotFindGivenSubdirectoryInCurrentWorkingDirectory)
 {
   string roc{"foo"};
-  ASSERT_THROW(cwd_path_to(roc), pathException);
+  ASSERT_THROW(cwd_path_to(roc), std::exception);
 }
 
 TEST_F(TestThatIO, ReadsData)
 {
   filesystem::path dn;
-  try
-  {
+  //try
+  //{
     string roc{"roc"};
     dn = cwd_path_to(roc);
-  }
-  catch (exception& e)
-  {
-    cout << e.what() << '\n';
-  }
+  //}
+  //catch (const std::exception& e)
+  //{
+  //  cout << e.what() << '\n';
+  //}
 
   string filename{dn / "test" / "coeff.txt"};
   // cout << filename << "\n";
   EXPECT_THAT(filename, EndsWith(string("roc/test/coeff.txt")));
 
   ifstream input{filename};
-  if (!input)
-  {
-    perror("Error opening input file");
-    // return -1;
-  }
+  //if (!input)
+  //{
+  //  perror("Error opening input file");
+  //  // return -1;
+  //}
 
   vector<double> coeffs;
   double time{0};
@@ -63,6 +63,7 @@ TEST_F(TestThatIO, ReadsData)
   string s;
   cout.precision(16);
   cout << scientific;
+  int i{0};
   while (getline(input, s))
   {
     coeffs = read_numbers(s);
@@ -73,10 +74,15 @@ TEST_F(TestThatIO, ReadsData)
     scale = coeffs.back();
     coeffs.pop_back();
 
-    // cout << coeffs;
-    // cout << "T     = " << time << '\n';
-    // cout << "Scale = " << scale << '\n';
-    // cout << "Size  = " << coeffs.size() << '\n';
+    // For testing exercise output operator << on first line read
+    if(i==0)
+    {
+      cout << coeffs;
+      cout << "T     = " << time << '\n';
+      cout << "Scale = " << scale << '\n';
+      cout << "Size  = " << coeffs.size() << '\n';
+      i++;
+    }
     EXPECT_THAT(time, Ge(0.0));
     EXPECT_THAT(scale, Gt(0.0));
     EXPECT_THAT(coeffs.size(), Eq(31));

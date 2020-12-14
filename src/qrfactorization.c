@@ -122,6 +122,7 @@ int qrf(int m, int n, double *a, int lda, int *ipiv, double *tau, double *wrk,
       {
         printf("Message from QRF: Zero pivot encountered\n");
         *ier = -i;
+        return *ier;
       }
       // Swap the columns if necessary
       if (imax != i)
@@ -139,6 +140,7 @@ int qrf(int m, int n, double *a, int lda, int *ipiv, double *tau, double *wrk,
     {
       printf("Message from QRF: Zero pivot encountered\n");
       *ier = -i;
+      return *ier;
     }
     else
     {
@@ -398,7 +400,8 @@ int qorg(int m, int n, int k, int l, double *a, int lda, double *tau, double *q,
 
   // Quick return: 0 = m >= n >= 0 implies m=n=0 so that lda >= 0.
   // If lda=0, then there is a quick return and matrix a is not accessed.
-  if ((n == 0) || ((m == 0) && (n == 0)) || (k == 0))
+  // k=0 handled because k < = 0 means k set to 1 below. 
+  if ((n == 0) || ((m == 0) && (n == 0)) )
   {
     *ier = 0;
     return 0;

@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 #include <cfloat>
 #include <cmath>
+#include <limits>
 
 #include "threeterm.hpp"
 
@@ -649,6 +650,18 @@ TEST(
   EXPECT_THAT(rc, DoubleNear(a - time, 0.545748));
   EXPECT_THAT(order, DoubleNear(1.0, 26.5676));
   EXPECT_THAT(coeffs.size(), Eq(30));
+}
+
+TEST(ThreeTermAnalysisOf, TestRCThree)
+{
+  double rc = std::numeric_limits<double>::quiet_NaN();
+  EXPECT_THROW(testRCThree(rc), std::exception);
+}
+
+TEST(ThreeTermAnalysisOf, TestOrder)
+{
+  double order = std::numeric_limits<double>::quiet_NaN();
+  EXPECT_THROW(testOrder(order), std::exception);
 }
 
 // WARNING Rc and order can be accurate, but backward error can be large near

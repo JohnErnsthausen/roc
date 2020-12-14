@@ -21,18 +21,18 @@ class TestThatDDIST2 : public Test
   void SetUp() override
   {
     xvector = (double *)calloc((size_t)n, (size_t)sizeof(double));
-    if (xvector == NULL)
-    {
-      printf("Failed to allocate xvector memory!\n");
-      assert(xvector);
-    }
+    //if (xvector == NULL)
+    //{
+    //  printf("Failed to allocate xvector memory!\n");
+    //  assert(xvector);
+    //}
 
     yvector = (double *)calloc((size_t)n, (size_t)sizeof(double));
-    if (yvector == NULL)
-    {
-      printf("Failed to allocate yvector memory!\n");
-      assert(yvector);
-    }
+    //if (yvector == NULL)
+    //{
+    //  printf("Failed to allocate yvector memory!\n");
+    //  assert(yvector);
+    //}
   }
 
   void TearDown() override
@@ -138,11 +138,11 @@ class TestThatDNRM2 : public Test
   void SetUp() override
   {
     xvector = (double *)calloc((size_t)n, (size_t)sizeof(double));
-    if (xvector == NULL)
-    {
-      printf("Failed to allocate xvector memory!\n");
-      assert(xvector);
-    }
+    //if (xvector == NULL)
+    //{
+    //  printf("Failed to allocate xvector memory!\n");
+    //  assert(xvector);
+    //}
   }
 
   void TearDown() override { free(xvector); }

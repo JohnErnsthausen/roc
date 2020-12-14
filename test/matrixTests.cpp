@@ -15,10 +15,31 @@ using namespace std;
 
 class TestThatMatrix : public Test
 {
- public:
-  void SetUp() override {}
+public:
+  int m{3}, n{5};
+  std::unique_ptr<matrix<double>> smart{nullptr};
+  matrix<double>* A{nullptr};
+
+  void SetUp() override
+  {
+    smart.reset(new matrix<double> (m,n, vector<double> (m*n, 0.0)));
+    A = smart.get();
+  }
+
   void TearDown() override {}
 };
+
+TEST_F(TestThatMatrix, CanAccessDeclaredMatrixInSetup)
+{
+  (*A)(1,1) = 1.0;
+  (*A)(2,2) = 1.0;
+  (*A)(3,3) = 1.0;
+  // For testing, exercise output operator <<
+  cout << "Rows [" + to_string((*A).get_rows()) + "]\n";
+  cout << "A =\n"
+       << (*A) << '\n';
+  ASSERT_THAT((*A)(2, 2), DoubleEq(1.0));
+}
 
 TEST_F(TestThatMatrix, CanConstructAnUninitializedMatrixSepcifyingRowsCols)
 {
@@ -380,6 +401,44 @@ TEST_F(TestThatMatrix, HasDiagonalMatrixConstructorWithInitializerList)
       {
         EXPECT_THAT(M(i, j), Eq(0));
       }
+}
+
+TEST_F(TestThatMatrix, ThrowErrorForFullMatrixConstructorWithMEqualZero)
+{
+  vector<int> v{1,2,3,4,5};
+  EXPECT_THAT(v.size(), Eq(n));
+  EXPECT_THAT(n, Gt(0));
+  EXPECT_THROW(matrix<int> M(0, n, v), std::exception);
+  //// Printing verification does work: Connot get here due to constructor throw
+  //cout << "M =\n"
+  //     << M << '\n';
+}
+
+TEST_F(TestThatMatrix, ThrowErrorForFullMatrixConstructorWithNEqualZero)
+{
+  vector<int> v{1,2,3};
+  EXPECT_THAT(v.size(), Eq(m));
+  EXPECT_THAT(m, Gt(0));
+  EXPECT_THROW(matrix<int> M(m, 0, v), std::exception);
+  //// Printing verification does work: Connot get here due to constructor throw
+  //cout << "M =\n"
+  //     << M << '\n';
+}
+
+TEST_F(TestThatMatrix, ThrowErrorForFullMatrixConstructorWithVectorOfSizeZeroAndMTimeNIsPositive)
+{
+  vector<int> v{};
+  EXPECT_THAT(v.size(), Eq(0));
+  EXPECT_THAT(m, Gt(0));
+  EXPECT_THAT(n, Gt(0));
+  EXPECT_THROW(matrix<int> M(m, n, v), std::exception);
+}
+
+TEST_F(TestThatMatrix, ThrowErrorForFullMatrixConstructorWithVectorOfSizeNotEqualToMByN)
+{
+  vector<int> v((m+1)*n);
+  EXPECT_THAT(v.size(), Eq((m+1)*n));
+  EXPECT_THROW(matrix<int> M(m, n, v), std::exception);
 }
 
 TEST_F(TestThatMatrix, HasFullMatrixConstructorWithVector)

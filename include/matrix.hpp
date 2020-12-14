@@ -266,10 +266,10 @@ inline void matrix<T>::set_output_width(const int &w)
 template <typename T>
 std::ostream &operator<<(std::ostream &out, const matrix<T> &m)
 {
-  if (m.rows == 0 and m.cols == 0)
-    out << "()\n";
-  else
-  {
+  // if (m.rows == 0 and m.cols == 0)
+  //   out << "()\n";
+  // else
+  // {
     for (size_t i{1}; i <= m.rows; i++)
     {
       out << "( ";
@@ -278,6 +278,6 @@ std::ostream &operator<<(std::ostream &out, const matrix<T> &m)
       out << ")\n";
     }
     out << '\n';
-  }
+  // }
   return out;
 }

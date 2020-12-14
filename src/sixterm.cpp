@@ -9,6 +9,55 @@
 
 using namespace std;
 
+void testRCSix(double rc)
+{
+  if (isnan(rc))
+  {
+    std::string message =
+        "The radius of convergence is infinity, which is highly unlikely\n";
+    throw sayMessage(message);
+  }
+}
+
+void testCosTheta(double cosTheta)
+{
+  if (isnan(cosTheta))
+  {
+    std::string message =
+        "Unconstrained optimization lead to infinite CosTheta which is not in "
+        "[-1, 1]\n";
+    throw sayMessage(message);
+  }
+  if ((cosTheta < -1.0) || (cosTheta > 1.0))
+  {
+    std::string message = "Unconstrained optimization lead to CosTheta [" +
+              to_string(cosTheta) + "] not in [-1, 1]\n";
+    throw sayMessage(message);
+  }
+}
+
+double testSingularityOrder(double singularityOrder1, double singularityOrder2)
+{
+  double order{0.0};
+  if (isnan(singularityOrder1) && isnan(singularityOrder2))
+  {
+    std::string message =
+        "Unconstrained optimization lead to NaN for Order of Singularity\n";
+    throw sayMessage(message);
+  }
+
+  if (isnan(singularityOrder1) && !isnan(singularityOrder2))
+    order = singularityOrder2;
+
+  if (!isnan(singularityOrder1) && isnan(singularityOrder2))
+    order = singularityOrder1;
+
+  if (!isnan(singularityOrder1) && !isnan(singularityOrder2))
+    order = (singularityOrder1 + singularityOrder2) / 2.0;
+
+  return order;
+}
+
 // The six-term-test of Chang and Corliss
 //
 // The method returns the absolute value of the penultimate equation to nUse
@@ -58,47 +107,16 @@ double sixterm(const vector<double> &coeff, const double &scale, double &rc,
 
   // Evaluate Rc
   rc = scale / hOverRc;
-  if (isnan(rc))
-  {
-    std::string message =
-        "The radius of convergence is infinity, which is highly unlikely\n";
-    throw sayMessage(message);
-  }
+  testRCSix(rc);
 
   // Evaluate Cos(Theta)
   cosTheta = beta(2) / hOverRc;
-  if (isnan(cosTheta))
-  {
-    std::string message =
-        "Unconstrained optimization lead to infinite CosTheta which is not in "
-        "[-1, 1]\n";
-    throw sayMessage(message);
-  }
-  if ((cosTheta < -1.0) || (cosTheta > 1.0))
-  {
-    std::string message = "Unconstrained optimization lead to CosTheta [" +
-              to_string(cosTheta) + "] not in [-1, 1]\n";
-    throw sayMessage(message);
-  }
+  testCosTheta(cosTheta);
 
   // Evaluate Order of the Singularity
   singularityOrder1 = beta(1) / beta(2);
   singularityOrder2 = beta(3) / beta(4);
-  if (isnan(singularityOrder1) && isnan(singularityOrder2))
-  {
-    std::string message =
-        "Unconstrained optimization lead to NaN for Order of Singularity\n";
-    throw sayMessage(message);
-  }
-
-  if (isnan(singularityOrder1) && !isnan(singularityOrder2))
-    order = singularityOrder2;
-
-  if (!isnan(singularityOrder1) && isnan(singularityOrder2))
-    order = singularityOrder1;
-
-  if (!isnan(singularityOrder1) && !isnan(singularityOrder2))
-    order = (singularityOrder1 + singularityOrder2) / 2.0;
+  order = testSingularityOrder(singularityOrder1, singularityOrder2);
 
   // Compare order
   // printf( "Abs of difference between two computations for order:
@@ -109,6 +127,8 @@ double sixterm(const vector<double> &coeff, const double &scale, double &rc,
   // Evaluate previous W equation at the solution of the least squares
   // optimization problem. Return the backward error, the absolute value of this
   // evaluation.
+  //
+  // TODO Use all equations?
   nUse++;
   int k = coeff.size() - nUse;
   double check =

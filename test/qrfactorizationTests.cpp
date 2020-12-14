@@ -41,11 +41,11 @@ class TestThatHouseholderG : public Test
   void SetUp() override
   {
     xvector = (double *)calloc((size_t)n, (size_t)sizeof(double));
-    if (xvector == NULL)
-    {
-      printf("Failed to allocate xvector memory!\n");
-      assert(xvector);
-    }
+    //if (xvector == NULL)
+    //{
+    //  printf("Failed to allocate xvector memory!\n");
+    //  assert(xvector);
+    //}
   }
 
   void TearDown() override { free(xvector); }
@@ -181,18 +181,18 @@ class TestThatHouseholderL : public Test
   void SetUp() override
   {
     xvector = (double *)calloc((size_t)m, (size_t)sizeof(double));
-    if (xvector == NULL)
-    {
-      printf("Failed to allocate xvector memory!\n");
-      assert(xvector);
-    }
+    //if (xvector == NULL)
+    //{
+    //  printf("Failed to allocate xvector memory!\n");
+    //  assert(xvector);
+    //}
 
     a = (double *)calloc((size_t)(lda * n), (size_t)sizeof(double));
-    if (a == NULL)
-    {
-      printf("Failed to allocate matrix A memory!\n");
-      assert(a);
-    }
+    //if (a == NULL)
+    //{
+    //  printf("Failed to allocate matrix A memory!\n");
+    //  assert(a);
+    //}
 
     a(1, 1) = 1.0, a(1, 2) = 2.0, a(1, 3) = 3.0;
     a(2, 1) = 1.0, a(2, 2) = 5.0, a(2, 3) = 6.0;
@@ -200,11 +200,11 @@ class TestThatHouseholderL : public Test
     a(4, 1) = 1.0, a(4, 2) = 11.0, a(4, 3) = 12.0;
 
     r = (double *)calloc((size_t)(lda * n), (size_t)sizeof(double));
-    if (r == NULL)
-    {
-      printf("Failed to allocate space for result r!\n");
-      assert(r);
-    }
+    //if (r == NULL)
+    //{
+    //  printf("Failed to allocate space for result r!\n");
+    //  assert(r);
+    //}
   }
 
   void TearDown() override
@@ -365,11 +365,11 @@ class TestThatQRF : public Test
   void SetUp() override
   {
     a = (double *)calloc((size_t)(lda * n), (size_t)sizeof(double));
-    if (a == NULL)
-    {
-      printf("Failed to allocate matrix A memory!\n");
-      assert(a);
-    }
+    //if (a == NULL)
+    //{
+    //  printf("Failed to allocate matrix A memory!\n");
+    //  assert(a);
+    //}
 
     a(1, 1) = 1.0, a(1, 2) = 2.0, a(1, 3) = 3.0;
     a(2, 1) = 1.0, a(2, 2) = 5.0, a(2, 3) = 6.0;
@@ -379,32 +379,32 @@ class TestThatQRF : public Test
     min_m_n = (m < n) ? m : n;
 
     tau = (double *)calloc((size_t)min_m_n, (size_t)sizeof(double));
-    if (tau == NULL)
-    {
-      printf("Failed to allocate tau memory!\n");
-      assert(tau);
-    }
+    //if (tau == NULL)
+    //{
+    //  printf("Failed to allocate tau memory!\n");
+    //  assert(tau);
+    //}
 
     wrk = (double *)calloc((size_t)n, (size_t)sizeof(double));
-    if (wrk == NULL)
-    {
-      printf("Failed to allocate wrk memory!\n");
-      assert(wrk);
-    }
+    //if (wrk == NULL)
+    //{
+    //  printf("Failed to allocate wrk memory!\n");
+    //  assert(wrk);
+    //}
 
     ipiv = (int *)calloc((size_t)n, (size_t)sizeof(int));
-    if (ipiv == NULL)
-    {
-      printf("Failed to allocate ipiv memory!\n");
-      assert(ipiv);
-    }
+    //if (ipiv == NULL)
+    //{
+    //  printf("Failed to allocate ipiv memory!\n");
+    //  assert(ipiv);
+    //}
 
     r = (double *)calloc((size_t)(lda * n), (size_t)sizeof(double));
-    if (r == NULL)
-    {
-      printf("Failed to allocate space for result r!\n");
-      assert(r);
-    }
+    //if (r == NULL)
+    //{
+    //  printf("Failed to allocate space for result r!\n");
+    //  assert(r);
+    //}
   }
 
   void TearDown() override
@@ -546,11 +546,11 @@ class TestThatQRS : public Test
   void SetUp() override
   {
     a = (double *)calloc((size_t)(lda * n), (size_t)sizeof(double));
-    if (a == NULL)
-    {
-      printf("Failed to allocate matrix A memory!\n");
-      assert(a);
-    }
+    //if (a == NULL)
+    //{
+    //  printf("Failed to allocate matrix A memory!\n");
+    //  assert(a);
+    //}
 
     a(1, 1) = 1.0, a(1, 2) = 2.0;
     a(2, 1) = 1.0, a(2, 2) = 5.0;
@@ -560,46 +560,46 @@ class TestThatQRS : public Test
     min_m_n = (m < n) ? m : n;
 
     tau = (double *)calloc((size_t)min_m_n, (size_t)sizeof(double));
-    if (tau == NULL)
-    {
-      printf("Failed to allocate tau memory!\n");
-      assert(tau);
-    }
+    //if (tau == NULL)
+    //{
+    //  printf("Failed to allocate tau memory!\n");
+    //  assert(tau);
+    //}
 
     wrk = (double *)calloc((size_t)n, (size_t)sizeof(double));
-    if (wrk == NULL)
-    {
-      printf("Failed to allocate wrk memory!\n");
-      assert(wrk);
-    }
+    //if (wrk == NULL)
+    //{
+    //  printf("Failed to allocate wrk memory!\n");
+    //  assert(wrk);
+    //}
 
     ipiv = (int *)calloc((size_t)n, (size_t)sizeof(int));
-    if (ipiv == NULL)
-    {
-      printf("Failed to allocate ipiv memory!\n");
-      assert(ipiv);
-    }
+    //if (ipiv == NULL)
+    //{
+    //  printf("Failed to allocate ipiv memory!\n");
+    //  assert(ipiv);
+    //}
 
     r = (double *)calloc((size_t)(lda * n), (size_t)sizeof(double));
-    if (r == NULL)
-    {
-      printf("Failed to allocate space for result r!\n");
-      assert(r);
-    }
+    //if (r == NULL)
+    //{
+    //  printf("Failed to allocate space for result r!\n");
+    //  assert(r);
+    //}
 
     x = (double *)calloc((size_t)n, (size_t)sizeof(double));
-    if (x == NULL)
-    {
-      printf("Failed to allocate space for result x!\n");
-      assert(x);
-    }
+    //if (x == NULL)
+    //{
+    //  printf("Failed to allocate space for result x!\n");
+    //  assert(x);
+    //}
 
     y = (double *)calloc((size_t)m, (size_t)sizeof(double));
-    if (y == NULL)
-    {
-      printf("Failed to allocate space for result y!\n");
-      assert(y);
-    }
+    //if (y == NULL)
+    //{
+    //  printf("Failed to allocate space for result y!\n");
+    //  assert(y);
+    //}
   }
 
   void TearDown() override
@@ -752,3 +752,116 @@ TEST_F(TestThatQR, WillFactorANDComputeSolutionForSquareSystem)
                 DOUBLE_NEAR_MULTIPLIER(x_check[ i ], 100.0));
   }
 }
+
+TEST_F(TestThatQR, WillProvideOrthogonalMartixQUnlessMLessThanZero)
+{
+  int ier{0};
+  int m{-1};
+  int n{2};
+  int k{1};
+  int ell{m};
+  int lda{1};
+  int ldq{2};
+  // All matricies not accessed in this test
+  EXPECT_THAT(qorg(m, n, k, ell, &a[ 0 ], lda, &tau[ 0 ], &q[ 0 ], ldq, &ier),
+              Eq(1));
+}
+
+TEST_F(TestThatQR, WillProvideOrthogonalMartixQUnlessNLessThanZero)
+{
+  int ier{0};
+  int m{2};
+  int n{-1};
+  int k{1};
+  int ell{m};
+  int lda{1};
+  int ldq{2};
+  // All matricies not accessed in this test
+  EXPECT_THAT(qorg(m, n, k, ell, &a[ 0 ], lda, &tau[ 0 ], &q[ 0 ], ldq, &ier),
+              Eq(1));
+}
+
+TEST_F(TestThatQR, WillProvideOrthogonalMartixQUnlessMLessThanN)
+{
+  int ier{0};
+  int m{2};
+  int n{3};
+  int k{1};
+  int ell{m};
+  int lda{m};
+  int ldq{m};
+  // All matricies not accessed in this test
+  EXPECT_THAT(qorg(m, n, k, ell, &a[ 0 ], lda, &tau[ 0 ], &q[ 0 ], ldq, &ier),
+              Eq(1));
+}
+
+TEST_F(TestThatQR, WillProvideOrthogonalMartixQUnlessKGreaterThanL)
+{
+  int ier{0};
+  int m{3};
+  int n{2};
+  int k{m+1};
+  int ell{m};
+  int lda{m};
+  int ldq{m};
+  // All matricies not accessed in this test
+  EXPECT_THAT(qorg(m, n, k, ell, &a[ 0 ], lda, &tau[ 0 ], &q[ 0 ], ldq, &ier),
+              Eq(1));
+}
+
+TEST_F(TestThatQR, WillProvideOrthogonalMartixQUnlessLDALessThanM)
+{
+  int ier{0};
+  int m{3};
+  int n{2};
+  int k{m};
+  int ell{m};
+  int lda{m-1};
+  int ldq{m};
+  // All matricies not accessed in this test
+  EXPECT_THAT(qorg(m, n, k, ell, &a[ 0 ], lda, &tau[ 0 ], &q[ 0 ], ldq, &ier),
+              Eq(1));
+}
+
+TEST_F(TestThatQR, WillProvideOrthogonalMartixQUnlessLDQLessThanOne)
+{
+  int ier{0};
+  int m{3};
+  int n{2};
+  int k{m};
+  int ell{m};
+  int lda{m};
+  int ldq{0};
+  // All matricies not accessed in this test
+  EXPECT_THAT(qorg(m, n, k, ell, &a[ 0 ], lda, &tau[ 0 ], &q[ 0 ], ldq, &ier),
+              Eq(1));
+}
+
+TEST_F(TestThatQR, WillProvideOrthogonalMartixQWithQuickReturnNEqualsZero)
+{
+  int ier{0};
+  int m{3};
+  int n{0};
+  int k{m};
+  int ell{m};
+  int lda{m};
+  int ldq{m};
+  // All matricies not accessed in this test
+  EXPECT_THAT(qorg(m, n, k, ell, &a[ 0 ], lda, &tau[ 0 ], &q[ 0 ], ldq, &ier),
+              Eq(0));
+}
+
+TEST_F(TestThatQR, WillProvideOrthogonalMartixQWithQuickReturnNEqualsZeroANDMEqualsZero)
+{
+  int ier{0};
+  int m{0};
+  int n{0};
+  int k{m};
+  int ell{m};
+  int lda{1};
+  int ldq{1};
+  // All matricies not accessed in this test
+  EXPECT_THAT(qorg(m, n, k, ell, &a[ 0 ], lda, &tau[ 0 ], &q[ 0 ], ldq, &ier),
+              Eq(0));
+}
+
