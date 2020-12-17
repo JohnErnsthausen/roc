@@ -188,20 +188,14 @@ The table that follows summarizes the mathematical notation used in this documen
   \textbf{symbol} & \textbf{description}\\
   \midrule 
   A & Assumption\\
-  BM & Bergsma and Mooij \cite{bergsma2016application}\\
-  CC & Chang and Corliss \cite{chang1982}\\
-  \cpp & The programming language\\
   $\Cz$ & Complex numbers\\
   DD & Data Definition\\
-  \fortran & The programming language\\
   GD & General Definition\\
   GS & Goal Statement\\
   IM & Instance Model\\
   \ivp & Initial Value Problem\\
-  JZ & Jorba and Zou \cite{jorba2005software}\\
   LC & Likely Change\\
   $\Iz$ & The non-negative integers\\
-%  PS & Physical System Description\\
   \ode & Ordinary Differential Equation\\
   $\Rz$ & Real numbers\\
   R & Requirement\\
@@ -333,10 +327,8 @@ Section~\ref{Sec_pd}, the \Quote{Problem~Description}.
 \subsection{Scope of Requirements}\label{sc:scope}
 
 In the late 1800's, several authors resolved problems
-concerning the characterization and analysis of singularities for power series. CC discuss
-this history \cite{chang1982}.
-
-The CC approach to series analysis is the topic of the following quote.
+concerning the characterization and analysis of singularities for power series.
+\cite{chang1982} discuss this history, the topic of the following quote.
 
 \begin{quote}
 Our approach to series analysis was motivated by the observation that series
@@ -352,19 +344,19 @@ Further, the effects of all secondary singularities disappear if sufficiently
 A primary singularity of \eqref{power-series} is the closest singularity to the series
 expansion point $z_0$ in the complex plane. All other singularities are secondary singularities.
 
-CC proposed a method of four parts to estimate the radius $R_c$ of the circle of convergence
+\cite{chang1982} proposed a method of four parts to estimate the radius $R_c$ of the circle of convergence
 as well as the order and location of primary singularities. The top-hump analysis applies to
 the power series of entire functions. The 3-term analysis applies to the power series of
 functions exhibiting a single primary singularity. The 6-term analysis applies to the
 power series of functions exhibiting a conjugate pair of primary singularities.
 Whenever these three analysis fail to resolve the $R_c$, singularity order, and
-singularity location parameters for the series, the CC method does
-a top-line analysis. Each CC sub-method works by fitting $R_c$, singularity order, and
+singularity location parameters for the series, the \cite{chang1982} method does
+a top-line analysis. Each \cite{chang1982} sub-method works by fitting $R_c$, singularity order, and
 singularity location parameters of a known model to the given sequence.
 
 Top-line analysis always applies to power series. It resolves situations where secondary singularities are
 less distinguishable from primary singularities. However it is less accurate, but it does
-have a convergence analysis \cite{chang1982}.
+have a convergence analysis \citep{chang1982}.
 
 The scope of this \progname{f} project is limited to top-line analysis.
 
@@ -507,15 +499,13 @@ ordinary differential equation (\ode) initial-value problem (\ivp)
   t \in \iode \subset \Rz,
 }
 the TS methods defined in
-Jorba and Zou \cite{jorba2005software} (JZ),
-Bergsma and Mooij \cite{bergsma2016application} (BM),
-and
-Chang and Corliss \cite{chang1982} (CC)
-explicitly require an estimate for the TS radius of convergence.
+\cite{jorba2005software},
+\cite{bergsma2016application},
+and \cite{chang1982} explicitly require an estimate for the TS radius of convergence.
 
 % From a practical standpoint, an order $1 \leq p \leq k$ TS approximate solution requires
 % $\parbg{t,y} \mapsto f\parbg{t,y} \in \Rz^d$ to be $k$-times differentiable.
-% JZ permit the order $p$ to change from step to step.
+% \cite{jorba2005software} permit the order $p$ to change from step to step.
 At each $\parn{t_n,x_n}$, $n \geq 0$, the TS method for the numerical solution
 of \eqref{introduction-mathematical-odeivp} computes Taylor coefficients (TCs)
 $\tc{\xn}{i}$ at $t_{n}$ to construct the TS approximate solution
@@ -524,7 +514,8 @@ $\tc{\xn}{i}$ at $t_{n}$ to construct the TS approximate solution
   \Tp(t) = \xn + \sum_{i=1}^{p}\tc{\xn}{i}(t-\tn)^{i} \quad\mbox{on}\quad \lode.
 \end{align}
 
-Another type of intended user is any developers like BM, JZ, or CC of a TS method seeking the accuracy
+Another type of intended user is any developers like \cite{bergsma2016application},
+\cite{jorba2005software}, or \cite{chang1982} of a TS method seeking the accuracy
 assurance from knowing the domain $\lode$ is in the circle of convergence.
 
 \plt{This section summarizes the knowledge/skills expected of the user.
@@ -703,13 +694,13 @@ includes the following elements:
     should have a meaningful label.}
 }
 
-\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_topline}:] Implement CC top line analysis to estimate $R_c$.
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_topline}:] Implement \cite{chang1982} top line analysis to estimate $R_c$.
 
 \item[GS\refstepcounter{goalnum}\thegoalnum \label{G_textbook}:] Use top line analysis to estimate $R_c$
   for three problems from real analysis where $R_c$ is known. Report on the accuracy of the result.
 
 \item[GS\refstepcounter{goalnum}\thegoalnum \label{G_order}:] Use top line analysis to estimate
-  the order of a singularity as described in CC \cite[pp.~127--128]{chang1982}.
+  the order of a singularity as described in \cite[pp.~127--128]{chang1982}.
 
 \item[GS\refstepcounter{goalnum}\thegoalnum \label{G_tsmethod}:] Use top line analysis to estimate $R_c$
   while solving \ode \ivp by the TS method.
@@ -1589,7 +1580,7 @@ qualities that the software is expected to exhibit.
 
   \item[\rlabel{R_Calculate}] \progname{f} should be developed in \cpp.
 
-    \progname{f} should execute as fast as the CC software \rdcon. The method developed in this
+    \progname{f} should execute as fast as the \cite{chang1982} software \rdcon. The method developed in this
     project is expected to be independent of system constraints. However
     most TS methods are developed in \cpp or \fortran, the goto languages
     of scientific computing. Certainly a scripting language would not be
@@ -1599,7 +1590,7 @@ qualities that the software is expected to exhibit.
     function $1/(z-z_0)^{\mu}$ at $x_c$. The radius of convergence $R_c$
     and the order of singularity $\mu$ computed by \progname{f} should
     be $R_c = | x_c - z_0 |$ and order of singularity $\mu$.
-  
+   
  \item[\rlabel{R_VerifyComplexOutput}] Compute the TS for the real valued function
    $1/(1 + 25*(z-z_0)^2)^{\mu}$ at $x_c$. The radius of convergence $R_c$
     and the order of singularity $\mu$ computed by \progname{f} should
@@ -1659,7 +1650,7 @@ This section summarizes the knowledge/skills expected of the user.
 
 \section{Likely Changes}    
 
-CC \cite{chang1982} discussed two additional estimators for $R_c$ of TS solutions to \ode under
+\cite{chang1982} discussed two additional estimators for $R_c$ of TS solutions to \ode under
 \ASref{real}. This should be implemented, if there is time.
 
 \plt
