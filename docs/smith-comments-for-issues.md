@@ -22,7 +22,7 @@ Use \cite{} to cite the paper as part of the text with author names and year of 
 
 Use \citep{} to put citation in parenthetical
 
-*4.
+4.
 
 P2 What would a typical title be for the associated course?
 
@@ -30,7 +30,7 @@ Calculus 2
 Complex Analysis 1
 Real Analysis
 
-*5.
+5.
 
 P2 Show show how ROC fits into a typical context
 
