@@ -20,15 +20,33 @@
 
 \usepackage{fullpage}
 \usepackage[round]{natbib}
+\usepackage{multirow}
 %\usepackage{refcheck}
 \usepackage{lipsum}
+
+\usepackage[section]{placeins}
+\usepackage{array}
 
 \input{../Comments}
 \input{../Common}
 
-\newcounter{reqnum} %Requirement Number
-\newcommand{\rthereqnum}{P\thereqnum}
-\newcommand{\rref}[1]{R\ref{#1}}
+\makeatletter
+\newcommand*{\addFileDependency}[1]{% argument=file name and extension
+  \typeout{(#1)}
+  \@addtofilelist{#1}
+  \IfFileExists{#1}{}{\typeout{No file #1.}}
+}
+\makeatother
+
+\newcommand*{\myexternaldocument}[1]{%
+    \externaldocument{#1}%
+    \addFileDependency{#1.tex}%
+    \addFileDependency{#1.aux}%
+}
+
+\externaldocument{../SRS/SRS}
+
+\newcommand{\rref}[1]{(R\ref{#1})}
 
 \begin{document}
 
@@ -178,35 +196,35 @@ Our objective it to implement Module {\bf findrc} and Module {\bf findrc} via
 {\it test driving} in \cpp. The implementation must satisfy the requirements
 enumerated in \cite{SRS}.
 
-Assume that the assumptions are satisfied. Recall the requirements
+Assume that the assumptions are satisfied. Recall the requirements.
 
-\noindent \begin{itemize}
-
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_Inputs}:] The input
-  sequence should be scaled by $h$ to prevent overflow/underflow.
-  If this is not possible, \progname{f} will find a scale.
-
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_Calculate}:]
-  \progname{f} should execute as fast as the CC software \rdcon.
-
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_VerifyOutput}:]
-  \progname{f} should estimate the radius of convergence $R_c$ and
-    the order of singularity $\mu$ for the following cases where $R_c$ and $\mu$ are known.
-
-  The real valued function $1/(z-z_0)^{\mu}$.
-
-  The real valued function $1/(1 + 25*(z-z_0)^2)^{\mu}$.
-
-  Top line analysis while solving \dae \ivp by the TS method should verify
-    the computed step is within the circle of convergence and compare
-    with the CC algorithm \rdcon.
-
-\item[R\refstepcounter{reqnum}\thereqnum \label{R_Output}:] We must not overestimate $R_c$.
-  If $R_c$ is overestimated, then the power-series is a divergence sum on the overestimation.
-
-  In \ode solving by TS methods, underestimating $R_c$ is acceptable as an underestimation
-  results in a slight increase in computational effort for solving an \ode \ivp.
-\end{itemize}
+%  \noindent \begin{itemize}
+%  
+%  \item[R\refstepcounter{reqnum}\thereqnum \label{R_Inputs}:] The input
+%    sequence should be scaled by $h$ to prevent overflow/underflow.
+%    If this is not possible, \progname{f} will find a scale.
+%  
+%  \item[R\refstepcounter{reqnum}\thereqnum \label{R_Calculate}:]
+%    \progname{f} should execute as fast as the CC software \rdcon.
+%  
+%  \item[R\refstepcounter{reqnum}\thereqnum \label{R_VerifyOutput}:]
+%    \progname{f} should estimate the radius of convergence $R_c$ and
+%      the order of singularity $\mu$ for the following cases where $R_c$ and $\mu$ are known.
+%  
+%    The real valued function $1/(z-z_0)^{\mu}$.
+%  
+%    The real valued function $1/(1 + 25*(z-z_0)^2)^{\mu}$.
+%  
+%    Top line analysis while solving \dae \ivp by the TS method should verify
+%      the computed step is within the circle of convergence and compare
+%      with the CC algorithm \rdcon.
+%  
+%  \item[R\refstepcounter{reqnum}\thereqnum \label{R_Output}:] We must not overestimate $R_c$.
+%    If $R_c$ is overestimated, then the power-series is a divergence sum on the overestimation.
+%  
+%    In \ode solving by TS methods, underestimating $R_c$ is acceptable as an underestimation
+%    results in a slight increase in computational effort for solving an \ode \ivp.
+%  \end{itemize}
 
 In a nutshell these requirements validate and verify \progname{f}.
 
@@ -324,8 +342,16 @@ discussion because \progname{f} has no nonfunctional requirements at this time.
 	
 \subsection{Tests for Functional Requirements}
 
-Functional requirements at the system level reflect \rref{R_Calculate} and
-\rref{R_VerifyOutput}.
+\subsubsection{Input testing}
+% Issue #9
+
+User misuses the inputs: Length should be negative. Ensure the program gives an error.
+
+Input testing in these input requirements:
+\rref{rIHardware} Input acquisition via hardware.
+\rref{rISoftware} Input acquisition via software.
+\rref{rIFormat} Validate input format.
+\rref{rIType} Validate input type.
 
 \subsubsection{Timing}
 
