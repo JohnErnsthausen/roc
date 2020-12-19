@@ -278,6 +278,20 @@ Defects will be addressed with issues on the GitHub platform.
 
 \subsection{Implementation Verification Plan}
 
+Dynamic testing through unit tests (Gtest/GMock), memory testing (valgrind), profiling (gprof),
+and code coverage (gcov).
+
+Static testing though linting (clang-format).
+
+Continuous integration through GitHub, TravisCI, and Coveralls.
+
+All verification will be automatic.
+
+\subsubsection{Dynamic testing}
+Dynamic testing requires the program to be executed. For example, unit test cases
+are run, and the results are checked against expected behaviour.
+
+\paragraph{Unit testing (Gtest/GMock)}:
 The Implementation Verification Plan for \progname{f} includes automated testing at the module level.
 For testing at the module level, the author plans to follow the Test Driven Development
 software development practices as described by \cite{langr2013} for {\it test driving}.
@@ -307,7 +321,61 @@ add a new piece of behavior into the system, first write a test to define that b
 existence of a test that will not pass drives the developer to implement the corresponding behavior.
 The increment should be the smallest meaningful amount of code, one or two lines of code and one assertion.
 
-The code should be well formatted and free of memory leaks.
+\paragraph{Memory testing (valgrind):}
+Code free of memory leaks.
+
+\paragraph{Profiling (gprof):}
+Number of method calls and time spent in each method. Used to help performance.
+
+\paragraph{Code coverage (gcov):}
+Reveals the code used/not used. Percentage of code used per directory and per file.
+
+\subsubsection{Static testing}
+Static testing does not involve program execution.
+Testing techniques simulate the dynamic environment.
+Static testing includes syntax checking.
+
+\paragraph{Linting (clang-format):}
+The code should be well formatted. Formats can be customized in XXX.
+
+\subsubsection{Continuous integration}
+\begin{itemize}
+\item Information available on
+  \href{https://en.wikipedia.org/wiki/Continuous_integration}{Wikipedia}
+\item Developers integrate their code into a shared repo frequently (multiple
+  times a day)
+\item Each integration is automatically accompanied by regression tests and
+  other build tasks
+\item Build server
+\begin{itemize}
+\item Unit tests
+\item Integration tests
+\item Static analysis
+\item Profile performance
+\item Extract documentation
+\item Update project web-page
+\item Portability tests
+\item etc.
+\end{itemize}
+\item Avoids potentially extreme problems with integration when the baseline and
+  a developer's code greatly differ
+\end{itemize}
+
+\begin{itemize}
+\item Eliminates the ``it works on my machine'' problem
+\item Package dependencies with your apps
+\item A container for lightweight virtualization
+\item Not a full VM
+\end{itemize}
+
+Continuous integration through GitHub, TravisCI, and Coveralls.
+
+\subsubsection{Parallel testing}
+In parallel testing, one compares to other programs.
+
+\subsubsection{Comparison with closed-form solution}
+Yes I do this too, in my unit tests.
+
 
 \subsection{Automated Testing and Verification Tools}
 
