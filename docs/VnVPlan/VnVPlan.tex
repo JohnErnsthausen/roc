@@ -411,21 +411,36 @@ Software Validation Plan is not applicable to this project.
 
 \section{System Test Description}
 
-System tests are about the public interface. Nonfunctional tests are removed from the
-discussion because \progname{f} has no nonfunctional requirements at this time.
-	
+System tests are about the public interface.
+
+Sample Functional System Testing
+\begin{itemize}
+\item Requirements: Determines if the system can perform its function correctly and that the correctness can be sustained over a continuous period of time
+\item Regression: Determines if changes to the system do not invalidate previous positive testing results
+\item Error Handling: Determines the ability of the system to properly process
+  incorrect transactions
+\item Manual Support: Determines that the manual support procedures are documented and complete, where manual support involves procedures, interfaces between people and the system, and training procedures
+\item Parallel: Determines the results of the new application are consistent with the processing of the previous application or version of the application
+\end{itemize}
+
+Sample Nonfunctional System Testing
+\begin{itemize}
+\item Stress testing - Determines if the system can function when subject to large volumes
+\item Usability testing
+\item Performance measurement
+\end{itemize}
+
 \subsection{Tests for Functional Requirements}
 
-\subsubsection{Input testing}
-% Issue #9
+\subsubsection{Parallel testing}
 
-User misuses the inputs: Length should be negative. Ensure the program gives an error.
+\progname{f} includes automated testing at the system level
+and integration level. The code output
+will be compared with the output of \rdcon developed by CC for validation at the integration level.
 
-Input testing in these input requirements:
-\rref{rIHardware} Input acquisition via hardware.
-\rref{rISoftware} Input acquisition via software.
-\rref{rIFormat} Validate input format.
-\rref{rIType} Validate input type.
+And see Nonfunctional tests.
+
+\subsection{Tests for Nonfunctional Requirements}
 
 \subsubsection{Timing}
 
@@ -437,7 +452,7 @@ the CC software \rdcon. The following tests represent a comparison between
 
 \begin{enumerate}
 
-\item{Layne-Watson\\}
+  \item{Layne-Watson \citep{watson1979}\\}
 
 % Control: 
 					
@@ -453,7 +468,7 @@ Test Case Derivation: Two techniques resolving the same data.
 					
 How test will be performed: Automatically.
 					
-\item{Planetary-Motion\\}
+\item{Planetary-Motion \citep{enright1987examples}\\}
 
 % Control: 
 					
@@ -483,7 +498,7 @@ The comparison will be carried out on the process of solving a \dae \ivp by the 
 
 \begin{enumerate}
 
-\item{Layne-Watson\\}
+\item{Layne-Watson \citep{watson1979}\\}
 
 % Control: 
 					
@@ -500,7 +515,7 @@ Test Case Derivation: Two techniques resolving the same data.
 					
 How test will be performed: Automatically.
 					
-\item{Planetary-Motion\\}
+\item{Planetary-Motion \citep{enright1987examples}\\}
 
 % Control: 
 					
@@ -568,9 +583,24 @@ How test will be performed: Automatically.
 
 In each test, the requirement supported by the test case is stated.
 
+However I would find a traceability table difficult to present as I have 158 tests, difficult to maintain, and a duplication of work. I wouldn't find this table useful. Here's why.
+
+In the Module Guide there is "Table 2: Trace Between Requirements and Modules". Here I'm thinking of Module as a Parnas Module, a work order. For every work order, I Test Drive the behavior given in the work order into my code base. All of the behaviors required by the module must have corresponding testing code. I then do code coverage on my tests. If I have 100\% code coverage of my tests and all the required behaviors are covered in the module. Then by my testing, I automatically have the functionality of the traceability table in discussion making the traceability table unnecessary work.
+
+The Software Development theories of Test Driving recommend running all test and observing that all tests pass. The interest of the third party in "Let’s say a third party person is only interested in testing the R3" should be highly discouraged.
+
 \section{Unit Test Description}
 
-This section should not be filled in until after the MIS has been completed.
+\subsubsection{Input testing}
+% Issue #9
+
+User misuses the inputs: Length should be negative. Ensure the program gives an error.
+
+Input testing in these input requirements:
+\rref{rIHardware} Input acquisition via hardware.
+\rref{rISoftware} Input acquisition via software.
+\rref{rIFormat} Validate input format.
+\rref{rIType} Validate input type.
 
 %  \wss{Reference your MIS and explain your overall philosophy for test case
 %    selection.}  
