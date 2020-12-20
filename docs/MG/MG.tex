@@ -171,30 +171,26 @@ adapted here is called design for change. Anticipated changes are labeled by
 {\bf AC} followed by a number.
 
 \begin{description}
-  \item[\aclabel{acIN}] Handle input acquisition.
-    % \item[\aclabel{acIHardware}] Handle input acquisition via hardware.
-    % \item[\aclabel{acISoftware}] Handle input acquisition via software.
-    % \item[\aclabel{acIFormat}] Validate input format.
-    % \item[\aclabel{acIType}] Validate input type.
-  \item[\aclabel{acOUT}] Handle output.
-    % \item[\aclabel{acOHardware}] Handle output via hardware.
-    % \item[\aclabel{acOSoftware}] Handle output via software.
-    % \item[\aclabel{acOFormat}] Handle output format.
-    % \item[\aclabel{acOType}] Handle output type.
-  \item[\aclabel{acPARAM}] Handle parameter acquisition.
-    % \item[\aclabel{acPFormat}] Handle parameter format.
-    % \item[\aclabel{acPType}] Handle parameter type.
-    % \item[\aclabel{acPDistribution}] Handle parameter distribution.
-    % \item[\aclabel{acPConstraints}] Handle parameter constraints.
-  \item[\aclabel{acSOLVER}] Algorithms.
-    % \item[\aclabel{acPoleRealSolverAlgorithm}] Algorithm to find the distance to the nearest real pole.
-    % \item[\aclabel{acPoleComplexSolverAlgorithm}] Algorithm to find the distance to the nearest complex conjugate pair of poles.
-    % \item[\aclabel{acPoleComplicatedAlgorithm}] Algorithm to find the distance to the nearest pole in hard to resolve case.
-  \item[\aclabel{acPoleRealSolver}] Find the distance to the nearest real pole.
-  \item[\aclabel{acPoleComplexSolver}] Find the distance to the nearest complex conjugate pair of poles.
-  \item[\aclabel{acPoleTopLine}] Find the distance to the nearest pole in hard to resolve case.
-  \item[\aclabel{acROC}] Pole identification, distinguish a real pole from a complex conjugate pair of poles
-    from a complicated situation.
+  \item[\aclabel{acIN}] The implementation of the input data structure.
+    % Format and type of coefficients.
+    % First coefficient corresponds to c_0, the coefficient of the zero power term,
+    % to c_N, the coefficient of the N-1 power term. All real doubles. Scaling is real double.
+  \item[\aclabel{acOUT}] The implementation of the output data structure.
+    % Format and type of the radius of convergence R_c, order of singularity \mu, error in tail,
+    % and error from coefficient MINTERMS to coefficient N-1.
+  \item[\aclabel{acPARAM}] The implementation of the parameter data structure.
+    % Format and type of parameters, distribution and constraints.
+  \item[\aclabel{acSOLVER}] The algorithm used to solve the minimization sub-problem
+    in 3TA, 6TA, and TLA.
+  \item[\aclabel{acPoleRealSolver}] The algorithm used to find the distance to the
+    nearest real pole.
+  \item[\aclabel{acPoleComplexSolver}] The algorithm used to find the distance to
+    the nearest complex conjugate pair of poles.
+  \item[\aclabel{acPoleTopLine}] The algorithm used to find the distance to the nearest pole
+    in top line analysis.
+  \item[\aclabel{acROC}] How the overall control of the calculations is orchestrated.
+    % Pole identification, distinguish a real pole from a complex conjugate pair of poles
+    % from a complicated situation.
 \end{description}
 
 \subsection{Unlikely Changes} \label{SecUchange}
