@@ -241,8 +241,7 @@ actually be implemented. Modules are labeled by {\bf M} followed by a number.
 \midrule
 
 \multirow{2}{0.3\textwidth}{Hardware-Hiding Module}
-  & Input Format Module\\
-  & Output Format Module \\
+  & \\
 
 \midrule
 
@@ -297,25 +296,10 @@ to be implemented.
 
 \subsection{Hardware Hiding Modules}
 
-\subsubsection{Input Format Module (\mref{mIN})}
-
-\begin{description}
-\item[Secrets:] Handle input acquisition via hardware.
-\item[Services:] Read files from hard drive.
-  This module provides the interface between the hardware and the
-  software. So, the system can use it to accept inputs.
-\item[Implemented By:] OS
-\end{description}
-
-\subsubsection{Output Format Module (\mref{mOUT})}
-
-\begin{description}
-\item[Secrets:] Handle output via hardware.
-\item[Services:] Write files to hard drive.
-  This module provides the interface between the hardware and the
-  software. So, the system can use it to display and save outputs.
-\item[Implemented By:] OS
-\end{description}
+\progname{f} is a library and it does not have Hardware Hiding Modules.
+Input is handled by the calling program, and the calling program is responsible for
+reading inputs from a file on the hard drive or even computing the inputs and writing the outputs
+to the calling method or to the hardware.
 
 \subsection{Behaviour-Hiding Module}
 
