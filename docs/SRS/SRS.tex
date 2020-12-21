@@ -700,7 +700,8 @@ includes the following elements:
   amount of technical language.  They should be understandable by non-domain
   experts.}
 
-\Ni Given the inputs, the goal statements are:
+\Ni Given a tolerance \tol, a truncated finite sequence $\Setbg{c_n}$, and the applied scale
+to the coefficients $c_n$, the goal of this project are:
 
 \begin{itemize}
 
@@ -710,16 +711,17 @@ includes the following elements:
     should have a meaningful label.}
 }
 
-\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_topline}:] Implement \cite{chang1982} top line analysis to estimate $R_c$.
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_3ta}:] Implement \cite{chang1982} three term analysis to estimate $R_c$, the order of singularity, the modelling error, and the truncation error committed
+by truncating the sequence at $N$ for a primary real poles. This appears to be four goals. However,
+the same setup and computation leads to each quantity. Separating these quantities into four goals
+would lead to a verbose, redundant document.
 
-\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_textbook}:] Use top line analysis to estimate $R_c$
-  for three problems from real analysis where $R_c$ is known. Report on the accuracy of the result.
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_6ta}:] Implement \cite{chang1982} six term analysis to estimate $R_c$, the order of singularity, the modelling error, and the truncation error committed
+by truncating the sequence at $N$ for a pair of primary complex conjugate poles. This appears to be
+four goals. However, the same setup and computation leads to each quantity. Separating these quantities
+into four goals would lead to a verbose, redundant document.
 
-\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_order}:] Use top line analysis to estimate
-  the order of a singularity as described in \cite[pp.~127--128]{chang1982}.
-
-\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_tsmethod}:] Use top line analysis to estimate $R_c$
-  while solving \ode \ivp by the TS method.
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_topline}:] Implement \cite{chang1982} top line analysis to estimate $R_c$ for a mix of primary and secondary poles.
 
 \end{itemize}
 
