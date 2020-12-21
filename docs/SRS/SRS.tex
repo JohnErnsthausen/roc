@@ -71,7 +71,7 @@
 
 \begin{document}
 
-\title{Software Requirements Specification for \progname{L}: software estimating the radius of convergence of
+\title{Software Requirements Specification for \progname{L}: Software estimating the radius of convergence of
 a power series} 
 \author{John M Ernsthausen}
 \date{\today}
@@ -377,14 +377,17 @@ The scope of this \progname{f} project is limited to top-line analysis.
 
 \subsection{Characteristics of Intended Reader} \label{sec_IntendedReader}
 
-This document assumes the intended reader has familiarity with basic real analysis and complex analysis.
-Courses which contribute to background knowledge may be titled Introduction to Real Analysis (undergrad),
+This document assumes the intended reader has familiarity with basic real analysis, complex analysis,
+and Taylor arithmetic.
+Courses which contribute to background knowledge may be titled Ordinary Differential Equations and
+Linear Algebra (undergrad), Introduction to Real Analysis (undergrad),
 Multivariate Calculus (undergrad), Functional Analysis (Graduate), Real Analysis (Graduate),
 and Complex Analysis (Graduate).
 Sequences and power series as well as the ratio and root tests will be discussed
 in this document. However, our exposition will only cover the concepts needed for our purposes. For proofs
 and for a complete exposition of all background materials, the interested reader should consult a beginning
-level graduate text such as \cite{rudin1976}.
+level graduate text such as \cite{rudin1976}. For a brief but sufficient introduction to Taylor arithmetic,
+consult \cite{TADIFF}.
 
 
 \plt{This section summarizes the skills and knowledge of the readers of the
@@ -432,9 +435,11 @@ characteristics, and lists the system constraints.  \plt{This text can likely be
   context for a family of related models.  The general description can stay the
   same, while specific details are changed between family members.}
 
-\subsection{System Context}
+\subsection{System Context}\label{ssc:systemcontext}
 
-The following figure \FGref{systemcontext} depicts the abstract view of \progname{f}.
+The following figure depicts a system context view of \progname{f}. This
+context appears, for example, in the numerical solution of ordinary differential and
+differential algebraic equations.
 
 \begin{figure}[h!]
 \begin{center}
@@ -444,6 +449,37 @@ The following figure \FGref{systemcontext} depicts the abstract view of \prognam
 \end{center}
 \end{figure}
 
+After generating a real-valued Taylor series (TS) approximate solution of order $p$ to the
+ordinary differential equation (\ode) initial-value problem (\ivp) 
+\EQ
+{
+  \label{eq:introduction-mathematical-odeivp}
+  y'\parn{t} = f\pbg{t,y\parn{t}},
+  \quad
+  y\parn{t_0} = y_0 \in \mathcal D \subset \Rz^d,
+  \quad
+  t \in \iode \subset \Rz,
+}
+the TS methods defined in
+\cite{jorba2005software},
+\cite{bergsma2016application},
+and \cite{chang1982} explicitly require an estimate for the TS radius of convergence.
+
+% From a practical standpoint, an order $1 \leq p \leq k$ TS approximate solution requires
+% $\parbg{t,y} \mapsto f\parbg{t,y} \in \Rz^d$ to be $k$-times differentiable.
+% \cite{jorba2005software} permit the order $p$ to change from step to step.
+At each $\parn{t_n,x_n}$, $n \geq 0$, the TS method for the numerical solution
+of \eqref{introduction-mathematical-odeivp} computes Taylor coefficients (TCs)
+$\tc{\xn}{i}$ at $t_{n}$ to construct the TS approximate solution
+\begin{align}
+  \label{eq:tss}
+  \Tp(t) = \xn + \sum_{i=1}^{p}\tc{\xn}{i}(t-\tn)^{i} \quad\mbox{on}\quad \lode.
+\end{align}
+Analysis of \EQref{tss} for its radius of convergence provides a practical system
+context for \progname{f} as depicted in \FGref{systemcontext}.
+In this system context, developers like \cite{bergsma2016application},
+\cite{jorba2005software}, or \cite{chang1982} of a TS method seek the accuracy
+assurance from knowing the domain $\lode$ is in the circle of convergence.
 
 \plt{Your system context will include a figure that shows the abstract view of
   the software.  Often in a scientific context, the program can be viewed
@@ -494,37 +530,9 @@ neither \matlab nor \maple currently implements an estimate for $R_c$,
 presumably the companies that develop \matlab and \maple will want
 to provide such a facility when robust, reliable, and accurate computational
 tools are available.
+Users of \progname{f} would be a calculus student, a user of MAPLE or MATLAB, and a
+developer of a Taylor series method as in \SSCref{systemcontext}.
 
-After generating a real-valued Taylor series (TS) approximate solution of order $p$ to the
-ordinary differential equation (\ode) initial-value problem (\ivp) 
-\EQ
-{
-  \label{eq:introduction-mathematical-odeivp}
-  y'\parn{t} = f\pbg{t,y\parn{t}},
-  \quad
-  y\parn{t_0} = y_0 \in \mathcal D \subset \Rz^d,
-  \quad
-  t \in \iode \subset \Rz,
-}
-the TS methods defined in
-\cite{jorba2005software},
-\cite{bergsma2016application},
-and \cite{chang1982} explicitly require an estimate for the TS radius of convergence.
-
-% From a practical standpoint, an order $1 \leq p \leq k$ TS approximate solution requires
-% $\parbg{t,y} \mapsto f\parbg{t,y} \in \Rz^d$ to be $k$-times differentiable.
-% \cite{jorba2005software} permit the order $p$ to change from step to step.
-At each $\parn{t_n,x_n}$, $n \geq 0$, the TS method for the numerical solution
-of \eqref{introduction-mathematical-odeivp} computes Taylor coefficients (TCs)
-$\tc{\xn}{i}$ at $t_{n}$ to construct the TS approximate solution
-\begin{align}
-  \label{eq:tss}
-  \Tp(t) = \xn + \sum_{i=1}^{p}\tc{\xn}{i}(t-\tn)^{i} \quad\mbox{on}\quad \lode.
-\end{align}
-
-Another type of intended user is any developers like \cite{bergsma2016application},
-\cite{jorba2005software}, or \cite{chang1982} of a TS method seeking the accuracy
-assurance from knowing the domain $\lode$ is in the circle of convergence.
 
 \plt{This section summarizes the knowledge/skills expected of the user.
   Measuring usability, which is often a required non-function requirement,

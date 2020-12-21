@@ -32,9 +32,9 @@ Real Analysis
 
 5.
 
-P2 Show show how ROC fits into a typical context
+P2 Show how ROC fits into a typical context
 
-*6.
+6.
 
 What you gave are some potential contexts in which ROC could be used. This information could
 go into the previous section. What we want in this section is the background needed by a user
@@ -94,5 +94,5 @@ Accuracy requirements are non-functional requirements. Portability and maintaina
 non-functional; requirements.
 
 TODO
-Have a look at the rational I added to the ??? project ??? on non-functional requirements.
-Have a loo
+Have a look at the rational I added to the ??? project template on non-functional requirements.
+
