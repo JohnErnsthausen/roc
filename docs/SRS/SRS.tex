@@ -1301,6 +1301,30 @@ of a graph of $\log_{10} | c_n |$ versus $n$ \cite{chang1982}. While no proof
 is given in this paper, the following argument justifies their claim that
 the slope approaches $\log_{10} |z - z_0|/R_c$ as $n \rightarrow \infty$.
 
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+  \hline
+  \rowcolor[gray]{0.9}
+  Number& IM\refstepcounter{instnum}\theinstnum \label{IM-rc}\\
+  \hline
+  Label& \bf Approximating the radius of convergence\\
+  \hline
+  Inputs & $N$ and approximation points \eqref{approximation-points} \\
+  \hline
+  Output& $R_c$ or confirmation of divergence.\\
+  \hline
+  Description& Approximate the radius of the circle of convergence, $R_c \approx 1/10^m$.\\
+  \hline
+  Sources& The full details are my own contribution. However the ideas are inspired by conversations
+  with G. Corliss and N. Nedialkov.\\
+  \hline
+  Ref.\ By & \iref{IM-order-of-singularity}\\
+  \hline
+\end{tabular}
+\end{minipage}\\
+
 Given $\tol>0$ and any sequence $\Setbg{c_n}$, construct the power series
 $\sum_{n=0}^{\infty} c_n (z-z_0)^n$.
 Use \ASref{n} to obtain an integer $N$ such that,
@@ -1342,49 +1366,6 @@ Moreover \dref{GD-rc} says $R_c = 1/10^m$.
 \begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
   \hline
   \rowcolor[gray]{0.9}
-  Number& IM\refstepcounter{instnum}\theinstnum \label{IM-rc}\\
-  \hline
-  Label& \bf Approximating the radius of convergence\\
-  \hline
-  Inputs & $N$ and approximation points \eqref{approximation-points} \\
-  \hline
-  Output& $R_c$ or confirmation of divergence.\\
-  \hline
-  Description& Approximate the radius of the circle of convergence, $R_c \approx 1/10^m$.\\
-  \hline
-  Sources& The full details are my own contribution. However the ideas are inspired by conversations
-  with G. Corliss and N. Nedialkov.\\
-  \hline
-  Ref.\ By & \iref{IM-order-of-singularity}\\
-  \hline
-\end{tabular}
-\end{minipage}\\
-
-Let the conditions of Data Definition \ddref{DD-order-of-singularity} hold.
-Then the real coefficients $\Setbg{c_n} \subset \Rz$ of the power series
-$\sum_{n=0}^{\infty} c_n (z-z_0)^n$ are obtained as a TS solution of an \ode and
-consider finding the order $\mu$ of the singularity from the graph
-of $\log_{10} | c_n |$ versus $n$.
-
-The order $\mu$ is increased or decreased by term-by-term differentiation or
-integration, respectively. The upper envelope of the graph of
-$\log_{10} | c_n |$ versus $n$ is concave up for orders $\mu < 1$ which means
-the slope underestimates $\log_{10} |z - z_0|/R_c$, and $R_c$ is overestimated.
-
-To estimate $R_c$ and the order $\mu$ form the graph of $\log_{10} | c_n |$ versus $n$,
-shift the order of the series by repeated term-wise differentiation or integration. After
-each shift, a linear upper envelope is fit with \iref{IM-rc}. The singularity may occur with any order.
-However, it is unusual for a solution to a differential equation to have singularities whose 
-order lies beyond $| \mu - 1 | \leq 3$ \cite{chang1982}.
-
-~\newline
-
-\noindent
-\begin{minipage}{\textwidth}
-\renewcommand*{\arraystretch}{1.5}
-\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
-  \hline
-  \rowcolor[gray]{0.9}
   Number& IM\refstepcounter{instnum}\theinstnum \label{IM-order-of-singularity}\\
   \hline
   Label& \bf Compute $\mu$ the order of singularity and underestimate $R_c$\\
@@ -1410,6 +1391,26 @@ by 10 percent for a conservative estimate for $R_c$ and $\mu=-4$ is returned.\\
   \hline
 \end{tabular}
 \end{minipage}\\
+
+
+Let the conditions of Data Definition \ddref{DD-order-of-singularity} hold.
+Then the real coefficients $\Setbg{c_n} \subset \Rz$ of the power series
+$\sum_{n=0}^{\infty} c_n (z-z_0)^n$ are obtained as a TS solution of an \ode and
+consider finding the order $\mu$ of the singularity from the graph
+of $\log_{10} | c_n |$ versus $n$.
+
+The order $\mu$ is increased or decreased by term-by-term differentiation or
+integration, respectively. The upper envelope of the graph of
+$\log_{10} | c_n |$ versus $n$ is concave up for orders $\mu < 1$ which means
+the slope underestimates $\log_{10} |z - z_0|/R_c$, and $R_c$ is overestimated.
+
+To estimate $R_c$ and the order $\mu$ form the graph of $\log_{10} | c_n |$ versus $n$,
+shift the order of the series by repeated term-wise differentiation or integration. After
+each shift, a linear upper envelope is fit with \iref{IM-rc}. The singularity may occur with any order.
+However, it is unusual for a solution to a differential equation to have singularities whose 
+order lies beyond $| \mu - 1 | \leq 3$ \cite{chang1982}.
+
+~\newline
 
 \plt{The motivation for this section is to reduce the problem defined in
   ``Physical System Description'' (Section~\ref{sec_phySystDescrip}) to one
