@@ -829,6 +829,19 @@ under the following assumptions:
 \item[A\refstepcounter{assumpnum}\theassumpnum \label{as:real}:]
   The sequence $\Setbg{c_n}$ is a subset of $\Rz$.
 
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{as:threeterm}:]
+  The scope of three term analysis is to compute the radius of convergence of
+  a real power series at a point $z_0 \in \Rz$ that has a primary singularity.
+
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{as:sixterm}:]
+  The scope of six term analysis is to compute the radius of convergence of
+  a real power series at a point $z_0 \in \Rz$ that has a complex conjugate pair of
+  primary singularity.
+
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{as:topline}:]
+  The scope of top line analysis is to compute the radius of convergence of
+  a real power series at a point $z_0 \in \Rz$ that has a secondary singularity.
+
 %\item[A\refstepcounter{assumpnum}\theassumpnum \label{as:linear-least-squares}:]
 %  A Linear Least Squares fit to the input sequence approximates the Least Squares residual within \tol.
 
@@ -840,7 +853,7 @@ under the following assumptions:
 Applying the terminology and definitions from \SSCref{terminology-definitions}, this section records
 theorems required to identify a convergent/divergent series.
 
-Consider the sequence $\Setbg{c_n}$ and its power series $\sum_{n=0}^{\infty} c_n$. The following
+Consider the sequence $\Setbg{c_n}$ and its power series $\sum_{n=0}^{\infty} c_n (z-z_0)^n$. The following
 TM is used to show that the coefficients in the terms of a series tend to zero as the index of the term
 tends to infinity.
 
