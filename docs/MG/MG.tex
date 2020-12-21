@@ -83,8 +83,11 @@ This section records information for easy reference.
   R & Requirement\\
   SC & Scientific Computing \\
   SRS & Software Requirements Specification\\
+  TLA & Top Line Analysis\\
   \progname{f} & Radius of Convergence software developed for this project\\
   UC & Unlikely Change\\
+  3TA & Three Term Analysis\\
+  6TA & Six Term Analysis\\
   \bottomrule
 \end{tabular}\\
 
@@ -183,11 +186,11 @@ adapted here is called design for change. Anticipated changes are labeled by
   \item[\aclabel{acSOLVER}] The algorithm used to solve the minimization sub-problem
     in 3TA, 6TA, and TLA.
   \item[\aclabel{acPoleRealSolver}] The algorithm used to find the distance to the
-    nearest real pole.
+    nearest real pole, 3TA.
   \item[\aclabel{acPoleComplexSolver}] The algorithm used to find the distance to
-    the nearest complex conjugate pair of poles.
+    the nearest complex conjugate pair of poles, 6TA.
   \item[\aclabel{acPoleTopLine}] The algorithm used to find the distance to the nearest pole
-    in top line analysis.
+    in top line analysis, TLA.
   \item[\aclabel{acROC}] How the overall control of the calculations is orchestrated.
     % Pole identification, distinguish a real pole from a complex conjugate pair of poles
     % from a complicated situation.
@@ -233,15 +236,14 @@ actually be implemented. Modules are labeled by {\bf M} followed by a number.
 \end{description}
 
 
-\begin{table}[h!]
+\begin{table}[!ht]
 \centering
 \begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
 \toprule
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
 
-\multirow{2}{0.3\textwidth}{Hardware-Hiding Module}
-  & \\
+\multirow{1}{0.3\textwidth}{Hardware-Hiding Module} & \\
 
 \midrule
 
@@ -300,14 +302,15 @@ to be implemented.
 Input is handled by the calling program, and the calling program is responsible for
 reading inputs from a file on the hard drive or even computing the inputs and writing the outputs
 to the calling method or to the hardware.
-
 \subsection{Behaviour-Hiding Module}
 
 \subsubsection{Input Format Module (\mref{mIN})}
 
 \begin{description}
-\item[Secrets:] The format and structure of the input data.
-\item[Services:] Validate input format. Validate input type. Handle input acquisition via software.
+\item[Secrets:] The implementation of the input data structure.
+\item[Services:] The first coefficient corresponds to $c_0$, the coefficient of the zero
+  power term, up to $c_{N-1}$,  the coefficient of the N-1 power term. The input data
+  structure must include the scaling of the coefficients.
 \item[Implemented By:] \progname{f}
 \item[Type of Module:] Library
 \end{description}
@@ -315,8 +318,10 @@ to the calling method or to the hardware.
 \subsubsection{Output Format Module (\mref{mOUT})}
 
 \begin{description}
-\item[Secrets:] The format and structure of the output.
-\item[Services:] Handle output format. Handle output type. Handle output via software.
+\item[Secrets:] The implementation of the output data structure.
+\item[Services:] The output data structure includes the radius of convergence $R_c$,
+  order of singularity $\mu$, the error in summing the tail $\sum_{n=N}^{\infty} c_n$,
+  and the modelling error from $c_{\minterms}$ to coefficient $c_{N-1}$.
 \item[Implemented By:] \progname{f}
 \item[Type of Module:] Library
 \end{description}
@@ -324,7 +329,7 @@ to the calling method or to the hardware.
 \subsubsection{Parameters Module (\mref{mPARAM})}
 
 \begin{description}
-\item[Secrets:] Handle all aspects of parameters.
+\item[Secrets:] The implementation of the parameter data structure.
 \item[Services:] This module handles parameter acquisition, format, type, distribution, and constraints.
 \item[Implemented By:] \progname{f}
 \item[Type of Module:] Record
@@ -333,8 +338,9 @@ to the calling method or to the hardware.
 \subsubsection{Real pole module (\mref{mPoleRealSolver})}
 
 \begin{description}
-\item[Secrets:] Implements solver for real poles.
-\item[Services:] Computes $R_c$ and $\mu$ for real poles.
+\item[Secrets:] The system and data structure used to find the distance to the nearest real pole.
+\item[Services:] Set up the minimization sub-problem. Call the solver. Interpret
+  solution to give the output data structure defined in \mref{mOUT} for 3TA.
 \item[Implemented By:] \progname{f}
 \item[Type of Module:] Library
 \end{description}
@@ -342,8 +348,10 @@ to the calling method or to the hardware.
 \subsubsection{Complex conjugate pair of poles module (\mref{mPoleComplexSolver})}
 
 \begin{description}
-\item[Secrets:] Implements solver for complex conjugate pair of poles.
-\item[Services:] Computes $R_c$ and $\mu$ for complex conjugate pair of poles.
+\item[Secrets:] The system and data structure used to find the distance to the nearest
+  pair of complex conjugate poles.
+\item[Services:] Set up the minimization sub-problem. Call the solver. Interpret
+  solution to give the output data structure defined in \mref{mOUT} for 6TA.
 \item[Implemented By:] \progname{f}
 \item[Type of Module:] Library
 \end{description}
@@ -351,8 +359,10 @@ to the calling method or to the hardware.
 \subsubsection{Resolve nearest pole in hard to resolve case module (\mref{mPoleTopLineSolver})}
 
 \begin{description}
-\item[Secrets:] Implements solver to find the distance to the nearest pole in hard to resolve case.
-\item[Services:] Computes $R_c$ for hard to resolve case.
+\item[Secrets:] The system and data structure used to find the distance to the nearest
+  pole in hard to resolve case.
+\item[Services:] Set up the minimization sub-problem. Call the solver. Interpret
+  solution to give the output data structure defined in \mref{mOUT} for TLA.
 \item[Implemented By:] \progname{f}
 \item[Type of Module:] Library
 \end{description}
@@ -360,9 +370,9 @@ to the calling method or to the hardware.
 \subsubsection{Pole identification module (\mref{mROC})}
 
 \begin{description}
-\item[Secrets:] Implements pole identification that distinguishes a real pole from
+\item[Secrets:] How the overall control of the calculations is orchestrated.
+\item[Services:] Implements pole identification that distinguishes a real pole from
   a complex conjugate pair of poles from a complicated situation.
-\item[Services:] Decides which solver is best suited to resolve the inputs.
 \item[Implemented By:] \progname{f}
 \item[Type of Module:] Library
 \end{description}
@@ -370,14 +380,9 @@ to the calling method or to the hardware.
 \subsection{Software Decision Module (\mref{mSOLVER})}
 
 \begin{description}
-\item[Secrets:] Algorithms.
-\item[Services:] Includes data structure and algorithms used in the system that
-  do not provide direct interaction with the user.
-  Algorithm to find the distance to the nearest real pole.
-  Algorithm to find the distance to the nearest complex conjugate pair of poles.
-  Algorithm to find the distance to the nearest pole in hard to resolve case.
-  % Changes in these modules are more likely to be motivated by a desire to
-  % improve performance than by externally imposed changes.
+\item[Secrets:] The algorithm used to solve the minimization sub-problem
+    in 3TA, 6TA, and TLA.
+\item[Services:] Solve the minimization sub-problem.
 \item[Implemented By:] \progname{f}
 \item[Type of Module:] Library
 \end{description}
