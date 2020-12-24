@@ -1,17 +1,85 @@
-\documentclass{article}
+\documentclass[12pt]{article}
 
-\input{../Common}
+\usepackage{amsmath, mathtools}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xspace}
 
-\title{CAS 741: Problem Statement\\Radius of Convergence}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{xr}
+\usepackage{longtable}
+\usepackage{xfrac}
+\usepackage{float}
+\usepackage{siunitx}
+\usepackage{caption}
+\usepackage{geometry}
+\usepackage{pdflscape}
+\usepackage{afterpage}
 
-\author{John Ernsthausen (macid: ernsthjm)}
-
-\date{}
+\usepackage{fullpage}
+\usepackage[round]{natbib}
+%\usepackage{refcheck}
+\usepackage{lipsum}
 
 \input{../Comments}
+\input{../Common}
+
+% For easy change of table widths
+\newcommand{\colZwidth}{1.0\textwidth}
+\newcommand{\colAwidth}{0.13\textwidth}
+\newcommand{\colBwidth}{0.82\textwidth}
+\newcommand{\colCwidth}{0.1\textwidth}
+\newcommand{\colDwidth}{0.05\textwidth}
+\newcommand{\colEwidth}{0.8\textwidth}
+\newcommand{\colFwidth}{0.17\textwidth}
+\newcommand{\colGwidth}{0.5\textwidth}
+\newcommand{\colHwidth}{0.28\textwidth}
+
+% Used so that cross-references have a meaningful prefix
+\newcounter{defnum} %Definition Number
+\newcommand{\dthedefnum}{GD\thedefnum}
+\newcommand{\dref}[1]{GD\ref{#1}}
+\newcounter{datadefnum} %Datadefinition Number
+\newcommand{\ddthedatadefnum}{DD\thedatadefnum}
+\newcommand{\ddref}[1]{DD\ref{#1}}
+\newcounter{theorynum} %Theory Number
+\newcommand{\tthetheorynum}{T\thetheorynum}
+\newcommand{\tref}[1]{TM\ref{#1}}
+\newcounter{tablenum} %Table Number
+\newcommand{\tbthetablenum}{T\thetablenum}
+\newcommand{\tbref}[1]{TB\ref{#1}}
+\newcounter{assumpnum} %Assumption Number
+\newcommand{\atheassumpnum}{P\theassumpnum}
+\newcommand{\aref}[1]{A\ref{#1}}
+\newcounter{goalnum} %Goal Number
+\newcommand{\gthegoalnum}{P\thegoalnum}
+\newcommand{\gsref}[1]{GS\ref{#1}}
+\newcounter{instnum} %Instance Number
+\newcommand{\itheinstnum}{IM\theinstnum}
+\newcommand{\iref}[1]{IM\ref{#1}}
+
+\newcounter{reqnum} %Requirement Number
+\newcommand{\rthereqnum}{R\thereqnum}
+\newcommand{\rref}[1]{R\ref{#1}}
+\newcommand{\rlabel}[1]{\refstepcounter{reqnum} \rthereqnum \label{#1}:}
+
+\newcounter{nfrnum} %NFR Number
+\newcommand{\rthenfrnum}{NFR\thenfrnum}
+\newcommand{\nfrref}[1]{NFR\ref{#1}}
+
+\newcounter{lcnum} %Likely change number
+\newcommand{\lthelcnum}{LC\thelcnum}
+\newcommand{\lcref}[1]{LC\ref{#1}}
 
 \begin{document}
 
+\title{CAS 741: Problem Statement\\Radius of Convergence}
+\author{John Ernsthausen (macid: ernsthjm)}
+\date{\today}
+	
 \maketitle
 
 \begin{table}[hp]
@@ -22,55 +90,83 @@
 \midrule
 September 18, 2020 & John Ernsthausen & Initial draft\\
 September 25, 2020 & John Ernsthausen & Removed connection to \daets\\
+24 December 2020 & John Ernsthausen & Second submission\\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-After generating a real-valued Taylor series (TS) approximate solution of order $p$ to the
-ordinary differential equation (\ode) initial-value problem (\ivp) 
+Construct the power series centered at $z_0 \in \Rz$
 \EQ
 {
-  \label{eq:introduction-mathematical-odeivp}
-  y'\parn{t} = f\pbg{t,y\parn{t}},
-  \quad
-  y\parn{t_0} = y_0 \in \mathcal D \subset \Rz^d,
-  \quad
-  t \in \iode \subset \Rz,
+  \label{eq:power-series}
+  \sum_{n=0}^{\infty} c_n (z-z_0)^n
 }
-the TS methods defined in
-Jorba and Zou \cite{jorba2005software} (JZ),
-Bergsma and Mooij \cite{bergsma2016application} (BM),
-and
-Chang and Corliss \cite{chang1982} (CC)
-explicitly require an estimate for the TS radius of convergence (RC).
+from a sequence $\Setbg{c_n}$ of real numbers where the $n^\text{th}$ term in the sequence corresponds
+to the $n^\text{th}$ coefficient in the series. We associate a sequence $\Setbg{s_n}$ of partial sums
+\EQ
+{
+  \label{eq:partial-sum}
+  s_n \defeq \sum_{k=0}^n c_k (z-z_0)^k
+}
+with the power series. If $\Setbg{s_n} \rightarrow s$ as $n \rightarrow \infty$,
+then we say $\Setbg{s_n}$ converges to $s$. The number $s$ is the sum of the series, and
+we write $s$ as \eqref{power-series}. If $\Setbg{s_n}$ diverges, then the series is said to diverge.
 
-At each $\parn{t_n,x_n}$, $n \geq 0$, the TS method for the numerical solution
-of \eqref{introduction-mathematical-odeivp} computes Taylor coefficients (TCs)
-$\tc{\xn}{i}$ at $t_{n}$ to construct the TS approximate solution
-\begin{align}
-  \label{eq:tss}
-  \Tp(t) = \xn + \sum_{i=1}^{p}\tc{\xn}{i}(t-\tn)^{i} \quad\mbox{on}\quad \lode.
-\end{align}
-TCs can be readily computed through automatic differentiation (AD) with packages
-such as \fadbad \cite{FADBAD++} and \adolc \cite{GriewankADBook2/e}.
-In choosing the order $p$ and the stepsize $h = t_{n+1} - t_n$, the goal is to minimize the amount
-of computational work required during the integration process while maintaining a user specified accuracy tolerance. 
+We cannot perform an infinite sum on a digital computer, and we cannot identify the set of all $z$
+near $z_0$ such that \eqref{power-series} converges by exhaustive checking. We need to identify
+the circle of convergence by its radius.
+A power series always converges inside a circle of convergence of radius $R_c$.
 
-JZ compute the RC from the TS as the minimum of the $p-1$ and $p$ terms in the usual ratio test.
-While the JZ process is straightforward, it can be inaccurate.
-CC fit the tail of the computed TS to the TS of a model problem, which has proven to be satisfactory
-on standard test problems \cite{enright1987examples}.
+Chang and Corliss \cite{chang1982} observed that the coefficients of \eqref{power-series} follow a few
+very definite patterns characterized by the location of primary singularities. Real valued power series
+can only have poles, logarithmic branch points, and essential singularities. Moreover, these singularities
+occur on the real axis or in complex conjugate pairs. The effects of secondary singularities disappear
+whenever sufficiently long power series are used.
+Recall that a primary singularity of \eqref{power-series} is the closest singularity to the series
+expansion point $z_0$ in the complex plane. All other singularities are secondary singularities.
 
-I propose to estimate the RC of a given Taylor series based on top line analysis
-\cite[pp.~127--128]{chang1982}, one of several sub-algorithms of the CC algorithm.
-Top line analysis is the default approach when all their other tests fail.
+To determine $R_c$ and the order of the singularity $\mu$,
+Chang and Corliss \cite{chang1982} fit a given finite sequence corresponding to the partial sum $s_N$
+for $N$ sufficiently large to a model.
 
-%  \wss{comment}
+I propose to estimate the $R_c$ of a given power series based on the three term analysis
+for a real pole, six term analysis for a pair of complex conjugate poles, and top line analysis
+\cite[pp.~127--128]{chang1982}. The input is a finite sequence of scaled coefficients
+and their scaling. The output is $R_c$ and the order of the singularity $\mu$.
+
+%  We cannot perform an infinite sum on a digital computer. However, given a tolerance \tol
+%  and a convergent power series, there exists an integer $N$ such that, for all
+%  $m \geq n \geq N$, $| \sum_{k=n}^{m} c_k | < \tol$. We assume that we know $N$. Our software
+%  \progname{f} will estimate the radius of convergence $R_c$ from the first $N$ terms 
+%  in the power series. The coefficients may be scaled with a scaling $h$ to
+%  prevent numerical overflow. The default scaling is $h=1$. Scaling the coefficients
+%  is a change of variables $v(z) \defeq (z - z_0)/h$ in \eqref{power-series}. With the scaled coefficients
+%   $\tilde c_n \defeq c_n h^n$ and the change of variables, \eqref{power-series} transforms to
+%  \EQ
+%  {
+%    \label{eq:power-series-scaled}
+%    \sum_{n=0}^{\infty} \tilde c_n v^n.
+%  }
+%  When $r_c$ is the radius of the circle of convergence of \eqref{power-series-scaled}, $R_c = h r_c$
+%  is the radius of the circle of convergence of \eqref{power-series}.
+%  \progname{f} may not compute $R_c$ exactly. These are the assumptions under which the \progname{f} software
+%  operates. In the sequel, we denote both scaled and unscaled coefficients by $c_n$.
 %  
-%  You can also leave comments for yourself, like this:
+%  \cite{chang1982} observed that the coefficients of \eqref{power-series} follow a few
+%  very definite patterns characterized by the location of primary singularities. Real valued power series
+%  can only have poles, logarithmic branch points, and essential singularities. Moreover, these singularities
+%  occur on the real axis or in complex conjugate pairs. The effects of secondary singularities disappear
+%  whenever sufficiently long power series are used. To determine $R_c$ and the order of the singularity $\mu$,
+%  \cite{chang1982} fit a given finite sequence to a model.
 %  
-%  \an{comment}
+%  Recall that a primary singularity of \eqref{power-series} is the closest singularity to the series
+%  expansion point $z_0$ in the complex plane. All other singularities are secondary singularities.
+%  
+%  I propose to estimate the RC of a given Taylor series based on top line analysis
+%  \cite[pp.~127--128]{chang1982}, one of several sub-algorithms of the CC algorithm.
+%  Top line analysis is the default approach when all their other tests fail.
 
-\bibliographystyle{elsarticle-num} 
-\bibliography{Bib}
+\bibliographystyle {plainnat}
+\bibliography {../../refs/References}
+
 \end{document}
