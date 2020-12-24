@@ -47,6 +47,7 @@
 \externaldocument{../SRS/SRS}
 
 \newcommand{\rref}[1]{(R\ref{#1})}
+\newcommand{\nfrref}[1]{NFR\ref{#1}}
 
 \begin{document}
 
@@ -63,7 +64,7 @@ Software estimating the radius of convergence of a power series}
 
 \tableofcontents
 
-%\listoftables
+\listoftables
 
 %\listoffigures
 
@@ -89,13 +90,6 @@ in Section 1 of the Software Requirements Document (SRS) \citep{SRS}.
 \newpage
 
 \pagenumbering{arabic}
-
-% \input examples
-% \input lagrangianfacility
-% \input mechfacility
-% \input vec3d
-% \input fcn 
-% \printindex
 
 %CHAPTER
 \section{Introduction} \label{sc:introduction}
@@ -149,99 +143,38 @@ in Section 1 of the Software Requirements Document (SRS) \citep{SRS}.
 %  expansion point $z_0$ in the complex plane. All other singularities are secondary singularities.
 
 This document provides a verification and validation plan for developing \progname{f}.
+This plan includes dynamic testing and static testing. Functional requirement will be tested
+using parallel testing techniques, and nonfunctional requirements will test accuracy and timing.
+Testing on \progname{f} is fully automated up to applying DevOps techniques available through
+our public repository on GitHub.
 
 %CHAPTER
 \section{General Information}
 
-The scope of this \progname{f} project is limited to top-line analysis.
-Top-line analysis always applies to any power series \eqref{power-series}. It resolves situations
-where secondary singularities are less distinguishable from primary singularities. However it is
-less accurate. It does have a convergence analysis \citep{chang1982}.
+The scope of this \progname{f} project includes three term analysis of primary real poles,
+six term analysis of primary pair of complex conjugate poles, and top line analysis.
+\progname{f} does not yet include an analysis for essential singularities.
 
-Also add 3TA and 6TA.
-
-% Move to MIS
-%
-%
-%  \subsection{Summary}
-%  
-%  In \cite{SRS}, we detailed the algorithm implementing top-line analysis.
-%  
-%  \paragraph{Module findrc} \label{findrc}
-%  We know the tolerance $\tol$, the scale $h$, the integer $N$, and the sequence
-%  $\Setbg{c_0, c_1, \ldots, c_{N}}$ by assumption, as in \SCref{introduction}.
-%  We extract the last $15$ terms from the sequence.
-%  With $k = i+N-14$, obtain the best linear fit $y(k) = m k + b$ in the $2$-norm to the points
-%  \EQ
-%  {
-%    \label{eq:approximation-points}
-%    \Setbg{(N-14, \log_{10} | c_{N-14} |), (N-13, \log_{10} |c_{N-13}|), \ldots, (N, \log_{10} |c_{N}|)},
-%  }
-%  that is, find $m$ and $b$ such that $\sum_{i=0}^{14} |\log_{10} |c_{i+N-14}| - y(i+N-14)|^2$ is minimized.
-%  The approximation problem \eqref{approximation-points} is the well known
-%  {\it linear least-squares problem} \cite{GoVL89}.
-%  The model parameter $m$ will be negative whenever the series \eqref{power-series} converges and
-%  positive whenever it diverges.The radius of convergence $R_c = h/10^m$.
-%  
-%  \paragraph{Module findmu}
-%  Start with the series resulting from integration of the given series three times and
-%  fit the coefficients with Module {\bf findrc}. If that graph is linear, meaning the
-%  minimizer has norm less than \tol, then the slope is accepted and the order of the
-%  singularity is 3. If the graph opens upward, then the series is differentiated term-wise
-%  to reduce the second derivative of the graph, and a new top-line fit is computed with
-%  Module {\bf findrc}. This process is repeated, reducing $\mu$ by 1 each time, until the
-%  graph opens downward or until seven term-wise differentiations have been tested.
-%  If seven term-wise differentiations have been tested and each result in turn proves
-%  unsatisfactory, then the final estimate for $R_c$ is reduced by 10 percent for a
-%  conservative estimate for $R_c$ and $\mu=-4$ is returned.
-%  
-%  We implement Module {\bf findrc} and Module {\bf findrc} in \progname{f}.
-%  This document provides plan for verification and validation \progname{f} while implementing
-%  these modules in \cpp.
+Top-line analysis always applies to any power series \eqref{power-series}. It resolves
+a series anaylsis exhibiting secondary singularities. However top line analysis can be
+inaccurate.
 
 \subsection{Objectives}
 
-Our objective it to implement Module {\bf findrc} and Module {\bf findrc} via
-{\it test driving} in \cpp. The implementation must satisfy the requirements
-enumerated in \cite{SRS}.
+Our objective is correctness, accuracy, and timing. \progname{f} is an idea for an academic
+research project. The impression form this software will guide future decisions about
+this idea as a viable research project.
 
-Assume that the assumptions are satisfied. Recall the requirements.
-
-%  \noindent \begin{itemize}
-%  
-%  \item[R\refstepcounter{reqnum}\thereqnum \label{R_Inputs}:] The input
-%    sequence should be scaled by $h$ to prevent overflow/underflow.
-%    If this is not possible, \progname{f} will find a scale.
-%  
-%  \item[R\refstepcounter{reqnum}\thereqnum \label{R_Calculate}:]
-%    \progname{f} should execute as fast as the \cite{chang1982} software \rdcon.
-%   A NONFUNCTIONAL requirement!
-%  
-%  \item[R\refstepcounter{reqnum}\thereqnum \label{R_VerifyOutput}:]
-%    \progname{f} should estimate the radius of convergence $R_c$ and
-%      the order of singularity $\mu$ for the following cases where $R_c$ and $\mu$ are known.
-%  
-%    The real valued function $1/(z-z_0)^{\mu}$.
-%  
-%    The real valued function $1/(1 + 25*(z-z_0)^2)^{\mu}$.
-%  
-%    Top line analysis while solving \dae \ivp by the TS method should verify
-%      the computed step is within the circle of convergence and compare
-%      with the \cite{chang1982} algorithm \rdcon.
-%  
-%  \item[R\refstepcounter{reqnum}\thereqnum \label{R_Output}:] We must not overestimate $R_c$.
-%    If $R_c$ is overestimated, then the power-series is a divergence sum on the overestimation.
-%  
-%    In \ode solving by TS methods, underestimating $R_c$ is acceptable as an underestimation
-%    results in a slight increase in computational effort for solving an \ode \ivp.
-%  \end{itemize}
-
-In a nutshell these requirements validate and verify \progname{f}.
+Every effort will be made to complete every aspect
+promised in this documentation. However, as a research project, it is more important to
+discover missing elements in the work of other authors such as \cite{chang1982} than
+to reproduce a known implementation. As a result, some promised work is expected to be
+accomplished after the course CSE 741 has completed.
 
 \subsection{Relevant Documentation}
 
-Relevant documentation includes the authors Software Requirements (SRS) Document \citep{SRS}, the
-authors Module Guide (MG, to be written), and the authors Module Interface Specification (MIS, to be written).
+Relevant documentation includes the authors Software Requirements Specification (SRS) \citep{SRS}, the
+authors Module Guide (MG) \citep{MG}, and the authors Module Interface Specification (MIS) \citep{MIS}.
 
 \section{Verification and Validation Plan}
 
@@ -288,25 +221,20 @@ Defects will be addressed with issues on the GitHub platform.
 
 \subsection{Implementation Verification Plan}
 
-Dynamic testing through unit tests (Gtest/GMock), memory testing (valgrind), profiling (gprof),
-and code coverage (gcov).
-
-Static testing though linting (clang-format).
-
-Continuous integration through GitHub, TravisCI, and Coveralls.
-
-All verification will be automatic.
+In the development of \progname{f}, all verification will be automatic.
 
 \subsubsection{Dynamic testing}
 Dynamic testing requires the program to be executed. For example, unit test cases
 are run, and the results are checked against expected behaviour.
+Dynamic testing of \progname{f} will be through unit tests, memory testing, profiling,
+and code coverage.
 
-\paragraph{Unit testing (Gtest/GMock)}:
+\paragraph{Unit testing (Gtest/GMock):}
 The Implementation Verification Plan for \progname{f} includes automated testing at the module level.
 For testing at the module level, the author plans to follow the Test Driven Development
 software development practices as described by \cite{langr2013} for {\it test driving}.
 Test driving is an interactive process for software development where tests are determined
-as part of the software development process. However on a high level, some unit tests
+as part of the software development process. However, on a high level, some unit tests
 will be offered in the sequel.
 
 Let us recall test driving \cite{langr2013}.
@@ -332,13 +260,35 @@ existence of a test that will not pass drives the developer to implement the cor
 The increment should be the smallest meaningful amount of code, one or two lines of code and one assertion.
 
 \paragraph{Memory testing (valgrind):}
-Code free of memory leaks.
+Memory leaks as result from un-freed dynamically allocated memory. Valgrind is a tool to automatically
+detect memory leaks and a variety of memory errors. We will engage valgrind to remove all the memory
+errors this checker flags.
+
+Valgrind will be run on the unit testing test suite.
 
 \paragraph{Profiling (gprof):}
-Number of method calls and time spent in each method. Used to help performance.
+GCC includes a tool called gprof, which can be used to analyze the performance of \progname{f}.
+Gprof will list the functions executed by \progname{f}, along with the percentage of total runtime,
+number of method calls, and time spent in each method. Gprof is used to help performance.
+
+Using gprof, \progname{f} can reveal the parts of itself that take up the most execution time,
+without needing to do any manual measurements. This will help me to decide which methods
+to focus on when I attempt to optimize my code.
+
+Gprof will be run on stand alone examples to determine performance for example in using \progname{f}
+as a stepsize controller in the solution process on an ordinary differential and differential-algebraic
+equation.
 
 \paragraph{Code coverage (gcov):}
-Reveals the code used/not used. Percentage of code used per directory and per file.
+GCC includes a tool called gcov, which can be used to reveal the lines of code used in the execution
+of a program. Unit testing is working whenever small increments of
+code are written when driving into the codebase the tests intended behavior. Gcov tests the
+assumption that all the code written for that unit test is used for that behavior.
+
+Gcov reveals the code used/not used, and its output indicates the percentage of code used
+per directory and per file.
+
+Gcov will be run against the test suite.
 
 \subsubsection{Static testing}
 Static testing does not involve program execution.
@@ -346,51 +296,51 @@ Testing techniques simulate the dynamic environment.
 Static testing includes syntax checking.
 
 \paragraph{Linting (clang-format):}
-The code should be well formatted. Formats can be customized in XXX.
+The code itself should be well formatted. Clang-format is a tool that keeps source code formatted
+to a specification. My specification is in the file ROC/.clang-format. Formats can be customized.
+
+Clang-format will be run against my code base before I push my code to GitHub. 
 
 \subsubsection{Continuous integration}
-\begin{itemize}
-\item Information available on
-  \href{https://en.wikipedia.org/wiki/Continuous_integration}{Wikipedia}
-\item Developers integrate their code into a shared repo frequently (multiple
-  times a day)
-\item Each integration is automatically accompanied by regression tests and
-  other build tasks
-\item Build server
-\begin{itemize}
-\item Unit tests
-\item Integration tests
-\item Static analysis
-\item Profile performance
-\item Extract documentation
-\item Update project web-page
-\item Portability tests
-\item etc.
-\end{itemize}
-\item Avoids potentially extreme problems with integration when the baseline and
-  a developer's code greatly differ
-\end{itemize}
+Continuous integration enables more than one developer to independently drive new behavior into
+a code base and maintain a working codebase. Without continuous integration and with developers
+impeccably practicing sound testing philosophies, a code base integration between the developers
+can fail on merge. Continuous integration asks for frequent merges so that developers can be
+assured of integration compatibility.
 
-\begin{itemize}
-\item Eliminates the ``it works on my machine'' problem
-\item Package dependencies with your apps
-\item A container for lightweight virtualization
-\item Not a full VM
-\end{itemize}
+TravisCI offers a working development server environment that will run unit tests, integration tests,
+static analysis, profile performance, extract documentation, and update the project web-page
+after developers integrate their code into a shared repo. It is expected that developers
+will merge their code into the shared repo several times a day.
+TravisCI offers MacOS, Windows, and Linux development environments for portability testing
+to eliminate the \Quote{it works on my machine} problem.
 
-Continuous integration through GitHub, TravisCI, and Coveralls.
+Continuous integration for \progname{f} is offered through GitHub, TravisCI, and Coveralls.
+My TravisCI specification is in the file ROC/.travis.yml and a badge on my 
+\href{https://github.com/JohnErnsthausen/roc}{repo page} indicates that my tests are passing/failing.
+I have not yet figured out how to get the code coverage server Coveralls to work for \progname{f}. However
+the badge for Coveralls is also on the \progname{f} \href{https://github.com/JohnErnsthausen/roc}{repo page}.
 
 \subsubsection{Parallel testing}
 In parallel testing, one compares to other programs.
-
 \progname{f} includes automated testing at the system level
 and integration level. The code output
 will be compared with the output of \rdcon developed by \cite{chang1982} for validation at
-the integration level.
+the integration level. More on this topic is in the sequel.
 
 \subsubsection{Comparison with closed-form solution}
 Yes I do this too, in my unit tests.
 
+For example, I expand $f(t) = 1.0/(1.0-t)$ at
+$t =-1.0$ into its TS with scaling $h=0.1$. I then use 3TA to recover the $R_c = 2$ to accuracy of
+$9.68115e-14$ and $\mu = 1$ to accuracy of $1.1887e-12$. See the unit test
+\EQ
+{
+\text{\footnotesize ThreeTermAnalysisOf.TaylorSeriesAtNegativeOneRealPoleAtOneWithScalingTenthAlphaOne}
+}
+
+\Ni I do this for a collection of $\mu$ and scaling $h$. 
+I build similar tests for 6TA and TLA.
 
 \subsection{Automated Testing and Verification Tools}
 
@@ -400,17 +350,17 @@ These tools include
 \href{https://git.kernel.org/pub/scm/git/git.git}{git} a distributed version-control system
 for tracking changes in source code during software development,
 \href{https://cmake.org/}{cmake} for build automation,
-\href{https://github.com/google/googletest}{gtest}
+\href{https://github.com/google/googletest}{gtest/gmock}
 as a unit testing framework, \href{http://clang.llvm.org/docs/ClangFormat.html}{clang-format}
-for consistent code style formatting, and \href{https://www.valgrind.org}{valgrind}
-to identify memory leaks.
+for consistent code style formatting, \href{https://www.valgrind.org}{valgrind}
+to identify memory leaks, \href{https://en.wikipedia.org/wiki/Gcov}{gcov} for code coverage,
+and \href{https://en.wikipedia.org/wiki/Gprof}{gprof} as a profiler.
 
 This document will additionally propose to branch out into three new areas for the author.
 In the DevOps arena,
 continuous integration will be pursued with \href{https://travis-ci.org}{TravisCI}.
 The continuous integration tool should send an email confirming the success state
 of integrating the new code into production.
-The author will explore the application of linters and metrics for code coverage.
 
 \subsection{Software Validation Plan}
 
@@ -424,39 +374,39 @@ Software Validation Plan is not applicable to this project.
 
 System tests are about the public interface.
 
-Sample Functional System Testing
-\begin{itemize}
-\item Requirements: Determines if the system can perform its function correctly and that the correctness can be sustained over a continuous period of time
-\item Regression: Determines if changes to the system do not invalidate previous positive testing results
-\item Error Handling: Determines the ability of the system to properly process
-  incorrect transactions
-\item Manual Support: Determines that the manual support procedures are documented and complete, where manual support involves procedures, interfaces between people and the system, and training procedures
-\item Parallel: Determines the results of the new application are consistent with the processing of the previous application or version of the application
-\end{itemize}
+\subsection{Parallel testing}
 
-Sample Nonfunctional System Testing
-\begin{itemize}
-\item Stress testing - Determines if the system can function when subject to large volumes
-\item Usability testing
-\item Performance measurement
-\end{itemize}
+\progname{f} includes automated testing at the system level. The code output
+will be compared with the output of \rdcon developed by \cite{chang1982} for validation
+at the integration level.
+Parallel testing will be used in nonfunctional testing.
+
+%  Sample Functional System Testing
+%  \begin{itemize}
+%  \item Requirements: Determines if the system can perform its function correctly and that the correctness can be sustained over a continuous period of time
+%  \item Regression: Determines if changes to the system do not invalidate previous positive testing results
+%  \item Error Handling: Determines the ability of the system to properly process
+%    incorrect transactions
+%  \item Manual Support: Determines that the manual support procedures are documented and complete, where manual support involves procedures, interfaces between people and the system, and training procedures
+%  \item Parallel: Determines the results of the new application are consistent with the processing of the previous application or version of the application
+%  \end{itemize}
+%  
+%  Sample Nonfunctional System Testing
+%  \begin{itemize}
+%  \item Stress testing - Determines if the system can function when subject to large volumes
+%  \item Usability testing
+%  \item Performance measurement
+%  \end{itemize}
 
 \subsection{Tests for Functional Requirements}
 
-\subsubsection{Parallel testing}
-
-\progname{f} includes automated testing at the system level
-and integration level. The code output
-will be compared with the output of \rdcon developed by \cite{chang1982} for validation
-at the integration level.
-
-And see Nonfunctional tests.
+\progname{f} does not have System Functional Requirements at this time.
 
 \subsection{Tests for Nonfunctional Requirements}
 
 \subsubsection{Timing}
 
-Requirement \rref{R_Calculate} says that \progname{f} should execute as fast as
+Requirement \nfrref{NFR_timing} says that \progname{f} should execute as fast as
 the \cite{chang1982} software \rdcon. The following tests represent a comparison between
 \progname{f} and \rdcon.
 
@@ -501,7 +451,7 @@ How test will be performed: Automatically.
 
 \subsubsection{Accuracy}
 
-Requirement \rref{R_VerifyOutput} says that the new top line
+Requirement \nfrref{NFR_accuracy} says that the new top line
 analysis in \progname{f} should compute a $R_c$ and $\mu$ which is
 close to the values computed with the \cite{chang1982} algorithm \rdcon.
 This test treats \rdcon as a pseudo oracle.
@@ -600,20 +550,49 @@ However I would find a traceability table difficult to present as I have 158 tes
 
 In the Module Guide there is "Table 2: Trace Between Requirements and Modules". Here I'm thinking of Module as a Parnas Module, a work order. For every work order, I Test Drive the behavior given in the work order into my code base. All of the behaviors required by the module must have corresponding testing code. I then do code coverage on my tests. If I have 100\% code coverage of my tests and all the required behaviors are covered in the module. Then by my testing, I automatically have the functionality of the traceability table in discussion making the traceability table unnecessary work.
 
-The Software Development theories of Test Driving recommend running all test and observing that all tests pass. The interest of the third party in "Let’s say a third party person is only interested in testing the R3" should be highly discouraged.
-
 \section{Unit Test Description}
 
-\subsubsection{Input testing}
-% Issue #9
+To implement each module required (so far) 158 unit tests. The tests are described in natural language
+through the tests \Quote{TestCase.TestName} combination. The tests are grouped by module in the directory
+roc/test. I enumerate the TestCases used in \TBref{testcases} that test all functional requirements.
+Especially notice the TestNames related to the inputs should the reader run the test suite.
+These tests demonstrate the exceptions thrown whenever a user error has occurred.
 
-User misuses the inputs: Length should be negative. Ensure the program gives an error.
+%  Input testing in these input requirements:
+%  \rref{rIHardware} Input acquisition via hardware.
+%  \rref{rISoftware} Input acquisition via software.
+%  \rref{rIFormat} Validate input format.
+%  \rref{rIType} Validate input type.
 
-Input testing in these input requirements:
-\rref{rIHardware} Input acquisition via hardware.
-\rref{rISoftware} Input acquisition via software.
-\rref{rIFormat} Validate input format.
-\rref{rIType} Validate input type.
+\begin{table}[h!]
+\centering
+\begin{tabular}{r p{0.3\textwidth} p{0.6\textwidth}}
+\toprule
+\textbf{Number of Tests} & \textbf{TestCase Name}\\
+\midrule
+  7 &  TestThatDDIST2\\
+ 5  &  TestThatDNRM2\\
+ 1  &  TestExceptions\\
+ 3  &  TestThatIO\\
+ 6  &  TestThatMathext\\
+ 23 &  TestThatMatrix\\
+ 10 &  TestThatCPPQR\\
+ 10 &  TestThatHouseholderG\\
+ 10 &  TestThatHouseholderL\\
+ 7  &  TestThatQRF\\
+ 8  &  TestThatQRS\\
+ 9  &  TestThatQR\\
+ 22 &  SixTermAnalysisOf\\
+ 21 &  ThreeTermAnalysisOf\\
+ 4  &  TestThatTopLine\\
+ 12 &  TestThatVectorF\\
+  \bottomrule
+
+\end{tabular}
+  \caption{Test cases}
+\label{tb:testcases}
+\end{table}
+
 
 %  \wss{Reference your MIS and explain your overall philosophy for test case
 %    selection.}  
@@ -777,3 +756,4 @@ Input testing in these input requirements:
 %  \wss{This is a section that would be appropriate for some projects.}
 
 \end{document}
+

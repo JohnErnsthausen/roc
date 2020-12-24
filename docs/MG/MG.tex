@@ -250,13 +250,13 @@ actually be implemented. Modules are labeled by {\bf M} followed by a number.
 \midrule
 
 \multirow{7}{0.3\textwidth}{Behaviour-Hiding Module}
-  & Input Format Module\\
-  & Output Format Module \\
-  & Parameters Module\\
-  & Real pole module\\
-  & Complex conjugate pair of poles module\\ 
-  & Resolve nearest pole in hard to resolve case module\\
-  & Pole identification module\\
+  & In Module\\
+  & Out Module \\
+  & Params Module\\
+  & Real Pole module\\
+  & Complex Pair Poles module\\ 
+  & Top Line Analysis module\\
+  & ROC module\\
 \midrule
 
 {Software Decision Module} & Solver Module\\
@@ -306,7 +306,7 @@ reading inputs from a file on the hard drive or even computing the inputs and wr
 to the calling method or to the hardware.
 \subsection{Behaviour-Hiding Module}
 
-\subsubsection{Input Format Module (\mref{mIN})}
+\subsubsection{In (\mref{mIN})}
 
 \begin{description}
 \item[Secrets:] The implementation of the input data structure.
@@ -317,7 +317,7 @@ to the calling method or to the hardware.
 \item[Type of Module:] Library
 \end{description}
 
-\subsubsection{Output Format Module (\mref{mOUT})}
+\subsubsection{Out (\mref{mOUT})}
 
 \begin{description}
 \item[Secrets:] The implementation of the output data structure.
@@ -328,7 +328,7 @@ to the calling method or to the hardware.
 \item[Type of Module:] Library
 \end{description}
 
-\subsubsection{Parameters Module (\mref{mPARAM})}
+\subsubsection{Params (\mref{mPARAM})}
 
 \begin{description}
 \item[Secrets:] The implementation of the parameter data structure.
@@ -337,7 +337,7 @@ to the calling method or to the hardware.
 \item[Type of Module:] Record
 \end{description}
 
-\subsubsection{Real pole module (\mref{mPoleRealSolver})}
+\subsubsection{Real Pole (\mref{mPoleRealSolver})}
 
 \begin{description}
 \item[Secrets:] The system and data structure used to find the distance to the nearest real pole.
@@ -347,7 +347,7 @@ to the calling method or to the hardware.
 \item[Type of Module:] Library
 \end{description}
 
-\subsubsection{Complex conjugate pair of poles module (\mref{mPoleComplexSolver})}
+\subsubsection{Complex Pair Poles (\mref{mPoleComplexSolver})}
 
 \begin{description}
 \item[Secrets:] The system and data structure used to find the distance to the nearest
@@ -358,7 +358,7 @@ to the calling method or to the hardware.
 \item[Type of Module:] Library
 \end{description}
 
-\subsubsection{Resolve nearest pole in hard to resolve case module (\mref{mPoleTopLineSolver})}
+\subsubsection{Top Line Analysis (\mref{mPoleTopLineSolver})}
 
 \begin{description}
 \item[Secrets:] The system and data structure used to find the distance to the nearest
@@ -369,7 +369,7 @@ to the calling method or to the hardware.
 \item[Type of Module:] Library
 \end{description}
 
-\subsubsection{Pole identification module (\mref{mROC})}
+\subsubsection{ROC (\mref{mROC})}
 
 \begin{description}
 \item[Secrets:] How the overall control of the calculations is orchestrated.
@@ -379,7 +379,7 @@ to the calling method or to the hardware.
 \item[Type of Module:] Library
 \end{description}
 
-\subsection{Software Decision Module (\mref{mSOLVER})}
+\subsection{Solver Module (\mref{mSOLVER})}
 
 \begin{description}
 \item[Secrets:] The algorithm used to solve the minimization sub-problem
@@ -407,28 +407,22 @@ requirements and between the modules and the anticipated changes.
   R3  & \mref{mIN}\\
   R4  & \mref{mIN}\\
   R5  & \mref{mIN}\\
-  R6  & \mref{mIN}\\
+  R6  & \mref{mOUT}\\
   R7  & \mref{mOUT}\\
   R8  & \mref{mOUT}\\
-  R9  & \mref{mOUT}\\
-  R10 & \mref{mOUT}\\
+  R9  & \mref{mPARAM}\\
+  R10 & \mref{mPARAM}\\
   R11 & \mref{mPARAM}\\
   R12 & \mref{mPARAM}\\
   R13 & \mref{mPARAM}\\
-  R14 & \mref{mPARAM}\\
-  R15 & \mref{mPARAM}\\
+  R14 & \mref{mSOLVER}\\
+  R15 & \mref{mSOLVER}\\
   R16 & \mref{mSOLVER}\\
-  R17 & \mref{mSOLVER}\\
-  R18 & \mref{mSOLVER}\\
-  R19 & \mref{mIN}, \mref{mOUT}, \mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleRealSolver}, \mref{mROC}\\
-  R20 & \mref{mIN}, \mref{mOUT}, \mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleComplexSolver}, \mref{mROC}\\
-  R21 & \mref{mIN}, \mref{mOUT}, \mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleTopLineSolver}, \mref{mROC}\\
-  R22 & \mref{mIN}, \mref{mOUT}, \mref{mROC}\\
-  R23 & \mref{mIN}, \mref{mOUT},\mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleRealSolver}, \mref{mPoleComplexSolver}, \mref{mPoleTopLineSolver}, \mref{mROC}\\
-  R24 & \mref{mIN}, \mref{mOUT}, \mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleRealSolver}, \mref{mROC}\\
-  R25 & \mref{mIN}, \mref{mOUT}, \mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleComplexSolver}, \mref{mROC}\\
-  R26 & \mref{mIN}, \mref{mOUT}, \mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleTopLineSolver}, \mref{mROC}\\
-  R27 & \mref{mSOLVER}\\
+  R17 & \mref{mIN}, \mref{mOUT}, \mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleRealSolver}, \mref{mROC}\\
+  R18 & \mref{mIN}, \mref{mOUT}, \mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleComplexSolver}, \mref{mROC}\\
+  R19 & \mref{mIN}, \mref{mOUT}, \mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleTopLineSolver}, \mref{mROC}\\
+  R20 & \mref{mIN}, \mref{mOUT}, \mref{mROC}\\
+  R21 & \mref{mIN}, \mref{mOUT},\mref{mPARAM}, \mref{mSOLVER}, \mref{mPoleRealSolver}, \mref{mPoleComplexSolver}, \mref{mPoleTopLineSolver}, \mref{mROC}\\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Requirements and Modules}
