@@ -15,6 +15,7 @@
 \usepackage{float}
 \usepackage{siunitx}
 \usepackage{caption}
+\usepackage{geometry}
 \usepackage{pdflscape}
 \usepackage{afterpage}
 
@@ -47,6 +48,7 @@
 \externaldocument{../SRS/SRS}
 
 \newcommand{\rref}[1]{(R\ref{#1})}
+\newcommand{\nfrref}[1]{NFR\ref{#1}}
 
 \begin{document}
 
@@ -73,9 +75,7 @@ a power series}
 
 \section{Symbols, Abbreviations and Acronyms}
 
-See SRS Documentation at
-
-\noindent \url{https://github.com/JohnErnsthausen/roc/blob/master/docs/SRS/SRS.pdf}.
+See \href{https://github.com/JohnErnsthausen/roc/blob/master/docs/SRS/SRS.pdf}{SRS Documentation}.
 
 \newpage
 
@@ -87,14 +87,58 @@ See SRS Documentation at
 
 \section{Introduction}
 
+% Move to MIS
+%
+%
+%  \subsection{Summary}
+%  
+%  In \cite{SRS}, we detailed the algorithm implementing top-line analysis.
+%  
+%  \paragraph{Module findrc} \label{findrc}
+%  We know the tolerance $\tol$, the scale $h$, the integer $N$, and the sequence
+%  $\Setbg{c_0, c_1, \ldots, c_{N}}$ by assumption, as in \SCref{introduction}.
+%  We extract the last $15$ terms from the sequence.
+%  With $k = i+N-14$, obtain the best linear fit $y(k) = m k + b$ in the $2$-norm to the points
+%  \EQ
+%  {
+%    \label{eq:approximation-points}
+%    \Setbg{(N-14, \log_{10} | c_{N-14} |), (N-13, \log_{10} |c_{N-13}|), \ldots, (N, \log_{10} |c_{N}|)},
+%  }
+%  that is, find $m$ and $b$ such that $\sum_{i=0}^{14} |\log_{10} |c_{i+N-14}| - y(i+N-14)|^2$ is minimized.
+%  The approximation problem \eqref{approximation-points} is the well known
+%  {\it linear least-squares problem} \cite{GoVL89}.
+%  The model parameter $m$ will be negative whenever the series \eqref{power-series} converges and
+%  positive whenever it diverges.The radius of convergence $R_c = h/10^m$.
+%  
+%  \paragraph{Module findmu}
+%  Start with the series resulting from integration of the given series three times and
+%  fit the coefficients with Module {\bf findrc}. If that graph is linear, meaning the
+%  minimizer has norm less than \tol, then the slope is accepted and the order of the
+%  singularity is 3. If the graph opens upward, then the series is differentiated term-wise
+%  to reduce the second derivative of the graph, and a new top-line fit is computed with
+%  Module {\bf findrc}. This process is repeated, reducing $\mu$ by 1 each time, until the
+%  graph opens downward or until seven term-wise differentiations have been tested.
+%  If seven term-wise differentiations have been tested and each result in turn proves
+%  unsatisfactory, then the final estimate for $R_c$ is reduced by 10 percent for a
+%  conservative estimate for $R_c$ and $\mu=-4$ is returned.
+%  
+%  We implement Module {\bf findrc} and Module {\bf findrc} in \progname{f}.
+%  This document provides plan for verification and validation \progname{f} while implementing
+%  these modules in \cpp.
+%  
+%  Our objective it to implement Module {\bf findrc} and Module {\bf findrc} via
+%  {\it test driving} in \cpp. The implementation must satisfy the requirements
+%  enumerated in \cite{SRS}.
+
+
+
 The following document details the Module Interface Specifications for the implemented
 modules in library software \progname{f} estimating the radius of convergence of a power series.
 It is intended to ease navigation through the program for design and maintenance purposes.
 
 Complementary documents include the System Requirement Specifications and Module Guide.
-The full documentation and implementation can be found at
-
-\noindent \url{https://github.com/JohnErnsthausen/roc}.
+The full documentation and implementation can be found at the project's
+\href{https://github.com/JohnErnsthausen/roc}{GitHub repository}.
 
 \section{Notation}
 
@@ -137,16 +181,15 @@ described by giving their type signature followed by their specification.
 
 The following table is taken directly from the Module Guide document for this project.
 
-\begin{table}[h!]
+\begin{table}[!ht]
 \centering
 \begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
 \toprule
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
 
-\multirow{2}{0.3\textwidth}{Hardware-Hiding Module}
-  & Input Format Module\\
-  & Output Format Module \\
+\multirow{1}{0.3\textwidth}{Hardware-Hiding Module}
+  & \\
 
 \midrule
 
@@ -171,7 +214,6 @@ The following table is taken directly from the Module Guide document for this pr
 \section{MIS of Input Format Module} \label{sc:MIS_IN}
 
 The secrets of this module are
- input acquisition via hardware \rref{rIHardware},
  input acquisition via software \rref{rISoftware},
  validate input format \rref{rIFormat},
  validate input type \rref{rIType},
@@ -229,7 +271,6 @@ The number of coefficients follows. Finally the scaling follows.
 \section{MIS of Output Format Module} \label{sc:MIS_OUT}
 
 The secrets of this module are
- output via hardware \rref{rOHardware},
  output via software \rref{rOSoftware},
  validate input format \rref{rOFormat},
  validate input type \rref{rOType},

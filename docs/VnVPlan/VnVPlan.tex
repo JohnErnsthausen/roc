@@ -15,6 +15,7 @@
 \usepackage{float}
 \usepackage{siunitx}
 \usepackage{caption}
+\usepackage{geometry}
 \usepackage{pdflscape}
 \usepackage{afterpage}
 
@@ -92,7 +93,7 @@ in Section 1 of the Software Requirements Document (SRS) \citep{SRS}.
 \pagenumbering{arabic}
 
 %CHAPTER
-\section{Introduction} \label{sc:introduction}
+\section{Introduction}
 
 %  Possibly move to SRS or introduction of MIS
 %
@@ -162,7 +163,7 @@ inaccurate.
 \subsection{Objectives}
 
 Our objective is correctness, accuracy, and timing. \progname{f} is an idea for an academic
-research project. The impression form this software will guide future decisions about
+research project. The impression from this software will guide future decisions about
 this idea as a viable research project.
 
 Every effort will be made to complete every aspect
@@ -564,7 +565,7 @@ These tests demonstrate the exceptions thrown whenever a user error has occurred
 %  \rref{rIFormat} Validate input format.
 %  \rref{rIType} Validate input type.
 
-\begin{table}[h!]
+\begin{table}[!ht]
 \centering
 \begin{tabular}{r p{0.3\textwidth} p{0.6\textwidth}}
 \toprule
