@@ -1,51 +1,109 @@
-\documentclass{article}
+\documentclass[12pt, titlepage]{article}
 
-\usepackage{tabularx}
+\usepackage{amsmath, mathtools}
+\usepackage{amsfonts}
+\usepackage{amssymb}
 \usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xspace}
 
-\title{Reflection Report on [Title of Project]}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{xr}
+\usepackage{longtable}
+\usepackage{xfrac}
+\usepackage{float}
+\usepackage{siunitx}
+\usepackage{caption}
+\usepackage{geometry}
+\usepackage{pdflscape}
+\usepackage{afterpage}
 
-\author{author name}
+\usepackage{fullpage}
+\usepackage[round]{natbib}
+\usepackage{multirow}
+%\usepackage{refcheck}
+\usepackage{lipsum}
 
-\date{}
+\usepackage[section]{placeins}
+\usepackage{array}
 
 \input{../Comments}
+\input{../Common}
+
+\makeatletter
+\newcommand*{\addFileDependency}[1]{% argument=file name and extension
+  \typeout{(#1)}
+  \@addtofilelist{#1}
+  \IfFileExists{#1}{}{\typeout{No file #1.}}
+}
+\makeatother
+
+\newcommand*{\myexternaldocument}[1]{%
+    \externaldocument{#1}%
+    \addFileDependency{#1.tex}%
+    \addFileDependency{#1.aux}%
+}
+
+\externaldocument{../SRS/SRS}
+
+\newcommand{\rref}[1]{(R\ref{#1})}
+\newcommand{\nfrref}[1]{NFR\ref{#1}}
 
 \begin{document}
 
-\begin{table}[hp]
-\caption{Revision History} \label{TblRevisionHistory}
-\begin{tabularx}{\textwidth}{llX}
-\toprule
-\textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
-\midrule
-Date1 & Name(s) & Description of changes\\
-Date2 & Name(s) & Description of changes\\
-... & ... & ...\\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-\newpage
-
+\title{Reflection Report on \progname{L}:
+Software estimating the radius of convergence of a power series} 
+\author{John M Ernsthausen}
+\date{\today}
+	
 \maketitle
 
-Put your introductory blurb here.
+\pagenumbering{roman}
+
+\section{Revision History}
+
+\begin{tabularx}{\textwidth}{p{4cm}p{2cm}X}
+\toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
+\midrule
+24 December 2020 & 1.0 & First submission\\
+\bottomrule
+\end{tabularx}
+
+~~\newpage
+
+\pagenumbering{arabic}
+
+The \progname{f} project set out to estimate the radius of convergence $R_c$ of a given
+power series based on the three term analysis for a real pole, six term analysis for
+a pair of complex conjugate poles, and top line analysis \cite[pp.~127--128]{chang1982}.
+The inputs are a truncated finite sequence of scaled coefficients
+and their scaling. The output is $R_c$ and the order of the singularity $\mu$.
 
 \section{Project Overview}
 
-\plt{Summarize the original project goals and requirements}
+Our objective is correctness, accuracy, and timing. \progname{f} is an idea for an academic
+research project. The impression from this software will guide future decisions about
+this idea as a viable research project.
 
 \section{Key Accomplishments}
 
-\plt{What went well?  This can be what went well with the documentation, the
-  coding, the project management, etc.}
+In general, this project went very well. Our research group can be confident that \progname{f}
+is achievable. All the achievements were accomplished in this past semester through
+CSE 701 which taught scientific computing with \cpp and CSE 741 which taught scientific
+computing documentation.
 
 \section{Key Problem Areas}
 
-\plt{What went wrong?  This can be what went wrong with the documentation, the
-  technology, the coding, time management, etc.}
+I don't think anything went wrong. I'm grateful for the opportunities afforded me to
+persue this scientific computing software development project.
 
 \section{What Would you Do Differently Next Time}
+
+Nothing. The process just takes a whole lot of time to do it right.
+
+\bibliographystyle{plainnat}
+
+\bibliography{../../refs/References}
 
 \end{document}
