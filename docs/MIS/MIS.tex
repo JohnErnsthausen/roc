@@ -75,7 +75,8 @@ a power series}
 
 \section{Symbols, Abbreviations and Acronyms}
 
-See \href{https://github.com/JohnErnsthausen/roc/blob/master/docs/SRS/SRS.pdf}{SRS Documentation}.
+Symbols, abbreviations, and acronyms applicable to \progname{f} are enumerated
+in Section 1 of the Software Requirements Document (SRS) \citep{SRS}.
 
 \newpage
 
@@ -188,22 +189,21 @@ The following table is taken directly from the Module Guide document for this pr
 \textbf{Level 1} & \textbf{Level 2}\\
 \midrule
 
-\multirow{1}{0.3\textwidth}{Hardware-Hiding Module}
-  & \\
+\multirow{1}{0.3\textwidth}{Hardware-Hiding Module} & \\
 
 \midrule
 
 \multirow{7}{0.3\textwidth}{Behaviour-Hiding Module}
-  & Input Format Module\\
-  & Output Format Module \\
-  & Parameters Module\\
-  & Real pole module\\
-  & Complex conjugate pair of poles module\\ 
-  & Resolve nearest pole in hard to resolve case module\\
-  & Pole identification module\\
+  & In\\
+  & Out\\
+  & Params\\
+  & Real Pole\\
+  & Complex Pair Poles\\ 
+  & Top Line Analysis\\
+  & ROC\\
 \midrule
 
-{Software Decision Module} & Solver Module\\
+{Software Decision Module} & Solver\\
 \bottomrule
 
 \end{tabular}
@@ -211,7 +211,8 @@ The following table is taken directly from the Module Guide document for this pr
 \label{tb:module}
 \end{table}
 
-\section{MIS of Input Format Module} \label{sc:MIS_IN}
+
+\section{MIS of In} \label{sc:MIS_IN}
 
 The secrets of this module are
  input acquisition via software \rref{rISoftware},
@@ -268,7 +269,7 @@ The number of coefficients follows. Finally the scaling follows.
   inputFile is incorrect $\Rightarrow$  FileError
 \end{itemize}
 
-\section{MIS of Output Format Module} \label{sc:MIS_OUT}
+\section{MIS of Out} \label{sc:MIS_OUT}
 
 The secrets of this module are
  output via software \rref{rOSoftware},
@@ -317,7 +318,7 @@ The radius of convergence $R_c$ and order of singularity $\mu$ must be ordered a
 \item exception: exc := a file name $s$ cannot be found $\Rightarrow$  FileError
 \end{itemize}
 
-\section{MIS of Parameters Module} \label{sc:MIS_PARAM}
+\section{MIS of Params} \label{sc:MIS_PARAM}
 
 The secrets of this module are parameter acquisition, format, type, distribution, and constraints.
 The author is thinking of constants in a header file.
@@ -336,7 +337,7 @@ None
 
 \noindent $SIXTERM\_NUSE$ of type integer. $SIXTERM\_NUSE$ must be less than the size of the coefficient vector minus 10.
 
-\section{MIS of Solver Module} \label{sc:MIS_SOLVER}
+\section{MIS of Solver} \label{sc:MIS_SOLVER}
 
 Algorithm to find the distance to the
  nearest real pole \rref{rPoleRealSolverAlgorithm},
@@ -360,7 +361,7 @@ The RealPoleModule discussed in \SCref{MIS_POLEREALSOLVERMODULE},
 The syntax depends on the pole to resolve and the algorithm used, the linear least squares
 solver is the QRFactorization in all cases.
 
-\section{MIS of Real Pole Module} \label{sc:MIS_POLEREALSOLVERMODULE}
+\section{MIS of Real Pole} \label{sc:MIS_POLEREALSOLVERMODULE}
 
 Find the distance to the nearest real pole \rref{rPoleRealSolverAlgorithm}.
 
@@ -382,7 +383,7 @@ IN \SCref{MIS_IN}, OUT \SCref{MIS_OUT}, PARAM \SCref{MIS_PARAM}, SOLVER \SCref{M
 \bottomrule
 \end{tabular}
 
-\section{MIS of Complex Poles Module} \label{sc:MIS_POLECOMPLEXSOLVERMODULE}
+\section{MIS of Complex Pair Poles} \label{sc:MIS_POLECOMPLEXSOLVERMODULE}
 
 Find the distance to the nearest complex conjugate pair of poles \rref{rPoleComplexSolverAlgorithm}.
 
@@ -404,7 +405,7 @@ IN \SCref{MIS_IN}, OUT \SCref{MIS_OUT}, PARAM \SCref{MIS_PARAM}, SOLVER \SCref{M
 \bottomrule
 \end{tabular}
 
-\section{MIS of Top-Line Module} \label{sc:MIS_POLETOPLINEMODULE}
+\section{MIS of Top Line Analysis} \label{sc:MIS_POLETOPLINEMODULE}
 
 Find the distance to the nearest complicated pole \rref{rPoleComplicatedAlgorithm}.
 
@@ -426,7 +427,7 @@ IN \SCref{MIS_IN}, OUT \SCref{MIS_OUT}, PARAM \SCref{MIS_PARAM}, SOLVER \SCref{M
 \bottomrule
 \end{tabular}
 
-\section{MIS of ROC Module} \label{sc:MIS_ROC}
+\section{MIS of ROC} \label{sc:MIS_ROC}
 
 Find the Radius of convergence $R_c$ and order of singularity $\mu$.
 
