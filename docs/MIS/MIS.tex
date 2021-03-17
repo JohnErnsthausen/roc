@@ -1,0 +1,668 @@
+\documentclass[12pt, titlepage]{article}
+
+\usepackage{amsmath, mathtools}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xspace}
+
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{xr}
+\usepackage{longtable}
+\usepackage{xfrac}
+\usepackage{float}
+\usepackage{siunitx}
+\usepackage{caption}
+\usepackage{geometry}
+\usepackage{pdflscape}
+\usepackage{afterpage}
+
+\usepackage{fullpage}
+\usepackage[round]{natbib}
+\usepackage{multirow}
+%\usepackage{refcheck}
+\usepackage{lipsum}
+
+\usepackage[section]{placeins}
+\usepackage{array}
+
+\input{../Comments}
+\input{../Common}
+
+\makeatletter
+\newcommand*{\addFileDependency}[1]{% argument=file name and extension
+  \typeout{(#1)}
+  \@addtofilelist{#1}
+  \IfFileExists{#1}{}{\typeout{No file #1.}}
+}
+\makeatother
+
+\newcommand*{\myexternaldocument}[1]{%
+    \externaldocument{#1}%
+    \addFileDependency{#1.tex}%
+    \addFileDependency{#1.aux}%
+}
+
+\externaldocument{../SRS/SRS}
+
+\newcommand{\rref}[1]{(R\ref{#1})}
+\newcommand{\nfrref}[1]{NFR\ref{#1}}
+
+\begin{document}
+
+\title{Module Interface Specification for \progname{L}: Software estimating the radius of convergence of
+a power series}
+\author{John M Ernsthausen}
+\date{\today}
+
+\maketitle
+
+\pagenumbering{roman}
+
+\section{Revision History}
+
+\begin{tabularx}{\textwidth}{p{4cm}p{2cm}X}
+\toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
+\midrule
+  22 November 2020 & 1.0 & First submission\\
+  24 December 2020 & 2.0 & Second submission\\
+\bottomrule
+\end{tabularx}
+
+\newpage
+
+\section{Symbols, Abbreviations and Acronyms}
+
+Symbols, abbreviations, and acronyms applicable to \progname{f} are enumerated
+in Section 1 of the Software Requirements Document (SRS) \citep{SRS}.
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\pagenumbering{arabic}
+
+\section{Introduction}
+
+% Move to MIS
+%
+%
+%  \subsection{Summary}
+%  
+%  In \cite{SRS}, we detailed the algorithm implementing top-line analysis.
+%  
+%  \paragraph{Module findrc} \label{findrc}
+%  We know the tolerance $\tol$, the scale $h$, the integer $N$, and the sequence
+%  $\Setbg{c_0, c_1, \ldots, c_{N}}$ by assumption, as in \SCref{introduction}.
+%  We extract the last $15$ terms from the sequence.
+%  With $k = i+N-14$, obtain the best linear fit $y(k) = m k + b$ in the $2$-norm to the points
+%  \EQ
+%  {
+%    \label{eq:approximation-points}
+%    \Setbg{(N-14, \log_{10} | c_{N-14} |), (N-13, \log_{10} |c_{N-13}|), \ldots, (N, \log_{10} |c_{N}|)},
+%  }
+%  that is, find $m$ and $b$ such that $\sum_{i=0}^{14} |\log_{10} |c_{i+N-14}| - y(i+N-14)|^2$ is minimized.
+%  The approximation problem \eqref{approximation-points} is the well known
+%  {\it linear least-squares problem} \cite{GoVL89}.
+%  The model parameter $m$ will be negative whenever the series \eqref{power-series} converges and
+%  positive whenever it diverges.The radius of convergence $R_c = h/10^m$.
+%  
+%  \paragraph{Module findmu}
+%  Start with the series resulting from integration of the given series three times and
+%  fit the coefficients with Module {\bf findrc}. If that graph is linear, meaning the
+%  minimizer has norm less than \tol, then the slope is accepted and the order of the
+%  singularity is 3. If the graph opens upward, then the series is differentiated term-wise
+%  to reduce the second derivative of the graph, and a new top-line fit is computed with
+%  Module {\bf findrc}. This process is repeated, reducing $\mu$ by 1 each time, until the
+%  graph opens downward or until seven term-wise differentiations have been tested.
+%  If seven term-wise differentiations have been tested and each result in turn proves
+%  unsatisfactory, then the final estimate for $R_c$ is reduced by 10 percent for a
+%  conservative estimate for $R_c$ and $\mu=-4$ is returned.
+%  
+%  We implement Module {\bf findrc} and Module {\bf findrc} in \progname{f}.
+%  This document provides plan for verification and validation \progname{f} while implementing
+%  these modules in \cpp.
+%  
+%  Our objective it to implement Module {\bf findrc} and Module {\bf findrc} via
+%  {\it test driving} in \cpp. The implementation must satisfy the requirements
+%  enumerated in \cite{SRS}.
+
+
+
+The following document details the Module Interface Specifications for the implemented
+modules in library software \progname{f} estimating the radius of convergence of a power series.
+It is intended to ease navigation through the program for design and maintenance purposes.
+
+Complementary documents include the System Requirement Specifications and Module Guide.
+The full documentation and implementation can be found at the project's
+\href{https://github.com/JohnErnsthausen/roc}{GitHub repository}.
+
+\section{Notation}
+
+\wss{You should describe your notation.  You can use what is below as
+  a starting point.}
+
+The structure of the MIS for modules comes from \citet{HoffmanAndStrooper1995},
+with the addition that template modules have been adapted from
+\cite{GhezziEtAl2003}.  The mathematical notation comes from Chapter 3 of
+\citet{HoffmanAndStrooper1995}.  For instance, the symbol := is used for a
+multiple assignment statement and conditional rules follow the form $(c_1
+\Rightarrow r_1 | c_2 \Rightarrow r_2 | ... | c_n \Rightarrow r_n )$.
+
+The following table summarizes the primitive data types used by \progname{f}. 
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\noindent 
+\begin{tabular}{l l p{7.5cm}} 
+\toprule 
+\textbf{Data Type} & \textbf{Notation} & \textbf{Description}\\ 
+\midrule
+integer & $\mathbb{Z}$ & a number without a fractional component in (-$\infty$, $\infty$) \\
+natural number & $\mathbb{N}$ & a number without a fractional component in [1, $\infty$) \\
+real & $\Rz$ & any number in (-$\infty$, $\infty$)\\
+  real vector & $\Rz^{d}$ & the real $d$-dimensional vector space \\
+\bottomrule
+\end{tabular} 
+\end{center}
+
+%  \noindent
+%  The specification of \progname{f} uses some derived data types: sequences, strings, and
+%  tuples. Sequences are lists filled with elements of the same data type. Strings
+%  are sequences of characters. Tuples contain a list of values, potentially of
+%  different types. In addition, \progname{f} uses functions, which
+%  are defined by the data types of their inputs and outputs. Local functions are
+%  described by giving their type signature followed by their specification.
+
+\section{Module Decomposition}
+
+The following table is taken directly from the Module Guide document for this project.
+
+\begin{table}[!ht]
+\centering
+\begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
+\toprule
+\textbf{Level 1} & \textbf{Level 2}\\
+\midrule
+
+\multirow{1}{0.3\textwidth}{Hardware-Hiding Module} & \\
+
+\midrule
+
+\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module}
+  & In\\
+  & Out\\
+  & Params\\
+  & Real Pole\\
+  & Complex Pair Poles\\ 
+  & Top Line Analysis\\
+  & ROC\\
+\midrule
+
+{Software Decision Module} & Solver\\
+\bottomrule
+
+\end{tabular}
+\caption{Module Hierarchy}
+\label{tb:module}
+\end{table}
+
+\pagebreak{4}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+\section{MIS of In} \label{sc:MIS_IN}
+
+The secrets of this module are
+ input acquisition via software \rref{rISoftware},
+ validate input format \rref{rIFormat},
+ validate input type \rref{rIType},
+ inputs should satisfy the assumptions \rref{rAssumptions}, and
+ inputs should be scaled to prevent overflow/underflow \rref{R_Inputs}.
+This module handles the data structure for input coefficients and the scaling of
+ the input coefficients, how the values are input,
+ and how the values are verified.
+
+This module is an invarient for the inputs of the modules
+ROC, Real Pole, Complex Pair Poles, and Top Line Analysis. This module
+has no way of knowing that the user satisfied the assumptions of the invarient.
+For example, this module cannot tell the scale on the coefficients.
+However poorly scaled coefficients may lead to overflow/underflow which would
+cause \progname{f} to fail.
+
+\subsection{Module}
+
+In
+
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+
+\begin{tabular}{p{3cm} p{2cm} p{4cm} >{\raggedright\arraybackslash}p{9cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+  coeffs & $\Rz^N$ & $\Rz^N$ &  \\
+  scale  & $\Rz$ & $\Rz$ &  {\footnotesize SCALENEG} \\
+\bottomrule
+\end{tabular}
+
+\subsection{Semantics}
+
+The calling sequence should be consistent across the modules
+ROC, Real Pole, Complex Pair Poles, and Top Line Analysis.
+
+exception: $\text{exec} := scale < 0 \Rightarrow \text{\footnotesize SCALENEG}$
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+The coefficients must be ordered according to the convention from lowest order to highest order.
+
+\subsubsection{Access Routine Semantics}
+
+None
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+\section{MIS of Out} \label{sc:MIS_OUT}
+
+The secrets of this module are
+ output via software \rref{rOSoftware},
+ validate output format \rref{rOFormat},
+ validate output type \rref{rOType},
+This module handles the data structure for output coefficients,
+ how the values are output,
+ and how the values are verified.
+
+\subsection{Module}
+
+Out
+
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+
+\begin{tabular}{p{3cm} p{2cm} p{4cm} >{\raggedright\arraybackslash}p{9cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+$R_c$            & & $\Rz$ &  \\
+$\mu$            & & $\Rz$ &  \\
+fitting error    & & $\Rz$ &  \\
+truncation error & & $\Rz$ &  \\
+\bottomrule
+\end{tabular}
+
+\subsection{Semantics}
+
+The calling sequence should be consistent among ROC, Real Pole, Complex Pair Poles, and Top Line Analysis.
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+This module is an invarient for the outputs of the modules
+ROC, Real Pole, Complex Pair Poles, and Top Line Analysis.
+The calling sequence should be consistent among all these modules.
+
+\subsubsection{Access Routine Semantics}
+
+None
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+\section{MIS of Params} \label{sc:MIS_PARAM}
+
+The secrets of this module are parameter acquisition \rref{rPARAM},
+format \rref{rPFormat}, type \rref{rPType}, distribution \rref{rPDistribution},
+and constraints \rref{rPConstraints}.
+
+\subsection{Module}
+
+Params
+
+\subsection{Uses}
+
+None
+
+\subsubsection{Exported Constants}
+
+\begin{tabular}{p{2cm} p{.5cm} p{.7cm} >{\raggedright\arraybackslash}p{10cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Constraints} \\
+\midrule
+\minterms     & $\mathbb{N}$ & & must be greater or equal to 10 \\
+\threenuses   & $\mathbb{N}$ & & must be less than the size of the coefficient vector minus \minterms \\
+\sixnuses     & $\mathbb{N}$ & & must be less than the size of the coefficient vector minus \minterms \\
+\tlanuses     & $\mathbb{N}$ & & must be less than the size of the coefficient vector minus \minterms \\
+\tlakstart    & $\mathbb{N}$ & & must be greater or equal to 10\\
+\tol          & $\Rz$ & & must be positive\\
+\bottomrule
+\end{tabular}
+
+\subsubsection{Assumptions}
+
+These parameters will not change.
+The author is thinking of these parameters in a header file.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+\section{MIS of Solver} \label{sc:MIS_SOLVER}
+
+Algorithm to find the distance to the
+ nearest real pole \rref{rPoleRealSolverAlgorithm},
+ nearest complex conjugate pair of poles \rref{rPoleComplexSolverAlgorithm}, and
+ nearest pole in hard to resolve case \rref{rPoleComplicatedAlgorithm}.
+This solver is required to solve the optimization problem
+\begin{equation}
+  \beta = \min_{x \in \Rz^2} \|\ x \|_2^2 \quad \text{such that} \quad W x = b.
+\end{equation}
+Here $W$ is an over determined matrix and $b$ is in its range.
+
+\subsection{Module}
+
+Solver
+
+\subsection{Uses}
+
+None
+
+\subsection{Syntax}
+
+The syntax depends on the algorithm used.
+
+\subsection{Semantics}
+
+The semantics depends on the algorithm used.
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+Efficiently solves the optimization presented in the Instance Modules
+for Real Pole, Complex Pair Poles, and Top Line Analysis.
+
+%  The RealPoleModule discussed in \SCref{MIS_POLEREALSOLVERMODULE},
+%   ComplexConjugatePoleModule discussed in \SCref{MIS_POLECOMPLEXSOLVERMODULE}, and
+%   the hard to resolve case module discussed in \SCref{MIS_POLETOPLINEMODULE}
+%   set up their respective problem for this module to resolve.
+
+\subsubsection{Access Routine Semantics}
+
+None
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+\section{MIS of Real Pole} \label{sc:MIS_POLEREALSOLVERMODULE}
+
+Find the distance to the nearest real pole \rref{rPoleRealSolverAlgorithm}.
+
+\subsection{Module}
+
+Real Pole
+
+\subsection{Uses}
+
+In \SCref{MIS_IN}, Out \SCref{MIS_OUT}, Params \SCref{MIS_PARAM}, Solver \SCref{MIS_SOLVER}
+
+\subsection{Syntax}
+
+\begin{tabular}{p{3cm} p{5cm} p{3cm} >{\raggedright\arraybackslash}p{5cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+  threeterm & $\Rz^N$, $\Rz$ &  $\Rz$, $\Rz$, $\Rz$, $\Rz$ & {\footnotesize RCEXCEPTION, MUEXCEPTION} \\
+\bottomrule
+\end{tabular}
+
+\subsection{Semantics}
+
+coeff is coefficients of truncated power series,
+$h$ is scaling,
+$R_c$ is radius of convergence,
+fError is fitting error, and
+tError is truncation error.
+
+\vspace{.3cm}
+
+\Ni $\text{threeterm}( \text{coeff}, h, R_c, \mu, \text{fError}, \text{tError})$
+
+\vspace{.3cm}
+
+\Ni exception: $\text{\footnotesize RCEXCEPTION} := (R_c = h/\beta(1)) == \text{NaN}$
+
+\vspace{.3cm}
+
+\Ni exception: $\text{\footnotesize MUEXCEPTION} := (\mu = \beta(2)/\beta(1)) == \text{NaN}$
+
+\vspace{.3cm}
+
+\Ni NaN is Not A Number after the division is computed.
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+None
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+\section{MIS of Complex Pair Poles} \label{sc:MIS_POLECOMPLEXSOLVERMODULE}
+
+Find the distance to the nearest complex conjugate pair of poles \rref{rPoleComplexSolverAlgorithm}.
+
+\subsection{Module}
+
+Complex Pair Poles
+
+\subsection{Uses}
+
+In \SCref{MIS_IN}, Out \SCref{MIS_OUT}, Params \SCref{MIS_PARAM}, Solver \SCref{MIS_SOLVER}
+
+\subsection{Syntax}
+
+\begin{tabular}{p{3cm} p{5cm} p{3cm} >{\raggedright\arraybackslash}p{5cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+  sixterm & $\Rz^N$, $\Rz$ &  $\Rz$, $\Rz$, $\Rz$, $\Rz$ & {\footnotesize RCEXCEPTION, MUEXCEPTION, BETA4EXCEPTION, COSEXCEPTION} \\
+\bottomrule
+\end{tabular}
+
+\subsection{Semantics}
+
+coeff is coefficients of truncated power series,
+$h$ is scaling,
+$R_c$ is radius of convergence,
+fError is fitting error, and
+tError is truncation error.
+
+\vspace{.3cm}
+
+\Ni $\text{sixterm}( \text{coeff}, h, R_c, \mu, \text{fError}, \text{tError})$
+
+\vspace{.3cm}
+
+\Ni exception: $\text{\footnotesize BETA4EXCEPTION} := \beta(4)<0$
+
+\vspace{.3cm}
+
+\Ni exception: $\text{\footnotesize RCEXCEPTION} := (R_c = h/\beta(1)) == \text{NaN}$
+
+\vspace{.3cm}
+Set $s_1 = \beta(1)/\beta(2)$ and $s_2 = \beta(3)/\beta(4)$\\
+\Ni exception: $\text{\footnotesize MUEXCEPTION} :=  s_1 == \text{NaN}  \text{ and } s_1 == \text{NaN}$\\
+\Ni $(\mu = s_2) := s_1 == \text{NaN}  \text{ and } \neg (s_1 == \text{NaN})$\\
+\Ni $(\mu = s_1) := \neg(s_1 == \text{NaN}) \text{ and } s_1 == \text{NaN}$\\
+\Ni $(\mu = (s_1+s_2)/2) := \neg(s_1 == \text{NaN})  \text{ and }  \neg(s_1 == \text{NaN})$
+
+\vspace{.3cm}
+
+\Ni exception: $\text{\footnotesize COSEXCEPTION} :=  \beta(2)/ R_c < -1 \text{ or } \beta(2)/ R_c > 1$
+
+\vspace{.3cm}
+
+\Ni NaN is Not A Number after the division is computed.
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+None
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+\section{MIS of Top Line Analysis} \label{sc:MIS_POLETOPLINEMODULE}
+
+Find the distance to the nearest complicated pole \rref{rPoleComplicatedAlgorithm}.
+
+\subsection{Module}
+
+Top Line Analysis
+
+\subsection{Uses}
+
+In \SCref{MIS_IN}, Out \SCref{MIS_OUT}, Params \SCref{MIS_PARAM}, Solver \SCref{MIS_SOLVER}
+
+\subsection{Syntax}
+
+\begin{tabular}{p{3cm} p{5cm} p{3cm} >{\raggedright\arraybackslash}p{5cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+  topline & $\Rz^N$, $\Rz$ &  $\Rz$, $\Rz$, $\Rz$, $\Rz$ &  \\
+\bottomrule
+\end{tabular}
+
+\subsection{Semantics}
+
+coeff is coefficients of truncated power series,
+$h$ is scaling,
+$R_c$ is radius of convergence,
+fError is fitting error, and
+tError is truncation error.
+
+\vspace{.3cm}
+
+\Ni $\text{topline}( \text{coeff}, h, R_c, \mu, \text{fError}, \text{tError})$
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+None
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+\section{MIS of ROC} \label{sc:MIS_ROC}
+
+Find the Radius of convergence $R_c$ and order of singularity $\mu$.
+
+\subsection{Module}
+
+ROC
+
+\subsection{Uses}
+
+In \SCref{MIS_IN}, Out \SCref{MIS_OUT},
+Real Pole \SCref{MIS_POLEREALSOLVERMODULE},
+Complex Pair Poles \SCref{MIS_POLECOMPLEXSOLVERMODULE},
+Top Line Analysis \SCref{MIS_POLETOPLINEMODULE}
+
+\subsection{Syntax}
+
+\begin{tabular}{p{3cm} p{5cm} p{3cm} >{\raggedright\arraybackslash}p{5cm}}
+\toprule
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\midrule
+  roc & $\Rz^N$, $\Rz$ &  $\Rz$, $\Rz$, $\Rz$, $\Rz$ & {\footnotesize KSTARTEXCEPTION, NUSEEXCEPTION} \\
+\bottomrule
+\end{tabular}
+
+\subsection{Semantics}
+
+coeff is coefficients of truncated power series,
+$h$ is scaling,
+$R_c$ is radius of convergence,
+fError is fitting error, and
+tError is truncation error.
+
+\vspace{.3cm}
+
+\Ni $\text{roc}( \text{coeff}, h, R_c, \mu, \text{fError}, \text{tError})$\\
+
+\Ni Recall $N$ is the number of coefficients.\\
+\Ni exception: $\text{\footnotesize KSTARTEXCEPTION} := \text{Cannot construct linear system}$\\
+\Ni exception: $\text{\footnotesize NUSEEXCEPTION} := N - \tlakstart < \tlanuses$\\
+\Ni exception: $\text{\footnotesize NUSEEXCEPTION} := N - \threenuses < \minterms$\\
+\Ni exception: $\text{\footnotesize NUSEEXCEPTION} := N - \sixnuses < \minterms$\\
+
+\subsubsection{Environment Variables}
+
+None
+
+\subsubsection{Assumptions}
+
+None
+
+\subsubsection{Access Routine Semantics}
+
+None
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+\bibliographystyle {plainnat}
+\bibliography {../../refs/References}
+\end{document}

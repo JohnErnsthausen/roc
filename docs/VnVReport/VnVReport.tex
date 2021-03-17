@@ -1,0 +1,213 @@
+\documentclass[12pt, titlepage]{article}
+
+\usepackage{amsmath, mathtools}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xspace}
+
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{xr}
+\usepackage{longtable}
+\usepackage{xfrac}
+\usepackage{float}
+\usepackage{siunitx}
+\usepackage{caption}
+\usepackage{geometry}
+\usepackage{pdflscape}
+\usepackage{afterpage}
+
+\usepackage{fullpage}
+\usepackage[round]{natbib}
+\usepackage{multirow}
+%\usepackage{refcheck}
+\usepackage{lipsum}
+
+\usepackage[section]{placeins}
+\usepackage{array}
+
+\input{../Comments}
+\input{../Common}
+
+\makeatletter
+\newcommand*{\addFileDependency}[1]{% argument=file name and extension
+  \typeout{(#1)}
+  \@addtofilelist{#1}
+  \IfFileExists{#1}{}{\typeout{No file #1.}}
+}
+\makeatother
+
+\newcommand*{\myexternaldocument}[1]{%
+    \externaldocument{#1}%
+    \addFileDependency{#1.tex}%
+    \addFileDependency{#1.aux}%
+}
+
+\externaldocument{../SRS/SRS}
+
+\newcommand{\rref}[1]{(R\ref{#1})}
+\newcommand{\nfrref}[1]{NFR\ref{#1}}
+
+\begin{document}
+
+\title{System Verification and Validation Report for \progname{L}:
+Software estimating the radius of convergence of a power series} 
+\author{John M Ernsthausen}
+\date{\today}
+	
+\maketitle
+
+\pagenumbering{roman}
+
+\section{Revision History}
+
+\begin{tabularx}{\textwidth}{p{4cm}p{2cm}X}
+\toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
+\midrule
+24 December 2020 & 1.0 & First submission\\
+\bottomrule
+\end{tabularx}
+
+~~\newpage
+
+\section{Symbols, Abbreviations, and Acronyms}
+
+Symbols, abbreviations, and acronyms applicable to \progname{f} are enumerated
+in Section 1 of the Software Requirements Document (SRS) \citep{SRS}.
+
+\newpage
+
+\tableofcontents
+
+%\listoftables %if appropriate
+
+%\listoffigures %if appropriate
+
+\newpage
+
+\pagenumbering{arabic}
+
+In this document, we report the results of executing the verification and validation
+plan for \progname{f}.
+
+Our objective for \progname{f} is correctness, accuracy, and timing. \progname{f} is
+an idea for an academic research project. The impression from this software will
+guide future decisions about this idea as a viable research project.
+
+\subsection{Relevant Documentation}
+
+Relevant documentation is completed. All GitHub issues were fully considered and subsequently closed.
+
+Relevant documentation includes the authors Software Requirements Specification (SRS) \citep{SRS}, the
+authors Module Guide (MG) \citep{MG}, and the authors Module Interface Specification (MIS) \citep{MIS}.
+
+\section{Verification and Validation Plan}
+
+Verification and Validation of \progname{f} includes automated testing at the module level,
+and the system level. We achieved continuous integration through TravisCI.
+
+\subsection{Verification and Validation Team}
+
+The \progname{f} team includes
+author
+\href{https://github.com/JohnErnsthausen}{John Ernsthausen},
+fellow students
+\href{https://github.com/LeilaMousapour}{Leila Mousapour},
+\href{https://github.com/salahhessien}{Salah Gamal aly Hessien},
+\href{https://github.com/liziscool}{Liz Hofer},
+and
+\href{https://github.com/XingzhiMac}{Xingzhi Liu} as well as Professors
+\href{http://baraksh.com}{Barak Shoshany},
+\href{https://github.com/smiths}{Spencer Smith},
+\href{https://www.cs.mu.edu/~george/}{George Corliss},
+and
+\href{http://www.cas.mcmaster.ca/~nedialk}{Ned Nedialkov}.
+The author appreciates the helpful comments and superior guidance on this project.
+
+\subsection{SRS Verification Plan}
+
+The SRS document Verification and Validation Plan for \progname{f} was peer-reviewed by
+secondary reviewer Salah Gamal aly Hessien and Prof. Spencer Smith the course instructor.
+
+The SRS document was published to \href{https://github.com/JohnErnsthausen/roc}{GitHub}.
+Defects were addressed with issues on the GitHub platform.
+
+\subsection{Design Verification Plan}
+
+The Design documents MG and MIS for \progname{f} were peer-reviewed by
+domain expert Leila Mousapour and Prof. Spencer Smith the course instructor.
+
+The MG and MIS documents were published to \href{https://github.com/JohnErnsthausen/roc}{GitHub}.
+Defects will be addressed with issues on the GitHub platform.
+
+\subsection{Implementation Verification Plan}
+
+Every effort was made to complete every aspect promised in this documentation.
+
+\section{Functional Requirements Evaluation}
+
+\progname{f} does not have system functional requirements at this time.
+
+\section{Nonfunctional Requirements Evaluation}
+
+We considered Timing and Accuracy.
+
+\subsection{Timing}
+
+Gprof output \href{https://github.com/JohnErnsthausen/roc/blob/master/examples\_cpp/gprof\_output.txt}{roc/examples\_cpp/gprof\_output.txt} on the Layne-Watson problem \citep{watson1979} shows that \progname{f} did not
+consume a measureable amount of CPU time to compute $R_c$ for this problem.
+		
+\subsection{Accuracy and Comparison to Existing Implementation}	
+
+We exercised 3TA, 6TA, and TLA on the Layne-Watson problem \citep{watson1979}, computing
+each analysis at each timestep.
+We discovered that fitting errors and truncation errors could be small (less than 1e-10),
+but one or the other of 3TA/6TA would align with TLA. This is not what the
+author expected. As a result, the decision logic proposed by \cite{chang1982} is in
+question.
+
+Careful research needs to be done to determine the correct indicators for which analysis 3TA/6TA/TLA to apply.
+As a result the nonfunctional accuracy requirement could not be fulfilled as I don't know the logic for
+this at this time.
+
+The author plans to compare and contrast the $R_c$, $\mu$, fitting error, and truncation error
+among the three methods 3TA, 6TA, and TLA. These results will be compared to the \cite{chang1982}
+existing implementation.
+
+\section{Unit Testing}
+
+Comparison with closed form solutions proved \progname{f} to be accurate. These comparisons
+are among the unit tests. The assertions were chosen to be optimal to the number of digits
+reported, meaning that rounding the last digit down will cause the test to fail.
+
+All the unit test pass.
+
+\section{Changes Due to Testing}
+
+I'm not sure what this is.
+
+\section{Automated Testing}
+
+All unit tests are automated.
+
+Valgrind, gcov, and clang-format are automated via my top level Ruby script.
+		
+\section{Trace to Requirements}
+
+Yes.
+		
+\section{Trace to Modules}		
+
+Yes.
+
+\section{Code Coverage Metrics}
+
+Visit \href{http://www.johnernsthausen.com/experiences/coverage/}{my website} to review gcov output.
+
+\bibliographystyle{plainnat}
+
+\bibliography{../../refs/References}
+
+\end{document}

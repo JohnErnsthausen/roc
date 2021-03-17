@@ -3,18 +3,44 @@
 Developer(s) Name: John Ernsthausen<br>
 Date of project start: 17 September 2020
 
+## This repo uses
+
+[![Build Status](https://travis-ci.org/JohnErnsthausen/roc.svg?branch=master)](https://travis-ci.org/JohnErnsthausen/roc)
+[![Coverage Status](https://coveralls.io/repos/github/JohnErnsthausen/roc/badge.svg?branch=master)](https://coveralls.io/github/JohnErnsthausen/roc?branch=master)
+
+[Coverage from plain gcov](http://www.johnernsthausen.com/experiences/coverage/)
+
 ## Introduction
 
-Given a power series, this software computes its radius of convergence
-[(RC)](https://en.wikipedia.org/wiki/Radius_of_convergence#:~:text=The%20radius%20of%20convergence%20of%20a%20power%20series%20%C6%92%20centered,called%20the%20disk%20of%20convergence.). This software is written in c/cpp.
+This software estimates the radius of convergence [(RC)](https://en.wikipedia.org/wiki/Radius_of_convergence#:~:text=The%20radius%20of%20convergence%20of%20a%20power%20series%20%C6%92%20centered,called%20the%20disk%20of%20convergence.) of a real valued power series.
 
 ## Getting started
 
-Get started by installing the gnu c/cpp compiler on your system. While the following development tools
-are not required, they make development and evaluation easier. Software development is facilitated with
-the Ruby scripting language, make, cmake, clang-format, valgrind, git, and the Google unit testing suite
-GTest and GMock. An IDE such as VSCode will provide many tools for convenience. For the hard core developer,
-editors such as GVim provide an alternative to the perks and advantages of an IDE.
+You can build this software on a computer system equipped with the gnu c/cpp compiler. For a good
+tutorial on equipping your system with this compiler, see
+[Barak Shoshany](http://baraksh.com/CSE701/notes.php#visual-studio-code).
+
+For convince and to run the test suite, additionally equip your system with
+
+1. [git](https://git-scm.com/downloads)
+1. [cmake](https://cmake.org/download)
+1. the Google unit testing suite [GTest and GMock](https://github.com/google/googletest)
+
+Properly integrate linting, code coverage, profiling, and performance testing by
+additionally equipping your system with the following development tools
+
+1. clang-check, clang-format, and clang-tidy aka [ClangTools](http://clang.llvm.org/docs/ClangTools.html)
+1. [valgrind](https://valgrind.org)
+1. gprof aka [Performance Analysis tools](https://en.wikipedia.org/wiki/List_of_performance_analysis_tools)
+1. [gcov](https://en.wikipedia.org/wiki/Gcov)
+
+We implement continuous integration and build testing through TravisCI.
+
+A Ruby Rakefile is offered for convenience for those users who can take advantage of it. Observe its
+functionality through the command `rake -T`.
+
+An IDE such as VSCode will provide many tools for convenience. Editors such as GVim
+provide an alternative to the perks and advantages offered through VSCode.
 
 With the software described above in place, there are two ways to compile the code. The standard way assumes
 the developer is in the top level directory roc/. Then
@@ -70,6 +96,32 @@ To remove the Makefile, type
 
 > rake clobber
 
+## Plain C example
+
+We present an example form [a calculus tutorial](https://tutorial.math.lamar.edu/Classes/CalcII/PowerSeries.aspx)
+and analyse
+
+```
+f(x) = sum_0^{infty} \frac{2^n}{n} (4 x -8)^n on 15/8 <= x < 17/8 has Rc=1/8.
+```
+
+We want to fit the tail of the Taylor series, ignore the first 17 terms of the TCs. From roc directory
+
+1. cd examples_c
+2. make
+3. ./e_calculus
+4. make clean
+
+## CPP example
+
+We present an example with Taylor series data from the solution of a Differential Algebraic Equation. From roc directory 
+
+1. cd examples_cpp
+2. make
+3. ./e_sevenbody
+4. gprof e_sevenbody gmon.out > gprof_output.txt
+4. make clean
+
 ## Documentation for coders
 
 The unit tests are living documentation for the functionality of this software. Read the __test-name.test-case__
@@ -91,12 +143,38 @@ At the moment, this software can be used as in the example __roc/examples/e_calc
 
 The software returns the RC and the best fit line slope/intercept coefficients.
 
+## Obtain a Taylor Series of a function 
+
+Download [FADBAD++ 2.1](http://www.fadbad.com/fadbad.html)
+
+In the program GetTS.cpp in the top level directory alter the following to your function
+
+```bash
+T<double> func(const T<double>& x)
+{
+  T<double> y = 1.0 - x;
+  return 1.0/y;
+}
+```
+
+```bash
+double x0{0.3}, hbar{1.0};
+```
+
+Put this program into FADBAD++/examples and compile with
+
+> gcc -I.. GetTS.cpp -o ex.exe -lstdc++ -lm
+
+and run to obtain a 30 term Taylor Series output to STDOUT
+
+> ./ex.exe
+
+
 ## Algorithms used
 
-The software was built for numerical stability. Great care was taken to solve the linear
-least squares problem to best fit the power series coefficients. The QRFactorization
-was implemented and used to solve the Linear Least Squares problem, and great care for
-numerical stability was taken in the construction of the Householder transformations,
+The code solves the linear least squares problem to best fit the power series coefficients.
+The QRFactorization was implemented and used to solve the Linear Least Squares problem,
+and great care was taken in the construction of the Householder transformations,
 the two-norm, and the backward substitution used in solving the linear system.
 
 This software was build somewhat for speed. However there is room for improvement. The
@@ -117,3 +195,5 @@ The folders and files for this project are as follows:
 3. src - Source code
 4. test - Test cases
 5. examples - Example use cases
+
+

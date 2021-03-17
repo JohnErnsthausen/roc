@@ -40,7 +40,7 @@
 \item \LaTeX{} points
   \begin{todolist}
   \item Only tex file (and possibly pdf files, or image files) are under version
-    control.
+    control (\texttt{aux} files etc. are not under version control)
     \item Opening and closing ``quotes'' are used (\verb|``quotes''|)
   \item Periods that do not end sentences are followed by only one space:
     \verb|``I like Dr.\ Smith.''|, or for no linebreaks: \verb|``I like Dr.~Smith.''|
@@ -48,13 +48,16 @@
     (\verb|$coeff$|) versus $\mathit{coeff}$ (\verb|$\mathit{coeff}$|) versus
     $\text{coeff}$ (\verb|$\text{coeff}$|).
   \item For CAS 741 the instructor would like to be able to add comments to your
-    tex files.  Please be sure to include the Comments.tex file in your repo and
+    tex files.  Please be sure to include the \texttt{Comments.tex} file in your repo and
     in your tex files.
-    \item Text should be 80 characters wide.
+  \item Text lines should be 80 characters wide.  That is, the text has a hard-wrap at
+    80 characters.  This is done to facilitate meaingful diffs between different
+    commits.  (Some ideas on how to do this are given below.)
   \item Template comments (plt) do not show in the pdf version, either by
     removing them, or by turning them off.
   \item References and labels are used so that maintenance is feasible
   \item Cross-references between documents are used as appropriate
+  \item BibTeX is used for generating bibliographic references
   \end{todolist}
 
 \item Structure
@@ -79,8 +82,10 @@
   \item Symbols used outside of a formula should be formatted the same way as
     they are in the equation.  For instance, when listing the variables in an
     equation, you should still use math mode for the symbols.
-  \item Include a .gitignore file in your repo so that generated files are
-    ignored by git
+  \item Include a \texttt{.gitignore} file in your repo so that generated files
+    are ignored by git.  More information is available on-line on
+    \href{https://en.wikipedia.org/wiki/Hidden_file_and_hidden_directory}
+    {Hidden files and hidden directories}.
   \item All hyperlinks work
   \item Every figure has a caption
   \item Every table has a heading
@@ -108,4 +113,21 @@
   
 \end{itemize}
 
+\subsubsection*{Fixed Width \LaTeX{} Text}
+
+Having the \LaTeX{} text at a fixed width (hard-wrap) is useful when the source
+is under version control.  The fixed line lengths help with isolating the
+changes between diffs.
+
+Although the checklist mentions an 80 column width, any reasonable fixed width
+is fine.
+
+The hard-wrap shouldn't be done manually.  Most editors will have some facility
+for fixed width.  In emacs it is called auto-fill.  Some advice from previous
+and current students:
+
+\begin{itemize}
+\item In TEXMaker, you can do: User $>$ Run script $>$ hardwordwrap
+\item Wrapping is easy in VSCode, Emacs, and Vim
+\end{itemize}
 \end{document}

@@ -1,4 +1,22 @@
+\usepackage[dvipsnames]{xcolor}
+\usepackage{enumitem}
+\usepackage{makeidx}
+\usepackage{eqparbox}
+\usepackage{newverbs}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenx}
+\usepackage[T1]{fontenc}
+%\usepackage{underscore}
+
+\newcommand\nc{\newcommand}
+\newcommand\rnc{\renewcommand}
+\input{../apidoc}
+\input{../hyperref}
+
 % Common Parts
+\usepackage{ifthen}
+
+\nc\qdot{\dot{\mathbf{q}}}
 
 %PUT YOUR PROGRAM NAME HERE %Every program should have a name
 \newcommand{\progname}[1]
@@ -22,6 +40,12 @@
 \newcommand{\mathematica}{{\footnotesize MATHEMATICA}\xspace}
 \newcommand{\maple}{{\footnotesize MAPLE}\xspace}
 \newcommand{\tol}{\text{\sc tol}\xspace}
+\newcommand{\nuses}{\text{\footnotesize nUses}\xspace}
+\newcommand{\minterms}{\text{\footnotesize MINTERMS}\xspace}
+\newcommand{\threenuses}{\text{\footnotesize 3TAnUses}\xspace}
+\newcommand{\sixnuses}{\text{\footnotesize 6TAnUses}\xspace}
+\newcommand{\tlanuses}{\text{\footnotesize TLAnUses}\xspace}
+\newcommand{\tlakstart}{\text{\footnotesize TLAkStart}\xspace}
 % User commands
 \newcommand{\Quote}[1]{``{#1}''}
 \newcommand{\Ni}{\noindent}

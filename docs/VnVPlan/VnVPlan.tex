@@ -1,0 +1,760 @@
+\documentclass[12pt, titlepage]{article}
+
+\usepackage{amsmath, mathtools}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xspace}
+
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{xr}
+\usepackage{longtable}
+\usepackage{xfrac}
+\usepackage{float}
+\usepackage{siunitx}
+\usepackage{caption}
+\usepackage{geometry}
+\usepackage{pdflscape}
+\usepackage{afterpage}
+
+\usepackage{fullpage}
+\usepackage[round]{natbib}
+\usepackage{multirow}
+%\usepackage{refcheck}
+\usepackage{lipsum}
+
+\usepackage[section]{placeins}
+\usepackage{array}
+
+\input{../Comments}
+\input{../Common}
+
+\makeatletter
+\newcommand*{\addFileDependency}[1]{% argument=file name and extension
+  \typeout{(#1)}
+  \@addtofilelist{#1}
+  \IfFileExists{#1}{}{\typeout{No file #1.}}
+}
+\makeatother
+
+\newcommand*{\myexternaldocument}[1]{%
+    \externaldocument{#1}%
+    \addFileDependency{#1.tex}%
+    \addFileDependency{#1.aux}%
+}
+
+\externaldocument{../SRS/SRS}
+
+\newcommand{\rref}[1]{(R\ref{#1})}
+\newcommand{\nfrref}[1]{NFR\ref{#1}}
+
+\begin{document}
+
+\title{System Verification and Validation Plan for \progname{L}:
+Software estimating the radius of convergence of a power series} 
+\author{John M Ernsthausen}
+\date{\today}
+	
+\maketitle
+
+~\newpage
+
+\pagenumbering{roman}
+
+\tableofcontents
+
+\listoftables
+
+%\listoffigures
+
+~\newpage
+
+\section*{Revision History}
+
+\begin{tabularx}{\textwidth}{p{4cm}p{2cm}X}
+\toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
+\midrule
+29 October 2020 & 1.0 & First submission\\
+24 December 2020 & 2.0 & Second submission\\
+\bottomrule
+\end{tabularx}
+
+~\newpage
+
+\section{Symbols, Abbreviations, and Acronyms}
+
+Symbols, abbreviations, and acronyms applicable to \progname{f} are enumerated
+in Section 1 of the Software Requirements Document (SRS) \citep{SRS}.
+
+\newpage
+
+\pagenumbering{arabic}
+
+%CHAPTER
+\section{Introduction}
+
+%  Possibly move to SRS or introduction of MIS
+%
+%
+%  Construct the series centered at $z_0 \in \Rz$
+%  \EQ
+%  {
+%    \label{eq:power-series}
+%    \sum_{n=0}^{\infty} c_n (z-z_0)^n
+%  }
+%  from a sequence $\Setbg{c_n}$ of real numbers where the $n^\text{th}$ term in the sequence corresponds
+%  to the $n^\text{th}$ coefficient in the series. We associate a sequence $\Setbg{s_n}$ of partial sums
+%  \EQ
+%  {
+%    \label{eq:partial-sum}
+%    s_n \defeq \sum_{k=0}^n c_k (z-z_0)^k
+%  }
+%  with the power series. If $\Setbg{s_n} \rightarrow s$ as $n \rightarrow \infty$,
+%  then we say $\Setbg{s_n}$ converges to $s$. The number $s$ is the sum of the series, and
+%  we write $s$ as \eqref{power-series}. If $\Setbg{s_n}$ diverges, then the series is said to diverge.
+%  
+%  We cannot perform an infinite sum on a digital computer. However, given a tolerance \tol
+%  and a convergent power series, there exists an integer $N$ such that, for all
+%  $m \geq n \geq N$, $| \sum_{k=n}^{m} c_k | < \tol$. We assume that we know $N$. Our software
+%  \progname{f} will estimate the radius of convergence $R_c$ from the first $N$ terms 
+%  in the power series. The coefficients may be scaled with a scaling $h$ to
+%  prevent numerical overflow. The default scaling is $h=1$. Scaling the coefficients
+%  is a change of variables $v(z) \defeq (z - z_0)/h$ in \eqref{power-series}. With the scaled coefficients
+%   $\tilde c_n \defeq c_n h^n$ and the change of variables, \eqref{power-series} transforms to
+%  \EQ
+%  {
+%    \label{eq:power-series-scaled}
+%    \sum_{n=0}^{\infty} \tilde c_n v^n.
+%  }
+%  When $r_c$ is the radius of the circle of convergence of \eqref{power-series-scaled}, $R_c = h r_c$
+%  is the radius of the circle of convergence of \eqref{power-series}.
+%  \progname{f} may not compute $R_c$ exactly. These are the assumptions under which the \progname{f} software
+%  operates. In the sequel, we denote both scaled and unscaled coefficients by $c_n$.
+%  
+%  \cite{chang1982} observed that the coefficients of \eqref{power-series} follow a few
+%  very definite patterns characterized by the location of primary singularities. Real valued power series
+%  can only have poles, logarithmic branch points, and essential singularities. Moreover, these singularities
+%  occur on the real axis or in complex conjugate pairs. The effects of secondary singularities disappear
+%  whenever sufficiently long power series are used. To determine $R_c$ and the order of the singularity $\mu$,
+%  \cite{chang1982} fit a given finite sequence to a model.
+%  
+%  Recall that a primary singularity of \eqref{power-series} is the closest singularity to the series
+%  expansion point $z_0$ in the complex plane. All other singularities are secondary singularities.
+
+This document provides a verification and validation plan for developing \progname{f}.
+This plan includes dynamic testing and static testing. Functional requirement will be tested
+using parallel testing techniques, and nonfunctional requirements will test accuracy and timing.
+Testing on \progname{f} is fully automated up to applying DevOps techniques available through
+our public repository on GitHub.
+
+%CHAPTER
+\section{General Information}
+
+The scope of this \progname{f} project includes three term analysis of primary real poles,
+six term analysis of primary pair of complex conjugate poles, and top line analysis.
+\progname{f} does not yet include an analysis for essential singularities.
+
+Top-line analysis always applies to any power series \eqref{power-series}. It resolves
+a series anaylsis exhibiting secondary singularities. However top line analysis can be
+inaccurate.
+
+\subsection{Objectives}
+
+Our objective is correctness, accuracy, and timing. \progname{f} is an idea for an academic
+research project. The impression from this software will guide future decisions about
+this idea as a viable research project.
+
+Every effort will be made to complete every aspect
+promised in this documentation. However, as a research project, it is more important to
+discover missing elements in the work of other authors such as \cite{chang1982} than
+to reproduce a known implementation. As a result, some promised work is expected to be
+accomplished after the course CSE 741 has completed.
+
+\subsection{Relevant Documentation}
+
+Relevant documentation includes the authors Software Requirements Specification (SRS) \citep{SRS}, the
+authors Module Guide (MG) \citep{MG}, and the authors Module Interface Specification (MIS) \citep{MIS}.
+
+\section{Verification and Validation Plan}
+
+Verification and Validation of \progname{f} includes automated testing at the module level,
+the system level, and integration level. This document will additionally propose continuous integration.
+
+\subsection{Verification and Validation Team}
+
+The \progname{f} team includes
+author
+\href{https://github.com/JohnErnsthausen}{John Ernsthausen},
+fellow students
+\href{https://github.com/LeilaMousapour}{Leila Mousapour},
+\href{https://github.com/salahhessien}{Salah Gamal aly Hessien},
+\href{https://github.com/liziscool}{Liz Hofer},
+and
+\href{https://github.com/XingzhiMac}{Xingzhi Liu} as well as Professors
+\href{http://baraksh.com}{Barak Shoshany},
+\href{https://github.com/smiths}{Spencer Smith},
+\href{https://www.cs.mu.edu/~george/}{George Corliss},
+and
+\href{http://www.cas.mcmaster.ca/~nedialk}{Ned Nedialkov}.
+The author appreciates the helpful comments and superior guidance on this project.
+
+\subsection{SRS Verification Plan}
+
+The SRS document Verification and Validation Plan for \progname{f} will be peer-reviewed by
+domain expert Leila Mousapour and secondary reviewer Salah Gamal aly Hessien.
+Prof. Spencer Smith the course instructor and my supervisor Ned Nedialkov will review the SRS
+document.
+
+The SRS document will be published to \href{https://github.com/JohnErnsthausen/roc}{GitHub}.
+Defects will be addressed with issues on the GitHub platform.
+
+\subsection{Design Verification Plan}
+
+The Design documents MG and MIS plan for \progname{f} will be peer-reviewed by
+domain expert Leila Mousapour and secondary reviewer Xingzhi Liu.
+Prof. Spencer Smith the course instructor and my supervisor Ned Nedialkov will also review these Design
+documents.
+
+The MG and MIS documents will be published to \href{https://github.com/JohnErnsthausen/roc}{GitHub}.
+Defects will be addressed with issues on the GitHub platform.
+
+\subsection{Implementation Verification Plan}
+
+In the development of \progname{f}, all verification will be automatic.
+
+\subsubsection{Dynamic testing}
+Dynamic testing requires the program to be executed. For example, unit test cases
+are run, and the results are checked against expected behaviour.
+Dynamic testing of \progname{f} will be through unit tests, memory testing, profiling,
+and code coverage.
+
+\paragraph{Unit testing (Gtest/GMock):}
+The Implementation Verification Plan for \progname{f} includes automated testing at the module level.
+For testing at the module level, the author plans to follow the Test Driven Development
+software development practices as described by \cite{langr2013} for {\it test driving}.
+Test driving is an interactive process for software development where tests are determined
+as part of the software development process. However, on a high level, some unit tests
+will be offered in the sequel.
+
+Let us recall test driving \cite{langr2013}.
+Test driving results in unit tests. A unit test verifies the {\it behavior} of a code unit,
+where a {\it unit} is the smallest testable piece of an application.
+
+A single unit test consists of a descriptive name and a series of code statements conceptually
+divided into four parts
+
+\begin{enumerate}
+  \item (Optional) statements that set up a context for execution
+  \item One or more statements to invoke the behavior to be verified
+  \item One or more statements to verify the expected outcome
+  \item (Optional) cleanup statements
+\end{enumerate}
+
+The first three parts are referred to as {\it Given-When-Then}. {\it Given} a context, {\it When}
+the test executes some code, {\it Then} some behavior is verified.
+
+Test Driven Development is used to test drive new behavior into the code in small increments. To
+add a new piece of behavior into the system, first write a test to define that behavior. The
+existence of a test that will not pass drives the developer to implement the corresponding behavior.
+The increment should be the smallest meaningful amount of code, one or two lines of code and one assertion.
+
+\paragraph{Memory testing (valgrind):}
+Memory leaks as result from un-freed dynamically allocated memory. Valgrind is a tool to automatically
+detect memory leaks and a variety of memory errors. We will engage valgrind to remove all the memory
+errors this checker flags.
+
+Valgrind will be run on the unit testing test suite.
+
+\paragraph{Profiling (gprof):}
+GCC includes a tool called gprof, which can be used to analyze the performance of \progname{f}.
+Gprof will list the functions executed by \progname{f}, along with the percentage of total runtime,
+number of method calls, and time spent in each method. Gprof is used to help performance.
+
+Using gprof, \progname{f} can reveal the parts of itself that take up the most execution time,
+without needing to do any manual measurements. This will help me to decide which methods
+to focus on when I attempt to optimize my code.
+
+Gprof will be run on stand alone examples to determine performance for example in using \progname{f}
+as a stepsize controller in the solution process on an ordinary differential and differential-algebraic
+equation.
+
+\paragraph{Code coverage (gcov):}
+GCC includes a tool called gcov, which can be used to reveal the lines of code used in the execution
+of a program. Unit testing is working whenever small increments of
+code are written when driving into the codebase the tests intended behavior. Gcov tests the
+assumption that all the code written for that unit test is used for that behavior.
+
+Gcov reveals the code used/not used, and its output indicates the percentage of code used
+per directory and per file.
+
+Gcov will be run against the test suite.
+
+\subsubsection{Static testing}
+Static testing does not involve program execution.
+Testing techniques simulate the dynamic environment.
+Static testing includes syntax checking.
+
+\paragraph{Linting (clang-format):}
+The code itself should be well formatted. Clang-format is a tool that keeps source code formatted
+to a specification. My specification is in the file ROC/.clang-format. Formats can be customized.
+
+Clang-format will be run against my code base before I push my code to GitHub. 
+
+\subsubsection{Continuous integration}
+Continuous integration enables more than one developer to independently drive new behavior into
+a code base and maintain a working codebase. Without continuous integration and with developers
+impeccably practicing sound testing philosophies, a code base integration between the developers
+can fail on merge. Continuous integration asks for frequent merges so that developers can be
+assured of integration compatibility.
+
+TravisCI offers a working development server environment that will run unit tests, integration tests,
+static analysis, profile performance, extract documentation, and update the project web-page
+after developers integrate their code into a shared repo. It is expected that developers
+will merge their code into the shared repo several times a day.
+TravisCI offers MacOS, Windows, and Linux development environments for portability testing
+to eliminate the \Quote{it works on my machine} problem.
+
+Continuous integration for \progname{f} is offered through GitHub, TravisCI, and Coveralls.
+My TravisCI specification is in the file ROC/.travis.yml and a badge on my 
+\href{https://github.com/JohnErnsthausen/roc}{repo page} indicates that my tests are passing/failing.
+I have not yet figured out how to get the code coverage server Coveralls to work for \progname{f}. However
+the badge for Coveralls is also on the \progname{f} \href{https://github.com/JohnErnsthausen/roc}{repo page}.
+
+\subsubsection{Parallel testing}
+In parallel testing, one compares to other programs.
+\progname{f} includes automated testing at the system level
+and integration level. The code output
+will be compared with the output of \rdcon developed by \cite{chang1982} for validation at
+the integration level. More on this topic is in the sequel.
+
+\subsubsection{Comparison with closed-form solution}
+Yes I do this too, in my unit tests.
+
+For example, I expand $f(t) = 1.0/(1.0-t)$ at
+$t =-1.0$ into its TS with scaling $h=0.1$. I then use 3TA to recover the $R_c = 2$ to accuracy of
+$9.68115e-14$ and $\mu = 1$ to accuracy of $1.1887e-12$. See the unit test
+\EQ
+{
+\text{\footnotesize ThreeTermAnalysisOf.TaylorSeriesAtNegativeOneRealPoleAtOneWithScalingTenthAlphaOne}
+}
+
+\Ni I do this for a collection of $\mu$ and scaling $h$. 
+I build similar tests for 6TA and TLA.
+
+\subsection{Automated Testing and Verification Tools}
+
+Automated Testing and Verification Tools will be extensively used in the development of \progname{f}
+for automation at the module level, the system level, and integration level.
+These tools include
+\href{https://git.kernel.org/pub/scm/git/git.git}{git} a distributed version-control system
+for tracking changes in source code during software development,
+\href{https://cmake.org/}{cmake} for build automation,
+\href{https://github.com/google/googletest}{gtest/gmock}
+as a unit testing framework, \href{http://clang.llvm.org/docs/ClangFormat.html}{clang-format}
+for consistent code style formatting, \href{https://www.valgrind.org}{valgrind}
+to identify memory leaks, \href{https://en.wikipedia.org/wiki/Gcov}{gcov} for code coverage,
+and \href{https://en.wikipedia.org/wiki/Gprof}{gprof} as a profiler.
+
+This document will additionally propose to branch out into three new areas for the author.
+In the DevOps arena,
+continuous integration will be pursued with \href{https://travis-ci.org}{TravisCI}.
+The continuous integration tool should send an email confirming the success state
+of integrating the new code into production.
+
+\subsection{Software Validation Plan}
+
+Validation is the validation of the requirements. Validation compares experimental
+data to output from \progname{f} to confirm or reject the problem model. Validation
+considers the applicability of the equations and assumptions to the problem space.
+However, \progname{f} is not modelling a physical problem. Thus a
+Software Validation Plan is not applicable to this project.
+
+\section{System Test Description}
+
+System tests are about the public interface.
+
+\subsection{Parallel testing}
+
+\progname{f} includes automated testing at the system level. The code output
+will be compared with the output of \rdcon developed by \cite{chang1982} for validation
+at the integration level.
+Parallel testing will be used in nonfunctional testing.
+
+%  Sample Functional System Testing
+%  \begin{itemize}
+%  \item Requirements: Determines if the system can perform its function correctly and that the correctness can be sustained over a continuous period of time
+%  \item Regression: Determines if changes to the system do not invalidate previous positive testing results
+%  \item Error Handling: Determines the ability of the system to properly process
+%    incorrect transactions
+%  \item Manual Support: Determines that the manual support procedures are documented and complete, where manual support involves procedures, interfaces between people and the system, and training procedures
+%  \item Parallel: Determines the results of the new application are consistent with the processing of the previous application or version of the application
+%  \end{itemize}
+%  
+%  Sample Nonfunctional System Testing
+%  \begin{itemize}
+%  \item Stress testing - Determines if the system can function when subject to large volumes
+%  \item Usability testing
+%  \item Performance measurement
+%  \end{itemize}
+
+\subsection{Tests for Functional Requirements}
+
+\progname{f} does not have System Functional Requirements at this time.
+
+\subsection{Tests for Nonfunctional Requirements}
+
+\subsubsection{Timing}
+
+Requirement \nfrref{NFR_timing} says that \progname{f} should execute as fast as
+the \cite{chang1982} software \rdcon. The following tests represent a comparison between
+\progname{f} and \rdcon.
+
+\paragraph{Proportion of time spent finding the stepsize}
+
+\begin{enumerate}
+
+  \item{Layne-Watson \citep{watson1979}\\}
+
+% Control: 
+					
+% Initial State: 
+					
+Input: Load a file with the Taylor series solution of the Layne-Watson problem. Each time the
+    local initial value problem was solved there will be a Taylor series of length $N$ and a scale $h$,
+    which are the required inputs for \progname{f} and \rdcon.
+					
+Output: Difference between time for \progname{f} to solve the problem and time for \rdcon to
+    solve the problem.
+
+Test Case Derivation: Two techniques resolving the same data.
+					
+How test will be performed: Automatically.
+					
+\item{Planetary-Motion \citep{enright1987examples}\\}
+
+% Control: 
+					
+% Initial State: 
+					
+Input: Load a file with the Taylor series solution of the Planetary-Motion problem. Each time the
+    local initial value problem was solved there will be a Taylor series of length $N$ and a scale $h$,
+    which are the required inputs for \progname{f} and \rdcon.
+					
+Output: Difference between time for \progname{f} to solve problem and time for \rdcon to solve problem.
+
+Test Case Derivation: Two techniques resolving the same data.
+					
+How test will be performed: Automatically.
+
+\end{enumerate}
+
+\subsubsection{Accuracy}
+
+Requirement \nfrref{NFR_accuracy} says that the new top line
+analysis in \progname{f} should compute a $R_c$ and $\mu$ which is
+close to the values computed with the \cite{chang1982} algorithm \rdcon.
+This test treats \rdcon as a pseudo oracle.
+The comparison will be carried out on the process of solving a \dae \ivp by the TS method.
+
+\paragraph{Accuracy in finding the stepsize}
+
+\begin{enumerate}
+
+\item{Layne-Watson \citep{watson1979}\\}
+
+% Control: 
+					
+% Initial State: 
+					
+Input: Load a file with the Taylor series solution of the Layne-Watson problem. Each time the
+    local initial value problem was solved there will be a Taylor series of length $N$ and a scale $h$,
+    which are the required inputs for \progname{f} and \rdcon.
+					
+Output: Each time the local initial value problem was solved, find $R_c$ and $\mu$ with
+    \progname{f} and \rdcon. Compare the results. Expect the results to compare within 10\%.
+
+Test Case Derivation: Two techniques resolving the same data.
+					
+How test will be performed: Automatically.
+					
+\item{Planetary-Motion \citep{enright1987examples}\\}
+
+% Control: 
+					
+% Initial State: 
+					
+Input: Load a file with the Taylor series solution of the Planetary-Motion problem. Each time the
+    local initial value problem was solved there will be a Taylor series of length $N$ and a scale $h$,
+    which are the required inputs for \progname{f} and \rdcon.
+					
+Output: Each time the local initial value problem was solved, find $R_c$ and $\mu$ with
+    \progname{f} and \rdcon. Compare the results. Expect the results to compare within 10\%.
+
+Test Case Derivation: Two techniques resolving the same data.
+					
+How test will be performed: Automatically.
+
+\end{enumerate}
+
+% \subsection{Tests for Nonfunctional Requirements}
+% 
+% \wss{The nonfunctional requirements for accuracy will likely just reference the
+%   appropriate functional tests from above.  The test cases should mention
+%   reporting the relative error for these tests.}
+% 
+% \wss{Tests related to usability could include conducting a usability test and
+%   survey.}
+% 
+% \subsubsection{Area of Testing1}
+% 		
+% \paragraph{Title for Test}
+% 
+% \begin{enumerate}
+% 
+% \item{test-id1\\}
+% 
+% Type: 
+% 					
+% Initial State: 
+% 					
+% Input/Condition: 
+% 					
+% Output/Result: 
+% 					
+% How test will be performed: 
+% 					
+% \item{test-id2\\}
+% 
+% Type: Functional, Dynamic, Manual, Static etc.
+% 					
+% Initial State: 
+% 					
+% Input: 
+% 					
+% Output: 
+% 					
+% How test will be performed: 
+% 
+% \end{enumerate}
+% 
+% \subsubsection{Area of Testing2}
+% 
+% ...
+
+\subsection{Traceability Between Test Cases and Requirements}
+
+In each test, the requirement supported by the test case is stated.
+
+However I would find a traceability table difficult to present as I have 158 tests, difficult to maintain, and a duplication of work. I wouldn't find this table useful. Here's why.
+
+In the Module Guide there is "Table 2: Trace Between Requirements and Modules". Here I'm thinking of Module as a Parnas Module, a work order. For every work order, I Test Drive the behavior given in the work order into my code base. All of the behaviors required by the module must have corresponding testing code. I then do code coverage on my tests. If I have 100\% code coverage of my tests and all the required behaviors are covered in the module. Then by my testing, I automatically have the functionality of the traceability table in discussion making the traceability table unnecessary work.
+
+\section{Unit Test Description}
+
+To implement each module required (so far) 158 unit tests. The tests are described in natural language
+through the tests \Quote{TestCase.TestName} combination. The tests are grouped by module in the directory
+roc/test. I enumerate the TestCases used in \TBref{testcases} that test all functional requirements.
+Especially notice the TestNames related to the inputs should the reader run the test suite.
+These tests demonstrate the exceptions thrown whenever a user error has occurred.
+
+%  Input testing in these input requirements:
+%  \rref{rIHardware} Input acquisition via hardware.
+%  \rref{rISoftware} Input acquisition via software.
+%  \rref{rIFormat} Validate input format.
+%  \rref{rIType} Validate input type.
+
+\begin{table}[!ht]
+\centering
+\begin{tabular}{r p{0.3\textwidth} p{0.6\textwidth}}
+\toprule
+\textbf{Number of Tests} & \textbf{TestCase Name}\\
+\midrule
+  7 &  TestThatDDIST2\\
+ 5  &  TestThatDNRM2\\
+ 1  &  TestExceptions\\
+ 3  &  TestThatIO\\
+ 6  &  TestThatMathext\\
+ 23 &  TestThatMatrix\\
+ 10 &  TestThatCPPQR\\
+ 10 &  TestThatHouseholderG\\
+ 10 &  TestThatHouseholderL\\
+ 7  &  TestThatQRF\\
+ 8  &  TestThatQRS\\
+ 9  &  TestThatQR\\
+ 22 &  SixTermAnalysisOf\\
+ 21 &  ThreeTermAnalysisOf\\
+ 4  &  TestThatTopLine\\
+ 12 &  TestThatVectorF\\
+  \bottomrule
+
+\end{tabular}
+  \caption{Test cases}
+\label{tb:testcases}
+\end{table}
+
+
+%  \wss{Reference your MIS and explain your overall philosophy for test case
+%    selection.}  
+%  \wss{This section should not be filled in until after the MIS has
+%    been completed.}
+%  
+%  
+%  
+%  
+%  %  \item[R\refstepcounter{reqnum}\thereqnum \label{R_Inputs}:] The input
+%  %    sequence should be scaled by $h$ to prevent overflow/underflow.
+%  %    If this is not possible, \progname{f} will find a scale.
+%  %  
+%  %  \item[R\refstepcounter{reqnum}\thereqnum \label{R_Calculate}:]
+%  %    \progname{f} should execute as fast as the \cite{chang1982} software \rdcon.
+%  %  
+%  %  \item[R\refstepcounter{reqnum}\thereqnum \label{R_VerifyOutput}:]
+%  %    \progname{f} should estimate the radius of convergence $R_c$ and
+%  %      the order of singularity $\mu$ for the following cases where $R_c$ and $\mu$ are known.
+%  %  
+%  %    The real valued function $1/(z-z_0)^{\mu}$.
+%  %  
+%  %    The real valued function $1/(1 + 25*(z-z_0)^2)^{\mu}$.
+%  %  
+%  %    Top line analysis while solving \dae \ivp by the TS method should verify
+%  %      the computed step is within the circle of convergence and compare
+%  %      with the \cite{chang1982} algorithm \rdcon.
+%  %  
+%  %  \item[R\refstepcounter{reqnum}\thereqnum \label{R_Output}:] We must not overestimate $R_c$.
+%  %    If $R_c$ is overestimated, then the power-series is a divergence sum on the overestimation.
+%  %  
+%  %    In \ode solving by TS methods, underestimating $R_c$ is acceptable as an underestimation
+%  %    results in a slight increase in computational effort for solving an \ode \ivp.
+%  %  \end{itemize}
+%  \subsection{Unit Testing Scope}
+%  
+%  \wss{What modules are outside of the scope.  If there are modules that are
+%    developed by someone else, then you would say here if you aren't planning on
+%    verifying them.  There may also be modules that are part of your software, but
+%    have a lower priority for verification than others.  If this is the case,
+%    explain your rationale for the ranking of module importance.}
+%  
+%  \subsection{Tests for Functional Requirements}
+%  
+%  \wss{Most of the verification will be through automated unit testing.  If
+%    appropriate specific modules can be verified by a non-testing based
+%    technique.  That can also be documented in this section.}
+%  
+%  \subsubsection{Module 1}
+%  
+%  \wss{Include a blurb here to explain why the subsections below cover the module.
+%    References to the MIS would be good.  You will want tests from a black box
+%    perspective and from a white box perspective.  Explain to the reader how the
+%    tests were selected.}
+%  
+%  \begin{enumerate}
+%  
+%  \item{test-id1\\}
+%  
+%  Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
+%    be automatic}
+%  					
+%  Initial State: 
+%  					
+%  Input: 
+%  					
+%  Output: \wss{The expected result for the given inputs}
+%  
+%  Test Case Derivation: \wss{Justify the expected value given in the Output field}
+%  
+%  How test will be performed: 
+%  					
+%  \item{test-id2\\}
+%  
+%  Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
+%    be automatic}
+%  					
+%  Initial State: 
+%  					
+%  Input: 
+%  					
+%  Output: \wss{The expected result for the given inputs}
+%  
+%  Test Case Derivation: \wss{Justify the expected value given in the Output field}
+%  
+%  How test will be performed: 
+%  
+%  \item{...\\}
+%      
+%  \end{enumerate}
+%  
+%  \subsubsection{Module 2}
+%  
+%  ...
+%  
+%  \subsection{Tests for Nonfunctional Requirements}
+%  
+%  \wss{If there is a module that needs to be independently assessed for
+%    performance, those test cases can go here.  In some projects, planning for
+%    nonfunctional tests of units will not be that relevant.}
+%  
+%  \wss{These tests may involve collecting performance data from previously
+%    mentioned functional tests.}
+%  
+%  \subsubsection{Module ?}
+%  		
+%  \begin{enumerate}
+%  
+%  \item{test-id1\\}
+%  
+%  Type: \wss{Functional, Dynamic, Manual, Automatic, Static etc. Most will
+%    be automatic}
+%  					
+%  Initial State: 
+%  					
+%  Input/Condition: 
+%  					
+%  Output/Result: 
+%  					
+%  How test will be performed: 
+%  					
+%  \item{test-id2\\}
+%  
+%  Type: Functional, Dynamic, Manual, Static etc.
+%  					
+%  Initial State: 
+%  					
+%  Input: 
+%  					
+%  Output: 
+%  					
+%  How test will be performed: 
+%  
+%  \end{enumerate}
+%  
+%  \subsubsection{Module ?}
+%  
+%  ...
+%  
+%  \subsection{Traceability Between Test Cases and Modules}
+%  
+%  \wss{Provide evidence that all of the modules have been considered.}
+				
+\bibliographystyle{plainnat}
+
+\bibliography{../../refs/References}
+
+%  \newpage
+%  
+%  \section{Appendix}
+%  
+%  This is where you can place additional information.
+%  
+%  \subsection{Symbolic Parameters}
+%  
+%  The definition of the test cases will call for SYMBOLIC\_CONSTANTS.
+%  Their values are defined in this section for easy maintenance.
+%  
+%  \subsection{Usability Survey Questions?}
+%  
+%  \wss{This is a section that would be appropriate for some projects.}
+
+\end{document}
+

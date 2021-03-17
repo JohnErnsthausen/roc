@@ -41,6 +41,11 @@ task :run => :make do |t|
   run "./run"
 end
 
+desc "run gcov"
+task :gcov  => BUILD_DIR do |t|
+  run "cmake ../ -DCMAKE_BUILD_TYPE=Debug -DENABLE_COVERAGE=ON; make -j8;make coverage"
+end
+
 desc "Identify swap files"
 task :swp do
   SWAP_FILES.each{|f| p f }
@@ -62,4 +67,38 @@ task :tar do
   dirname = Dir.getwd
   dirbasename = File.basename(dirname)
   sh "git archive --format=tar.gz -o #{dirbasename}.tar.gz HEAD"
+end
+
+desc "Reformat Coeffs"
+task :coeffs do
+  ofn = File.join(File.dirname(__FILE__), "test", "coeff.txt")
+  ifn = File.join(File.dirname(__FILE__), "test", "coeffs.txt")
+  lines = File.readlines(ifn)
+
+  File.open(ofn, "w") do |output|
+    arr = Array.new
+    t = 0
+    scale = 0
+    lines.each do |line|
+      if line.include?('t')
+        strarr = line.scan(/\d+\.\d+/)
+        if strarr.length==2
+          t = strarr[0]
+          scale = strarr[1]
+          puts "#{line.strip},#{t},#{scale}"
+          #output.puts "#{line.strip},#{t},#{scale}"
+        else
+          puts "WARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRNING"
+        end
+        next
+      end
+      if !line.include?('x')
+        arr << line.strip
+      else
+        output.puts "#{arr.join(' ')} #{scale} #{t}" unless arr.empty?
+        arr = Array.new
+        next
+      end
+    end
+  end
 end

@@ -1,7 +1,12 @@
 #include "dist.h"
 #include <tgmath.h>
 #include "mathext.h"
-#include "swap.h"
+#define swap(T, x, y) \
+  {                   \
+    T tmp = (x);      \
+    x = (y);          \
+    y = tmp;          \
+  }
 
 #define map1(i) (i) - 1
 #define x(i) x[ map1(i) ]
@@ -45,11 +50,10 @@
 //
 double ddist2(int n, double *x, int incx, double *y, int incy, int kvec)
 {
-  const double zer = 0.0, one = 1.0;
-
+  const double zer = 0.0;
   int ix = 1, iy = 1;
   double diff = 0.0, dx = 0.0, dy = 0.0;
-  double scale = 0.0, sum = 0.0, tmp = 0.0, trm = 0.0;
+  double scale = 0.0, sum = 0.0;
 
   if (kvec != 2) kvec = 1;
 
@@ -71,7 +75,7 @@ double ddist2(int n, double *x, int incx, double *y, int incy, int kvec)
   for (int j = 1; j <= n; j++)
   {
     dx = x(ix);
-    ix = ix + incx;
+    ix += incx;
     if (kvec == 1)  // One vector case
     {
       diff = dx;
@@ -79,63 +83,79 @@ double ddist2(int n, double *x, int incx, double *y, int incy, int kvec)
     else  // Two vector case
     {
       dy = y(iy);
-      iy = iy + incy;
-
-      // Compute diff = dx - dy
-      diff = diff_avoids_subtractive_cancellation(dx, dy);
+      iy += incy;
+      diff = dx - dy;
     }
 
-    // Sum the scaled squares (all less than or equal to one) of the nonzero
-    // terms.
-
-    if (diff != zer)
-    {
-      trm = fabs(diff);
-      if (scale < trm)
-      {
-        tmp = scale / trm;
-        sum = one + sum * tmp * tmp;
-        scale = trm;
-      }
-      else
-      {
-        tmp = trm / scale;
-        sum += tmp * tmp;
-      }
-    }
+    // Scaled squares (less than or equal to one) of the nonzero terms.
+    add_next_element_squared(diff, &sum, &scale);
   }
   return scale * sqrt(sum);
 }
 
-// If dx and dy are not of the same sgn, then safely subtract
+// Computes the Euclidean norm of X.
 //
-// else
+// If N .LE. 0 then zero is returned, if N .GE. 1 then the
+// storage increments cannot be zero.
 //
-// If dx and dy are of the same sign, then subtract by
-// 1.) make sure dx > dy
-// 2.a) We have sgn(dx)=sgn(dy).
-//      If dx=0, then dy=0. Thus diff=0.
-// 2.b) else Subtract dx - dy = dx*(one-dy/dx)
-double diff_avoids_subtractive_cancellation(double dx, double dy)
+// This code is inspired by the LAPACK function DNRM2 written by
+// Sven Hammarling.
+//
+// Variables in the calling sequence
+// ---------------------------------
+//    N     I    IN   Dimension of the vector X
+//    X     D    IN   Vector of dimension N
+//    INCX  I    IN   Storage spacing between elements of X
+//
+double dnrm2(int n, double *x, int incx)
 {
-  const double zer = 0.0, one = 1.0;
-  double diff = 0.0;
+  const double zer = 0.0;
+  int ix = 1;
+  double dx = 0.0;
+  double scale = 0.0, sum = 0.0;
 
-  if (sgn(dx) != sgn(dy))
+  // Define the norm2 to be zero whenever the dimension is not positive
+  // or a storage incrementor is zero
+  if (n < 1 || incx == 0) return zer;
+
+  // Initialize incrementors
+  if (incx < 0) ix = (-n + 1) * incx + 1;
+
+  for (int j = 1; j <= n; j++)
   {
-    diff = dx - dy;
+    dx = x(ix);
+    ix += incx;
+    // Scaled squares (less than or equal to one) of the nonzero terms.
+    add_next_element_squared(dx, &sum, &scale);
+  }
+  return scale * sqrt(sum);
+}
+
+void add_next_element_squared(double xi, double *sum, double *scale)
+{
+  double bar = *scale;
+  double ssq = *sum;
+  const double zer = 0.0, one = 1.0;
+  double tmp = 0.0, absxi = 0.0;
+
+  // If xi==0, then the remaining statements do not permit a division by zero
+  // because bar >= 0 implies that bar < 0 is always false.
+  // However a quick return prohibits a wasted multiplication and sum.
+  if (xi == zer) return;
+
+  absxi = fabs(xi);
+  if (bar < absxi)
+  {
+    tmp = bar / absxi;
+    ssq = one + ssq * tmp * tmp;
+    bar = absxi;
   }
   else
   {
-    if (fabs(dx) < fabs(dy)) dswap(&dx, &dy);
-    if (dx == zer)
-    {
-      diff = zer;
-    }
-    else
-    {
-      diff = dx * (one - dy / dx);
-    }
+    tmp = absxi / bar;
+    ssq += tmp * tmp;
   }
-  return diff;
+
+  *scale = bar;
+  *sum = ssq;
 }
