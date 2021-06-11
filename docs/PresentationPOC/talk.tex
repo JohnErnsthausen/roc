@@ -27,7 +27,7 @@
 }
 % End Theme
 
-\input{../Common}
+%\input{../Common}
 
 \newcommand{\Alert}[1]{ {\Ni\color{red} {#1}}\newline }
 \newcommand{\NC}[1]{{\color{red}#1}}
@@ -38,6 +38,53 @@
 \newcommand{\FG}[1]{\begin{figure} {#1} \end{figure}}
 \newcommand{\EX}[1]{\begin{example} {#1} \end{example}}
 \newcommand{\VB}[1]{\begin{singlespacing} \verbatiminput{#1} \end{singlespacing}}
+
+% Abbreviations
+\newcommand{\ode}{{\footnotesize ODE}\xspace}
+\newcommand{\dae}{{\footnotesize DAE}\xspace}
+\newcommand{\ivp}{{\footnotesize IVP}\xspace}
+\newcommand{\fadbad}{{\footnotesize FADBAD++}\xspace}
+\newcommand{\plainc}{{\footnotesize C}\xspace}
+\newcommand{\cpp}{{\footnotesize C++}\xspace}
+\newcommand{\adolc}{{\footnotesize ADOL-C}\xspace}
+\newcommand{\rdcon}{{\footnotesize DRDCV}\xspace}
+\newcommand{\fortran}{{\footnotesize FORTRAN 77}\xspace}
+\newcommand{\daets}{{\footnotesize DAETS}\xspace}
+\newcommand{\matlab}{{\footnotesize MATLAB}\xspace}
+\newcommand{\mathematica}{{\footnotesize MATHEMATICA}\xspace}
+\newcommand{\maple}{{\footnotesize MAPLE}\xspace}
+\newcommand{\tol}{\text{\sc tol}\xspace}
+\newcommand{\nuses}{\text{\footnotesize nUses}\xspace}
+\newcommand{\minterms}{\text{\footnotesize MINTERMS}\xspace}
+\newcommand{\threenuses}{\text{\footnotesize 3TAnUses}\xspace}
+\newcommand{\sixnuses}{\text{\footnotesize 6TAnUses}\xspace}
+\newcommand{\tlanuses}{\text{\footnotesize TLAnUses}\xspace}
+\newcommand{\tlakstart}{\text{\footnotesize TLAkStart}\xspace}
+% User commands
+\newcommand{\Quote}[1]{``{#1}''}
+\newcommand{\Ni}{\noindent}
+\newcommand{\defeq}{\stackrel{\textup{\tiny def}}{=}}
+% Environment
+\newcommand{\EQ}[1]{\begin{align} {#1} \end{align}}
+% Mathematics
+\newcommand{\parn}[1]{( {#1} )}
+\newcommand{\parbg}[1]{\left(  {#1} \right)}
+\newcommand{\pbg}[1]{\bigl(  {#1} \bigr)}
+\newcommand{\Setbg}[1]{\bigl\{ {#1} \bigr\}}
+\def\Rz{\mathbb{R}}
+\def\Cz{\mathbb{C}}
+\def\Iz{\mathbb{N}}
+\newcommand{\nliminf}[1]{\liminf\limits_{{#1} \rightarrow \infty}}
+\newcommand{\nlimsup}[1]{\limsup\limits_{{#1} \rightarrow \infty}}
+\newcommand{\proot}[2]{\sqrt[\leftroot{-3}\uproot{3}{#1}]{#2}}
+% Mathematics: ODE
+\newcommand{\iode}{\protect{\makebox{$[t_0,\tend]$}}\xspace}
+\newcommand{\lode}{\protect{\makebox{$[t_n,t_{n+1}]$}}\xspace}
+\newcommand{\tend}{t_\text{end}}
+\newcommand{\tc}[2]{(#1)_{#2}}
+\newcommand{\Tp}{T}
+\newcommand{\xn}{x_{n}}
+\newcommand{\tn}{t_{n}}
 
 % Author, Title, etc.
 
