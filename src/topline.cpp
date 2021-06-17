@@ -62,8 +62,7 @@ double topline(const std::vector<double> &coeff, const double &scale,
 {
   int m{(int)coeff.size() - TOPLINE_KSTART}, n{2};
   matrix<double> W(m, n);
-  vectorf<double> beta(n);
-  vectorf<double> b(m);
+  vectorf<double> beta(m);
 
   // Less than TOPLINE_NUSE coefficients to estimate Rc
   if (m < TOPLINE_NUSE)
@@ -75,11 +74,11 @@ double topline(const std::vector<double> &coeff, const double &scale,
   }
 
   // Construct the least squares linear system
-  constructLinearLeastSquaresSystem(coeff, TOPLINE_KSTART, W, b);
+  constructLinearLeastSquaresSystem(coeff, TOPLINE_KSTART, W, beta);
 
   // Save a copy of linear system for computing residual
   matrix<double> WSaved{W};
-  vectorf<double> bSaved{b};
+  vectorf<double> rhs{beta};
 
   // Solve W beta = b for beta
   MinNormSolution(m, n, W.data(), beta.data());
@@ -88,7 +87,11 @@ double topline(const std::vector<double> &coeff, const double &scale,
   order = std::numeric_limits<double>::quiet_NaN();
 
   // Compute and return 2-norm of residuals
+  vectorf<double> residual(coeff.size());
   for (int i{1}; i <= m; i++)
-    bSaved(i) -= WSaved(i, 1) * beta(1) + WSaved(i, 2) * beta(2);
-  return norm2(m, bSaved.data());
+    residual(i) = WSaved(i, 1) * beta(1) + WSaved(i, 2) * beta(2) - rhs(i);
+  double bnrm2 = norm2(m, rhs.data());
+  double rnrm2 = norm2(m, residual.data());
+  double error = rnrm2/bnrm2;
+  return error;
 }

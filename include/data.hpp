@@ -1,7 +1,7 @@
 // SIXTERM_NUSE must be at least 4
 
 #define TOPLINE_KSTART 10
-#define TOPLINE_NUSE 5
+#define TOPLINE_NUSE 7
 #define SIXTERM_NUSE 7
 #define SIXTERM_KSTART 10
 #define THREETERM_NUSE 7

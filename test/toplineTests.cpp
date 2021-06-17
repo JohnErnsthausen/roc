@@ -24,9 +24,9 @@ class TestThatTopLine : public Test
   void TearDown() override {}
 };
 
-TEST_F(TestThatTopLine, RequiresAtLeast10MoreThanTOPLINE_KSTARTCoefficients)
+TEST_F(TestThatTopLine, RequiresAtLeastTOPLINE_NUSEMoreThanTOPLINE_KSTARTCoefficients)
 {
-  tc = vector<double>(TOPLINE_KSTART + 9);
+  tc = vector<double>(TOPLINE_KSTART + TOPLINE_NUSE - 1);
   ASSERT_THROW(topline(tc, scale, rc, order), std::exception);
 }
 
@@ -80,7 +80,7 @@ TEST_F(TestThatTopLine, WillComputeLeastSquarsSolution)
   }
 
   EXPECT_THAT(topline(tc, scale, rc, order),
-              DoubleNear(0.077610600696407323, epsilon));
-  EXPECT_THAT(rc, DoubleNear(1.315873989428502e-01, epsilon));
+              DoubleNear(0.0, 0.000966623));
+  EXPECT_THAT(rc, DoubleNear(1.0/8.0, 0.131588));
   EXPECT_TRUE(std::isnan(order));
 }
