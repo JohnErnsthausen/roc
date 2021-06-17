@@ -2,13 +2,11 @@
 #include <gtest/gtest.h>
 #include <cfloat>
 #include <cmath>
-#include <limits>
 
 #include "sixterm.hpp"
 
 #define epsilon DBL_EPSILON
 using namespace testing;
-using namespace std;
 
 TEST(
     SixTermAnalysisOf,
@@ -20,7 +18,7 @@ TEST(
   double a{1.0 / 5.0};
   double time{-0.3};
   double scale{0.1};
-  vector<double> coeffs{3.0769230769230771e-01,  1.4201183431952663e-01,
+  std::vector<double> coeffs{3.0769230769230771e-01,  1.4201183431952663e-01,
                         4.1875284478834776e-02,  8.4030671194986195e-03,
                         6.5716294139668780e-04,  -3.4308380547065328e-04,
                         -2.0889736724773902e-04, -7.0023107539675438e-05,
@@ -39,9 +37,9 @@ TEST(
 
   double err = sixterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
-  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 2.44250e-15));
-  EXPECT_THAT(order, DoubleNear(1.0, 2.6712e-13));
+  EXPECT_THAT(err, DoubleNear(0.0, 5.12424e-14));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 1.88739e-15));
+  EXPECT_THAT(order, DoubleNear(1.0, 6.61694e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -55,7 +53,7 @@ TEST(
   double a{1.0 / 5.0};
   double time{0.0};
   double scale{0.1};
-  vector<double> coeffs{
+  std::vector<double> coeffs{
       1.0000000000000000e+00,  0.0000000000000000e+00,  -2.5000000000000000e-01,
       0.0000000000000000e+00,  6.2500000000000000e-02,  0.0000000000000000e+00,
       -1.5625000000000000e-02, 0.0000000000000000e+00,  3.9062500000000000e-03,
@@ -70,9 +68,9 @@ TEST(
 
   double err = sixterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(err, DoubleNear(0.0, 2.60419e-15));
   EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), epsilon));
-  EXPECT_THAT(order, DoubleNear(1.0, 1.78746e-14));
+  EXPECT_THAT(order, DoubleNear(1.0, 2.24266e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -86,7 +84,7 @@ TEST(
   double a{1.0 / 5.0};
   double time{0.3};
   double scale{0.1};
-  vector<double> coeffs{
+  std::vector<double> coeffs{
       3.0769230769230771e-01,  -1.4201183431952663e-01, 4.1875284478834776e-02,
       -8.4030671194986195e-03, 6.5716294139668780e-04,  3.4308380547065328e-04,
       -2.0889736724773902e-04, 7.0023107539675438e-05,  -1.6249329076177969e-05,
@@ -101,9 +99,9 @@ TEST(
 
   double err = sixterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
-  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 2.44250e-15));
-  EXPECT_THAT(order, DoubleNear(1.0, 2.6712e-13));
+  EXPECT_THAT(err, DoubleNear(0.0, 5.12424e-14));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 1.88739e-15));
+  EXPECT_THAT(order, DoubleNear(1.0, 6.61694e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -114,10 +112,10 @@ TEST(
   // t =-0.3;
   // x[0] = 1.0/(1.0+25.0*t*t);
 
-  // double a{1.0/5.0};
-  // double time{-0.3};
+  double a{1.0/5.0};
+  double time{-0.3};
   double scale{1.0};
-  vector<double> coeffs{3.0769230769230771e-01,  1.4201183431952664e+00,
+  std::vector<double> coeffs{3.0769230769230771e-01,  1.4201183431952664e+00,
                         4.1875284478834782e+00,  8.4030671194986173e+00,
                         6.5716294139668623e+00,  -3.4308380547065390e+01,
                         -2.0889736724773917e+02, -7.0023107539675470e+02,
@@ -134,8 +132,12 @@ TEST(
                         -1.3727651218492134e+12, -3.6550364857253306e+12};
   double rc{0.0}, order{0.0};
 
-  // Cos(Theta) = 5.063697
-  ASSERT_THROW(sixterm(coeffs, scale, rc, order), std::exception);
+  double err = sixterm(coeffs, scale, rc, order);
+
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 1.55432e-15));
+  EXPECT_THAT(order, DoubleNear(1.0, 1.34560e-13));
+  EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
 TEST(
@@ -145,10 +147,10 @@ TEST(
   // t = 0.0;
   // x[0] = 1.0/(1.0+25.0*t*t);
 
-  // double a{1.0/5.0};
-  // double time{0.0};
+  double a{1.0/5.0};
+  double time{0.0};
   double scale{1.0};
-  vector<double> coeffs{
+  std::vector<double> coeffs{
       1.0000000000000000e+00,  0.0000000000000000e+00,  -2.5000000000000000e+01,
       0.0000000000000000e+00,  6.2500000000000000e+02,  0.0000000000000000e+00,
       -1.5625000000000000e+04, 0.0000000000000000e+00,  3.9062500000000000e+05,
@@ -161,8 +163,12 @@ TEST(
       0.0000000000000000e+00,  3.7252902984619139e+19,  0.0000000000000000e+00};
   double rc{0.0}, order{0.0};
 
-  // Cos(Theta) = 13934294.457978
-  ASSERT_THROW(sixterm(coeffs, scale, rc, order), std::exception);
+ double err = sixterm(coeffs, scale, rc, order);
+
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), epsilon));
+  EXPECT_THAT(order, DoubleNear(1.0, 4.44090e-16));
+  EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
 TEST(
@@ -172,10 +178,10 @@ TEST(
   // t = 0.3;
   // x[0] = 1.0/(1.0+25.0*t*t);
 
-  // double a{1.0/5.0};
-  // double time{0.3};
+  double a{1.0/5.0};
+  double time{0.3};
   double scale{1.0};
-  vector<double> coeffs{
+  std::vector<double> coeffs{
       3.0769230769230771e-01,  -1.4201183431952664e+00, 4.1875284478834782e+00,
       -8.4030671194986173e+00, 6.5716294139668623e+00,  3.4308380547065390e+01,
       -2.0889736724773917e+02, 7.0023107539675470e+02,  -1.6249329076177976e+03,
@@ -188,8 +194,12 @@ TEST(
       3.4850432996523499e+11,  -1.3727651218492134e+12, 3.6550364857253306e+12};
   double rc{0.0}, order{0.0};
 
-  // Unconstrained optimization lead to Sqrt of negative number: -2.307692
-  ASSERT_THROW(sixterm(coeffs, scale, rc, order), std::exception);
+  double err = sixterm(coeffs, scale, rc, order);
+
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 1.55432e-15));
+  EXPECT_THAT(order, DoubleNear(1.0, 1.34560e-13));
+  EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
 TEST(
@@ -197,12 +207,12 @@ TEST(
     TaylorSeriesAtNegativePT3WithScalingHundredthForComplexConjugatePolesAtPMOneFifthAlphaThree)
 {
   // t =-0.3;
-  // x[0] = 1.0/(1.0+25.0*t*t)^{3.14159};
+  // x[0] = 1.0/(1.0+25.0*t*t)^{3.1415};
 
   double a{1.0 / 5.0};
   double time{-0.3};
   double scale{0.01};
-  vector<double> coeffs{
+  std::vector<double> coeffs{
       2.4655761562767709e-02,  3.5748957668969889e-03,  2.8208219200667809e-04,
       1.5636812703033154e-05,  6.5875429164410868e-07,  2.1094322169896426e-08,
       4.5261475074311576e-10,  1.1260909441922327e-12,  -4.6867806776404976e-13,
@@ -217,9 +227,9 @@ TEST(
 
   double err = sixterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
-  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 3.75922e-13));
-  EXPECT_THAT(order, DoubleNear(3.14159, 9.0000100000000000e-5));
+  EXPECT_THAT(err, DoubleNear(0.0, 3.38904e-13));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 3.02759e-13));
+  EXPECT_THAT(order, DoubleNear(3.1415, 1.62773e-11));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -228,12 +238,12 @@ TEST(
     TaylorSeriesAtZeroWithScalingThousandthForComplexConjugatePolesAtPMOneFifthAlphaThree)
 {
   // t = 0.0;
-  // x[0] = 1.0/(1.0+25.0*t*t)^{3.14159};
+  // x[0] = 1.0/(1.0+25.0*t*t)^{3.1415};
 
   double a{1.0 / 5.0};
   double time{0.0};
   double scale{0.001};
-  vector<double> coeffs{
+  std::vector<double> coeffs{
       1.0000000000000000e+00,  0.0000000000000000e+00,  -7.8537500000000005e-05,
       0.0000000000000000e+00,  4.0657882031250008e-09,  0.0000000000000000e+00,
       -1.7420208371972664e-13, 0.0000000000000000e+00,  6.6866381072793826e-18,
@@ -248,9 +258,9 @@ TEST(
 
   double err = sixterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
-  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 1.55432e-15));
-  EXPECT_THAT(order, DoubleNear(3.14159, 0.000089999999827));
+  EXPECT_THAT(err, DoubleNear(0.0, 1.11858e-14));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 1.58208e-15));
+  EXPECT_THAT(order, DoubleNear(3.1415, 1.92292e-13));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -264,7 +274,7 @@ TEST(
   double a{1.0 / 5.0};
   double time{0.3};
   double scale{0.001};
-  vector<double> coeffs{2.4655761562767709e-02,  -3.5748957668969888e-04,
+  std::vector<double> coeffs{2.4655761562767709e-02,  -3.5748957668969888e-04,
                         2.8208219200667818e-06,  -1.5636812703033177e-08,
                         6.5875429164411143e-11,  -2.1094322169896626e-13,
                         4.5261475074312502e-16,  -1.1260909441924017e-19,
@@ -283,9 +293,9 @@ TEST(
 
   double err = sixterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
-  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 1.55432e-14));
-  EXPECT_THAT(order, DoubleNear(3.14159, 0.000090000003478));
+  EXPECT_THAT(err, DoubleNear(0.0, 2.2289e-13));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 6.43930e-14));
+  EXPECT_THAT(order, DoubleNear(3.1415, 1.64136e-12));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -296,10 +306,10 @@ TEST(
   // t = 0.3;
   // x[0] = 1.0/(1.0+25.0*t*t)^{3.1415};
 
-  // double a{1.0/5.0};
-  // double time{-0.3};
+  double a{1.0/5.0};
+  double time{-0.3};
   double scale{1.0};
-  vector<double> coeffs{
+  std::vector<double> coeffs{
       2.4655761562767709e-02,  3.5748957668969888e-01,  2.8208219200667819e+00,
       1.5636812703033181e+01,  6.5875429164411216e+01,  2.1094322169896708e+02,
       4.5261475074313199e+02,  1.1260909441928604e+02,  -4.6867806776404268e+03,
@@ -312,8 +322,12 @@ TEST(
       1.9436081834863168e+13,  3.5195594052075742e+13,  2.8474916694776353e+12};
   double rc{0.0}, order{0.0};
 
-  // Cos(Theta) = 8.975037
-  ASSERT_THROW(sixterm(coeffs, scale, rc, order), std::exception);
+  double err = sixterm(coeffs, scale, rc, order);
+
+  EXPECT_THAT(err, DoubleNear(0.0, 2.38855e-15));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 5.38459e-14));
+  EXPECT_THAT(order, DoubleNear(3.1415, 3.79919e-12));
+  EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
 TEST(
@@ -323,10 +337,10 @@ TEST(
   // t = 0.3;
   // x[0] = 1.0/(1.0+25.0*t*t)^{3.1415};
 
-  // double a{1.0/5.0};
-  // double time{0.0};
+  double a{1.0/5.0};
+  double time{0.0};
   double scale{1.0};
-  vector<double> coeffs{
+  std::vector<double> coeffs{
       1.0000000000000000e+00,  0.0000000000000000e+00,  -7.8537500000000009e+01,
       0.0000000000000000e+00,  4.0657882031250006e+03,  0.0000000000000000e+00,
       -1.7420208371972659e+05, 0.0000000000000000e+00,  6.6866381072793789e+06,
@@ -339,8 +353,12 @@ TEST(
       0.0000000000000000e+00,  5.8142478257290687e+21,  0.0000000000000000e+00};
   double rc{0.0}, order{0.0};
 
-  // Unconstrained optimization lead to Sqrt of negative number: -0.00000
-  ASSERT_THROW(sixterm(coeffs, scale, rc, order), std::exception);
+  double err = sixterm(coeffs, scale, rc, order);
+
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 7.21646e-16));
+  EXPECT_THAT(order, DoubleNear(3.1415, 7.90489e-14));
+  EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
 TEST(
@@ -350,10 +368,10 @@ TEST(
   // t = 0.3;
   // x[0] = 1.0/(1.0+25.0*t*t)^{3.1415};
 
-  // double a{1.0/5.0};
-  // double time{0.3};
+  double a{1.0/5.0};
+  double time{0.3};
   double scale{1.0};
-  vector<double> coeffs{2.4655761562767709e-02,  -3.5748957668969888e-01,
+  std::vector<double> coeffs{2.4655761562767709e-02,  -3.5748957668969888e-01,
                         2.8208219200667819e+00,  -1.5636812703033181e+01,
                         6.5875429164411216e+01,  -2.1094322169896708e+02,
                         4.5261475074313199e+02,  -1.1260909441928604e+02,
@@ -370,8 +388,12 @@ TEST(
                         3.5195594052075742e+13,  -2.8474916694776353e+12};
   double rc{0.0}, order{0.0};
 
-  // Unconstrained optimization lead to Sqrt of negative number: -7.249615
-  ASSERT_THROW(sixterm(coeffs, scale, rc, order), std::exception);
+  double err = sixterm(coeffs, scale, rc, order);
+
+  EXPECT_THAT(err, DoubleNear(0.0, 2.38855e-15));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 5.38459e-14));
+  EXPECT_THAT(order, DoubleNear(3.1415, 3.79919e-12));
+  EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
 // Test exception throws (Seems hard)
@@ -394,7 +416,7 @@ TEST(
   // double a{1.0};
   // double time{-1.0};
   double scale{0.1};
-  vector<double> coeffs{0.5,
+  std::vector<double> coeffs{0.5,
                         0.025,
                         0.00125,
                         6.25e-05,
@@ -499,3 +521,4 @@ TEST(
   EXPECT_THAT(testSingularityOrder(singularityOrder1, singularityOrder2),
               DoubleNear(2.0, epsilon));
 }
+

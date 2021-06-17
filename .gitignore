@@ -38,4 +38,5 @@ latex
 build
 # Makefile
 *.sw*
-*.exe  
+*.exe
+*.d 

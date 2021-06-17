@@ -5,8 +5,8 @@
 #include "data.hpp"
 #include "exceptions.hpp"
 #include "matrix.hpp"
-#include "qrfactorization.hpp"
 #include "vectorf.hpp"
+#include "linearalgebra.hpp"
 
 void constructThreeTermSystem(const vectorf<double> &coeff, const int nUse,
                               matrix<double> &W, vectorf<double> &b)
@@ -19,6 +19,10 @@ void constructThreeTermSystem(const vectorf<double> &coeff, const int nUse,
     W(i, 2) = coeff(k);
     b(i) = k * coeff(k + 1);
   }
+  // std::cout << "Rows [" + std::to_string(W.get_rows()) + "]\n";
+  // std::cout << "Cols [" + std::to_string(W.get_cols()) + "]\n";
+  // std::cout << "W =\n" << W << '\n';
+  // std::cout << "b =\n" << b << '\n';
 }
 
 void testRCThree(double rc)
@@ -55,7 +59,7 @@ double threeterm(const std::vector<double> &coeff, const double &scale,
   constructThreeTermSystem(tc, nUse, W, b);
 
   // Solve W beta = b for beta
-  qr(m, n, W, b, beta);
+  MinNormSolution(m, n, W.data(), beta.data());
 
   // Interpret the variables found from Least Squares Optimization Problem
   double hOverRc = beta(1);

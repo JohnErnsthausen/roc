@@ -1,6 +1,7 @@
-CPPSRCS = e_sevenbody.cpp \
+CPPSRCS = e_laynewatson.cpp \
+   ../src/norm2.cpp \
+   ../src/minnormsol.cpp \
    ../src/io.cpp \
-	 ../src/qrfactorization.cpp \
 	 ../src/threeterm.cpp \
 	 ../src/sixterm.cpp \
 	 ../src/topline.cpp \
@@ -9,9 +10,7 @@ CPPSRCS = e_sevenbody.cpp \
 CPPOBJS = $(patsubst %.cpp, %.cpp.o, $(CPPSRCS))
 CPPDEPS = $(patsubst %.cpp, %.cpp.d, $(CPPSRCS))
 
-CSRCS  = ../src/dist.c \
-   ../src/mathext.c \
-   ../src/qrfactorization.c
+CSRCS  = 
 
 COBJS  = $(patsubst %.c, %.c.o, $(CSRCS))
 CDEPS  = $(patsubst %.c, %.c.d, $(CSRCS))
@@ -28,17 +27,17 @@ CC = cc
 CFLAGS= -O2 -pg -std=c11
 
 LDFLAGS=-I../include
-LDLIBS =-lm -lstdc++
+LDLIBS =-lm -lstdc++ -lblas -lgfortran -llapack
 
 .PHONY: all clean
 
-all: e_sevenbody
+all: e_laynewatson
 
 clean:
-	$(RM) $(OBJECTS) $(DEPENDS) e_sevenbody 
+	$(RM) $(OBJECTS) $(DEPENDS) e_laynewatson 
 
 # Rule for the executable, depending on all the object files
-e_sevenbody: $(OBJECTS)
+e_laynewatson: $(OBJECTS)
 	$(CXX) $(WARNING) $(CXXFLAGS) $(LDFLAGS) -o $@ $(OBJECTS) $(LDLIBS)
 
 # We have a dependency file for each source file. Here we include them into the Makefile.
@@ -49,7 +48,7 @@ e_sevenbody: $(OBJECTS)
 # Generic rule to compile CPP individual source files into corresponding object file
 # Demanding this rule to depend on the Makefile as well ensures that e.g. changes in
 # $(CXXFLAGS) trigger a recompile as well. $< resolves to the first dependency, the
-# first CPP source file. $@ is the filename of the target, here e_sevenbody
+# first CPP source file. $@ is the filename of the target, here e_laynewatson
 #
 # We have the compiler generate those dependency files for us. For that, we extend the build
 # rule. The -MMD flag generates the dependency file (%.cpp.d), which will hold in Makefile
@@ -70,7 +69,7 @@ e_sevenbody: $(OBJECTS)
 # Generic rule to compile CC individual source files into corresponding object file
 # Demanding this rule to depend on the Makefile as well ensures that e.g. changes in
 # $(CFLAGS) trigger a recompile as well. $< resolves to the first dependency, the
-# first CC source file. $@ is the filename of the target, here e_sevenbody
+# first CC source file. $@ is the filename of the target, here e_laynewatson
 %.c.o: %.c
 	$(CC) $(WARNING) $(CFLAGS) $(LDFLAGS) -MMD -MP -c $< -o $@
 

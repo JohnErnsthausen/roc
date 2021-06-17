@@ -66,6 +66,8 @@ class vectorf
   template <typename U>
   friend std::ostream &operator<<(std::ostream &, const vectorf<U> &);
 
+  T *data() { return elements; }
+
  private:
   // The number of rows
   size_t size{0};

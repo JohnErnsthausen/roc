@@ -91,6 +91,8 @@ class matrix
   template <typename U>
   friend std::ostream &operator<<(std::ostream &, const matrix<U> &);
 
+  T *data() { return elements; }
+
  private:
   // The number of rows
   size_t rows{0};

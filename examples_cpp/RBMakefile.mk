@@ -1,6 +1,7 @@
 CPPSRCS = ##MYEXAMPLE##.cpp \
+   ../src/norm2.cpp \
+   ../src/minnormsol.cpp \
    ../src/io.cpp \
-	 ../src/qrfactorization.cpp \
 	 ../src/threeterm.cpp \
 	 ../src/sixterm.cpp \
 	 ../src/topline.cpp \
@@ -9,9 +10,7 @@ CPPSRCS = ##MYEXAMPLE##.cpp \
 CPPOBJS = $(patsubst %.cpp, %.cpp.o, $(CPPSRCS))
 CPPDEPS = $(patsubst %.cpp, %.cpp.d, $(CPPSRCS))
 
-CSRCS  = ../src/dist.c \
-   ../src/mathext.c \
-   ../src/qrfactorization.c
+CSRCS  = 
 
 COBJS  = $(patsubst %.c, %.c.o, $(CSRCS))
 CDEPS  = $(patsubst %.c, %.c.d, $(CSRCS))
@@ -28,7 +27,7 @@ CC = cc
 CFLAGS= -O2 -pg -std=c11
 
 LDFLAGS=-I../include
-LDLIBS =-lm -lstdc++
+LDLIBS =-lm -lstdc++ -lblas -lgfortran -llapack
 
 .PHONY: all clean
 

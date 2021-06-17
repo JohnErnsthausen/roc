@@ -5,22 +5,30 @@
 #include "data.hpp"
 #include "exceptions.hpp"
 #include "matrix.hpp"
-#include "qrfactorization.hpp"
 #include "vectorf.hpp"
+#include "linearalgebra.hpp"
 
-void constructSixTermSystem(const vectorf<double> &coeff, const int nUse,
+void constructSixTermRow(const vectorf<double> &coeff, const int k,
+                         double &w1, double &w2, double &w3, double &w4, double &b)
+{
+  w1 = 2.0 * coeff(k);
+  w2 = 2.0 * (k - 1) * coeff(k);
+  w3 =-2.0 * coeff(k - 1);
+  w4 =-(k - 2) * coeff(k - 1);
+  b  = k * coeff(k + 1);
+}
+
+void constructSixTermSystem(const vectorf<double> &coeff, const int from, const int to,
                             matrix<double> &W, vectorf<double> &b)
 {
-  // TODO Check coeff.get_size, nUse, and W.get_rows are compatible?
-
-  for (int i{1}, k{(int)coeff.get_size() - nUse}; i <= nUse; i++, k++)
+  for (int i{1}, k{from}; k <= to; i++, k++)
   {
-    W(i, 1) = 2.0 * coeff(k);
-    W(i, 2) = 2.0 * (k - 1) * coeff(k);
-    W(i, 3) = -2.0 * coeff(k - 1);
-    W(i, 4) = -(k - 2) * coeff(k - 1);
-    b(i) = k * coeff(k + 1);
+    constructSixTermRow(coeff, k, W(i, 1), W(i, 2), W(i, 3), W(i, 4), b(i));
   }
+  // std::cout << "Rows [" + std::to_string(W.get_rows()) + "]\n";
+  // std::cout << "Cols [" + std::to_string(W.get_cols()) + "]\n";
+  // std::cout << "W =\n" << W << '\n';
+  // std::cout << "b =\n" << b << '\n';
 }
 
 void testBeta4(double beta4)
@@ -83,32 +91,58 @@ double testSingularityOrder(double singularityOrder1, double singularityOrder2)
   return order;
 }
 
+// Relative error in all equations starting from SIXTERM_KSTART
+double errorSixTerm(const vectorf<double> &coeff, const vectorf<double> &beta)
+{
+  int dim;
+  double w1, w2, w3, w4;
+  vectorf<double> residual(coeff.get_size());
+  vectorf<double> rhs(coeff.get_size());
+  for (int i{1}, k{SIXTERM_KSTART}; k < (int)coeff.get_size(); i++, k++)
+  {
+    dim = i;
+    constructSixTermRow(coeff, k, w1, w2, w3, w4, rhs(i));
+    residual(i) = w1*beta(1) + w2*beta(2) + w3*beta(3) + w4*beta(4) - rhs(i);
+  }
+  double bnrm2 = norm2(dim, rhs.data());
+  double rnrm2 = norm2(dim, residual.data());
+  double error = rnrm2/bnrm2;
+  return error;
+}
+
 // The six-term-test of Chang and Corliss
 //
-// The method returns the absolute value of the penultimate equation to nUse
-// parameter, which must be at least 4, evaluated at the solution to the least
-// squares optimal solution.
+// The Six-Term model subproblem is the Six-Term model at indicies FROM to TO
+// where FROM = coeff.size()-nUse and TO = coeff.size()-1 and nUse is defined in
+// header file data.h
 //
-// The computation is successful whenever the value return is acceptably small,
-// otherwise the algorithm is said to detect that the coefficients do not
-// resemble pair of complex conjugate poles.
+// The method returns the relative error of the Six-Term model evaluated
+// at the computed solution of the Six-Term model subproblem at indicies
+// FROM to TO where FROM = 11 and TO = coeff.size()-1.
 //
 // The calling subroutine should maintain the invarient that coeff.size()
-// must be sufficiently large, say 10.
+// must be sufficiently large, say larger than 19.
+//
+// The computation is successful whenever the relative error is acceptably small,
+// otherwise the algorithm is said to detect that the coefficients do not
+// resemble pair of complex conjugate poles.
 double sixterm(const std::vector<double> &coeff, const double &scale,
                double &rc, double &order)
 {
   int nUse = SIXTERM_NUSE;
   int m{nUse}, n{4};
   matrix<double> W(m, n);
-  vectorf<double> beta(n);
-  vectorf<double> b(m);
+  vectorf<double> beta(m);
   vectorf<double> tc(coeff);
 
-  constructSixTermSystem(tc, nUse, W, b);
+  // from must be greater than 0
+  int from = (int)coeff.size()-nUse;
+  // to must be less than coeff.size()
+  int to = (int)coeff.size()-1;
+  constructSixTermSystem(tc, from, to, W, beta);
 
   // Solve W beta = b for beta
-  qr(m, n, W, b, beta);
+  MinNormSolution(m, n, W.data(), beta.data());
 
   // Interpret the variables found from Least Squares Optimization Problem
   double hOverRc{0.0}, cosTheta{0.0}, singularityOrder1{0.0},
@@ -131,23 +165,6 @@ double sixterm(const std::vector<double> &coeff, const double &scale,
   singularityOrder2 = beta(3) / beta(4);
   order = testSingularityOrder(singularityOrder1, singularityOrder2);
 
-  // Compare order
-  // printf( "Abs of difference between two computations for order:
-  // [%22.16f]\n",
-  //     fabs(singularityOrder1-singularityOrder2));
-  // TODO Add this error to checked error on return?
-
-  // Evaluate previous W equation at the solution of the least squares
-  // optimization problem. Return the backward error, the absolute value of this
-  // evaluation.
-  //
-  // TODO Use all equations?
-  nUse++;
-  int k = coeff.size() - nUse;
-  double check =
-      k * tc(k + 1) -
-      ((2.0 * tc(k)) * beta(1) + (2.0 * (k - 1) * tc(k)) * beta(2) +
-       (-2.0 * tc(k - 1)) * beta(3) + (-(k - 2) * tc(k - 1)) * beta(4));
-
-  return fabs(check);
+  return errorSixTerm(tc, beta);
 }
+

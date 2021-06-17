@@ -3,15 +3,11 @@
 #include <string>
 #include <vector>
 
-extern "C"
-{
-#include "dist.h"
-}
 #include "data.hpp"
 #include "exceptions.hpp"
 #include "matrix.hpp"
-#include "qrfactorization.hpp"
 #include "vectorf.hpp"
+#include "linearalgebra.hpp"
 
 void constructLinearLeastSquaresSystem(const std::vector<double> &coeff,
                                        const int kstart, matrix<double> &W,
@@ -86,7 +82,7 @@ double topline(const std::vector<double> &coeff, const double &scale,
   vectorf<double> bSaved{b};
 
   // Solve W beta = b for beta
-  qr(m, n, W, b, beta);
+  MinNormSolution(m, n, W.data(), beta.data());
 
   rc = scale / pow(10, beta(2));
   order = std::numeric_limits<double>::quiet_NaN();
@@ -94,5 +90,5 @@ double topline(const std::vector<double> &coeff, const double &scale,
   // Compute and return 2-norm of residuals
   for (int i{1}; i <= m; i++)
     bSaved(i) -= WSaved(i, 1) * beta(1) + WSaved(i, 2) * beta(2);
-  return dnrm2(m, &bSaved(1), 1);
+  return norm2(m, bSaved.data());
 }
