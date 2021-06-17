@@ -14,13 +14,13 @@ class TestThatROC : public Test
 {
 };
 
-TEST_F(TestThatROC, HasMethodDerivatives2Coeddicients)
+TEST_F(TestThatROC, HasMethodDerivatives2Coefficients)
 {
   vector<double> coeffs{1,1,1,1,1};
   ASSERT_THAT(derivatives2coefficients(coeffs),Eq(0));
 }
 
-TEST_F(TestThatROC, MethodDerivatives2CoeddicientsConvertsCoefficientArrayOfDerivativesToCoefficientArrayOfCoefficients)
+TEST_F(TestThatROC, MethodDerivatives2CoefficientsConvertsCoefficientArrayOfDerivativesToCoefficientArrayOfCoefficients)
 {
   vector<double> coeffs{1,1,1,1,1};
   derivatives2coefficients(coeffs);

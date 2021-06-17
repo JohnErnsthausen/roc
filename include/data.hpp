@@ -5,5 +5,6 @@
 #define SIXTERM_NUSE 7
 #define SIXTERM_KSTART 10
 #define THREETERM_NUSE 7
+#define THREETERM_KSTART 10
 #define MINTERMS 10
 #define TOL 1e-10

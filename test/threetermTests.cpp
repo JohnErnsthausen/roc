@@ -8,7 +8,6 @@
 
 #define epsilon DBL_EPSILON
 using namespace testing;
-using namespace std;
 
 TEST(ThreeTermAnalysisOf,
      TaylorSeriesAtNegativeOneRealPoleAtOneWithScalingTenthAlphaOne)
@@ -19,7 +18,7 @@ TEST(ThreeTermAnalysisOf,
   double a{1.0};
   double time{-1.0};
   double scale{0.1};
-  vector<double> coeffs{0.5,
+  std::vector<double> coeffs{0.5,
                         0.025,
                         0.00125,
                         6.25e-05,
@@ -53,9 +52,9 @@ TEST(ThreeTermAnalysisOf,
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
-  EXPECT_THAT(rc, DoubleNear(a - time, 9.68115e-14));
-  EXPECT_THAT(order, DoubleNear(1.0, 1.1887e-12));
+  EXPECT_THAT(err, DoubleNear(0.0, 6.26323e-14));
+  EXPECT_THAT(rc, DoubleNear(a - time, 8.57093e-14));
+  EXPECT_THAT(order, DoubleNear(1.0, 1.05228e-12));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -68,7 +67,7 @@ TEST(ThreeTermAnalysisOf,
   double a{1.0};
   double time{0.0};
   double scale{0.1};
-  vector<double> coeffs{1,     0.1,   0.01,  0.001, 0.0001, 1e-05, 1e-06, 1e-07,
+  std::vector<double> coeffs{1,     0.1,   0.01,  0.001, 0.0001, 1e-05, 1e-06, 1e-07,
                         1e-08, 1e-09, 1e-10, 1e-11, 1e-12,  1e-13, 1e-14, 1e-15,
                         1e-16, 1e-17, 1e-18, 1e-19, 1e-20,  1e-21, 1e-22, 1e-23,
                         1e-24, 1e-25, 1e-26, 1e-27, 1e-28,  1e-29};
@@ -76,7 +75,7 @@ TEST(ThreeTermAnalysisOf,
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(err, DoubleNear(0.0, 1.03287e-15));
   EXPECT_THAT(rc, DoubleNear(a - time, 4.44090e-16));
   EXPECT_THAT(order, DoubleNear(1.0, 1.35448e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
@@ -91,7 +90,7 @@ TEST(ThreeTermAnalysisOf,
   double a{1.0};
   double time{0.9};
   double scale{0.1};
-  vector<double> coeffs{10,
+  std::vector<double> coeffs{10,
                         10,
                         10,
                         10,
@@ -125,9 +124,9 @@ TEST(ThreeTermAnalysisOf,
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, 8.52652e-14));
-  EXPECT_THAT(rc, DoubleNear(a - time, 8.52652e-14));
-  EXPECT_THAT(order, DoubleNear(1.0, 2.93099e-14));
+  EXPECT_THAT(err, DoubleNear(0.0, 2.2994e-15));
+  EXPECT_THAT(rc, DoubleNear(a - time, epsilon));
+  EXPECT_THAT(order, DoubleNear(1.0, 4.78507e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -140,7 +139,7 @@ TEST(ThreeTermAnalysisOf,
   double a{1.0};
   double time{1.0001};
   double scale{0.1};
-  vector<double> coeffs{
+  std::vector<double> coeffs{
       -10000.0000000011,     10000000.0000022,      -10000000000.0033,
       10000000000004.4,      -1.00000000000055e+16, 1.00000000000066e+19,
       -1.00000000000077e+22, 1.00000000000088e+25,  -1.00000000000099e+28,
@@ -155,7 +154,7 @@ TEST(ThreeTermAnalysisOf,
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, 1.7213e+58));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
   EXPECT_THAT(rc, DoubleNear(a - time, epsilon));
   EXPECT_THAT(order, DoubleNear(1.0, 8.03569e-12));
   EXPECT_THAT(coeffs.size(), Eq(30));
@@ -170,7 +169,7 @@ TEST(ThreeTermAnalysisOf,
   double a{1.0};
   double time{1.9};
   double scale{0.1};
-  vector<double> coeffs{
+  std::vector<double> coeffs{
       -1.11111111111111,     0.123456790123457,     -0.0137174211248285,
       0.00152415790275873,   -0.000169350878084303, 1.88167642315892e-05,
       -2.09075158128769e-06, 2.32305731254188e-07,  -2.5811747917132e-08,
@@ -185,9 +184,9 @@ TEST(ThreeTermAnalysisOf,
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
-  EXPECT_THAT(rc, DoubleNear(a - time, 8.54872e-14));
-  EXPECT_THAT(order, DoubleNear(1.0, 2.19869e-12));
+  EXPECT_THAT(err, DoubleNear(0.0, 1.13933e-13));
+  EXPECT_THAT(rc, DoubleNear(a - time, 7.76047e-14));
+  EXPECT_THAT(order, DoubleNear(1.0, 1.98886e-12));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -199,7 +198,7 @@ TEST(ThreeTermAnalysisOf, TaylorSeriesAtThreePoleAtOneWithScalingTenthAlphaOne)
   double a{1.0};
   double time{3.0};
   double scale{0.1};
-  vector<double> coeffs{-0.5,
+  std::vector<double> coeffs{-0.5,
                         0.025,
                         -0.00125,
                         6.25e-05,
@@ -233,9 +232,9 @@ TEST(ThreeTermAnalysisOf, TaylorSeriesAtThreePoleAtOneWithScalingTenthAlphaOne)
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
-  EXPECT_THAT(rc, DoubleNear(a - time, 9.68115e-14));
-  EXPECT_THAT(order, DoubleNear(1.0, 1.1887e-12));
+  EXPECT_THAT(err, DoubleNear(0.0, 6.26323e-14));
+  EXPECT_THAT(rc, DoubleNear(a - time, 8.57093e-14));
+  EXPECT_THAT(order, DoubleNear(1.0, 1.05228e-12));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -248,7 +247,7 @@ TEST(ThreeTermAnalysisOf,
   double a{1.0};
   double time{-1.0};
   double scale{1.0};
-  vector<double> coeffs{
+  std::vector<double> coeffs{
       5.000000000000000e-01, 2.500000000000000e-01, 1.250000000000000e-01,
       6.250000000000000e-02, 3.125000000000000e-02, 1.562500000000000e-02,
       7.812500000000000e-03, 3.906250000000000e-03, 1.953125000000000e-03,
@@ -263,9 +262,9 @@ TEST(ThreeTermAnalysisOf,
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
-  EXPECT_THAT(rc, DoubleNear(a - time, 1.06582e-14));
-  EXPECT_THAT(order, DoubleNear(1.0, 1.33005e-13));
+  EXPECT_THAT(err, DoubleNear(0.0, 4.52325e-15));
+  EXPECT_THAT(rc, DoubleNear(a - time, 7.10544e-15));
+  EXPECT_THAT(order, DoubleNear(1.0, 8.33778e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -278,15 +277,15 @@ TEST(ThreeTermAnalysisOf,
   double a{1.0};
   double time{0.0};
   double scale{1.0};
-  vector<double> coeffs{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  std::vector<double> coeffs{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
   double rc{0.0}, order{0.0};
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, 1.06582e-14));
-  EXPECT_THAT(rc, DoubleNear(a - time, 6.66134e-16));
-  EXPECT_THAT(order, DoubleNear(1.0, 2.4758e-14));
+  EXPECT_THAT(err, DoubleNear(0.0, 6.15225e-16));
+  EXPECT_THAT(rc, DoubleNear(a - time, 6.66135e-16));
+  EXPECT_THAT(order, DoubleNear(1.0, 2.40919e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -299,7 +298,7 @@ TEST(ThreeTermAnalysisOf,
   double a{1.0};
   double time{0.9};
   double scale{1.0};
-  vector<double> coeffs{
+  std::vector<double> coeffs{
       1.000000000000000e+01, 1.000000000000000e+02, 1.000000000000001e+03,
       1.000000000000001e+04, 1.000000000000001e+05, 1.000000000000001e+06,
       1.000000000000002e+07, 1.000000000000002e+08, 1.000000000000002e+09,
@@ -314,9 +313,9 @@ TEST(ThreeTermAnalysisOf,
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, 2.25486e+10));
-  EXPECT_THAT(rc, DoubleNear(a - time, 2.98373e-15));
-  EXPECT_THAT(order, DoubleNear(1.0, 8.77743e-13));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(a - time, 2.85883e-15));
+  EXPECT_THAT(order, DoubleNear(1.0, 8.24009e-13));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -329,7 +328,7 @@ TEST(ThreeTermAnalysisOf,
   double a{1.0};
   double time{1.0001};
   double scale{1.0};
-  vector<double> coeffs{
+  std::vector<double> coeffs{
       -1.000000000000110e+04,  1.000000000000220e+08,   -1.000000000000330e+12,
       1.000000000000440e+16,   -1.000000000000551e+20,  1.000000000000661e+24,
       -1.000000000000771e+28,  1.000000000000881e+32,   -1.000000000000991e+36,
@@ -344,7 +343,7 @@ TEST(ThreeTermAnalysisOf,
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, 1.85268e+78));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
   EXPECT_THAT(rc, DoubleNear(a - time, epsilon));
   EXPECT_THAT(order, DoubleNear(1.0, 1.5100e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
@@ -359,7 +358,7 @@ TEST(ThreeTermAnalysisOf,
   double a{1.0};
   double time{1.9};
   double scale{1.0};
-  vector<double> coeffs{
+  std::vector<double> coeffs{
       -1.111111111111111e+00, 1.234567901234568e+00,  -1.371742112482853e+00,
       1.524157902758726e+00,  -1.693508780843029e+00, 1.881676423158922e+00,
       -2.090751581287691e+00, 2.323057312541879e+00,  -2.581174791713199e+00,
@@ -374,9 +373,9 @@ TEST(ThreeTermAnalysisOf,
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, 1.98952e-13));
-  EXPECT_THAT(rc, DoubleNear(a - time, 9.99201e-16));
-  EXPECT_THAT(order, DoubleNear(1.0, 1.77636e-14));
+  EXPECT_THAT(err, DoubleNear(0.0, 6.94819e-16));
+  EXPECT_THAT(rc, DoubleNear(a - time, 2.44250e-15));
+  EXPECT_THAT(order, DoubleNear(1.0, 7.72716e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -388,7 +387,7 @@ TEST(ThreeTermAnalysisOf, TaylorSeriesAtThreePoleAtOneWithScalingOneAlphaOne)
   double a{1.0};
   double time{3.0};
   double scale{1.0};
-  vector<double> coeffs{
+  std::vector<double> coeffs{
       -5.000000000000000e-01, 2.500000000000000e-01,  -1.250000000000000e-01,
       6.250000000000000e-02,  -3.125000000000000e-02, 1.562500000000000e-02,
       -7.812500000000000e-03, 3.906250000000000e-03,  -1.953125000000000e-03,
@@ -403,9 +402,9 @@ TEST(ThreeTermAnalysisOf, TaylorSeriesAtThreePoleAtOneWithScalingOneAlphaOne)
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
-  EXPECT_THAT(rc, DoubleNear(a - time, 1.06582e-14));
-  EXPECT_THAT(order, DoubleNear(1.0, 1.33005e-13));
+  EXPECT_THAT(err, DoubleNear(0.0, 4.52325e-15));
+  EXPECT_THAT(rc, DoubleNear(a - time, 7.10544e-15));
+  EXPECT_THAT(order, DoubleNear(1.0, 8.33778e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -419,7 +418,7 @@ TEST(ThreeTermAnalysisOf,
   double a{1.0};
   double time{-1.0};
   double scale{0.1};
-  vector<double> coeffs{0.25,
+  std::vector<double> coeffs{0.25,
                         0.025,
                         0.001875,
                         0.000125,
@@ -453,9 +452,9 @@ TEST(ThreeTermAnalysisOf,
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
-  EXPECT_THAT(rc, DoubleNear(a - time, 2.0096e-13));
-  EXPECT_THAT(order, DoubleNear(2.0, 2.49401e-12));
+  EXPECT_THAT(err, DoubleNear(0.0, 1.29579e-13));
+  EXPECT_THAT(rc, DoubleNear(a - time, 2.07613e-13));
+  EXPECT_THAT(order, DoubleNear(2.0, 2.5696e-12));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -467,7 +466,7 @@ TEST(ThreeTermAnalysisOf, TaylorSeriesAtZeroPoleAtOneWithScalingTenthAlphaTwo)
   double a{1.0};
   double time{0.0};
   double scale{0.1};
-  vector<double> coeffs{1,       0.2,     0.03,
+  std::vector<double> coeffs{1,       0.2,     0.03,
                         0.004,   0.0005,  6e-05,
                         7e-06,   8e-07,   9.00000000000001e-08,
                         1e-08,   1.1e-09, 1.2e-10,
@@ -481,9 +480,9 @@ TEST(ThreeTermAnalysisOf, TaylorSeriesAtZeroPoleAtOneWithScalingTenthAlphaTwo)
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
-  EXPECT_THAT(rc, DoubleNear(a - time, 3.77476e-15));
-  EXPECT_THAT(order, DoubleNear(2.0, 9.32588e-14));
+  EXPECT_THAT(err, DoubleNear(0.0, 9.30465e-15));
+  EXPECT_THAT(rc, DoubleNear(a - time, 7.32748e-15));
+  EXPECT_THAT(order, DoubleNear(2.0, 1.83409e-13));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -495,7 +494,7 @@ TEST(ThreeTermAnalysisOf, TaylorSeriesAtPT9PoleAtOneWithScalingTenthAlphaTwo)
   double a{1.0};
   double time{0.9};
   double scale{0.1};
-  vector<double> coeffs{100,
+  std::vector<double> coeffs{100,
                         200,
                         300,
                         400.000000000001,
@@ -529,9 +528,9 @@ TEST(ThreeTermAnalysisOf, TaylorSeriesAtPT9PoleAtOneWithScalingTenthAlphaTwo)
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, 2.03727e-10));
-  EXPECT_THAT(rc, DoubleNear(a - time, 2.77556e-16));
-  EXPECT_THAT(order, DoubleNear(2.0, 7.50511e-14));
+  EXPECT_THAT(err, DoubleNear(0.0, 2.12876e-15));
+  EXPECT_THAT(rc, DoubleNear(a - time, 2.77557e-16));
+  EXPECT_THAT(order, DoubleNear(2.0, 7.59394e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -544,7 +543,7 @@ TEST(ThreeTermAnalysisOf,
   double a{1.0};
   double time{-1.0};
   double scale{1.0};
-  vector<double> coeffs{
+  std::vector<double> coeffs{
       2.500000000000000e-01, 2.500000000000000e-01, 1.875000000000000e-01,
       1.250000000000000e-01, 7.812500000000000e-02, 4.687500000000000e-02,
       2.734375000000000e-02, 1.562500000000000e-02, 8.789062500000000e-03,
@@ -559,9 +558,9 @@ TEST(ThreeTermAnalysisOf,
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
-  EXPECT_THAT(rc, DoubleNear(a - time, 6.66134e-15));
-  EXPECT_THAT(order, DoubleNear(2.0, 8.34888e-14));
+  EXPECT_THAT(err, DoubleNear(0.0, 4.79343e-16));
+  EXPECT_THAT(rc, DoubleNear(a - time, 1.33228e-15));
+  EXPECT_THAT(order, DoubleNear(2.0, 1.28787e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -573,16 +572,16 @@ TEST(ThreeTermAnalysisOf, TaylorSeriesAtZeroPoleAtOneWithScalingOneAlphaTwo)
   double a{1.0};
   double time{0.0};
   double scale{1.0};
-  vector<double> coeffs{1,  2,  3,  4,  5,  6,  7,  8,  9,  10,
+  std::vector<double> coeffs{1,  2,  3,  4,  5,  6,  7,  8,  9,  10,
                         11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
                         21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
   double rc{0.0}, order{0.0};
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, 3.97904e-13));
-  EXPECT_THAT(rc, DoubleNear(a - time, 1.11023e-15));
-  EXPECT_THAT(order, DoubleNear(2.0, 4.17444e-14));
+  EXPECT_THAT(err, DoubleNear(0.0, 3.25648e-16));
+  EXPECT_THAT(rc, DoubleNear(a - time, 6.66135e-16));
+  EXPECT_THAT(order, DoubleNear(2.0, 2.26486e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -594,7 +593,7 @@ TEST(ThreeTermAnalysisOf, TaylorSeriesAtPT9PoleAtOneWithScalingOneAlphaTwo)
   double a{1.0};
   double time{0.9};
   double scale{1.0};
-  vector<double> coeffs{
+  std::vector<double> coeffs{
       1.000000000000001e+02, 2.000000000000002e+03, 3.000000000000004e+04,
       4.000000000000006e+05, 5.000000000000010e+06, 6.000000000000015e+07,
       7.000000000000021e+08, 8.000000000000028e+09, 9.000000000000035e+10,
@@ -609,9 +608,9 @@ TEST(ThreeTermAnalysisOf, TaylorSeriesAtPT9PoleAtOneWithScalingOneAlphaTwo)
 
   double err = threeterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, 1.71799e+12));
-  EXPECT_THAT(rc, DoubleNear(a - time, 1.27676e-15));
-  EXPECT_THAT(order, DoubleNear(2.0, 3.61711e-13));
+  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(rc, DoubleNear(a - time, 1.23513e-15));
+  EXPECT_THAT(order, DoubleNear(2.0, 3.52164e-13));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
@@ -625,7 +624,7 @@ TEST(
   double a{1.0 / 5.0};
   double time{-0.3};
   double scale{0.1};
-  vector<double> coeffs{3.0769230769230771e-01,  1.4201183431952663e-01,
+  std::vector<double> coeffs{3.0769230769230771e-01,  1.4201183431952663e-01,
                         4.1875284478834776e-02,  8.4030671194986195e-03,
                         6.5716294139668780e-04,  -3.4308380547065328e-04,
                         -2.0889736724773902e-04, -7.0023107539675438e-05,
@@ -646,9 +645,9 @@ TEST(
 
   // Model is wrong, as it should be. However there are no difficulties
   // executing this test case
-  EXPECT_THAT(err, DoubleNear(0.0, 1.54316e-12));
+  EXPECT_THAT(err, DoubleNear(0.0, 18.0446));
   EXPECT_THAT(rc, DoubleNear(a - time, 0.545748));
-  EXPECT_THAT(order, DoubleNear(1.0, 26.5676));
+  EXPECT_THAT(order, DoubleNear(1.0, 26.5677));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 

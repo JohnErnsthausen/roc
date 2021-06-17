@@ -8,16 +8,20 @@
 #include "vectorf.hpp"
 #include "linearalgebra.hpp"
 
-void constructThreeTermSystem(const vectorf<double> &coeff, const int nUse,
-                              matrix<double> &W, vectorf<double> &b)
+void constructThreeTermRow(const vectorf<double> &coeff, const int k,
+                           double &w1, double &w2, double &b)
 {
-  // TODO Check coeff.get_size, nUse, and W.get_rows are compatible?
+  w1 = (k - 1) * coeff(k);
+  w2 = coeff(k);
+  b  = k * coeff(k + 1);
+}
 
-  for (int i{1}, k{(int)coeff.get_size() - nUse}; i <= nUse; i++, k++)
+void constructThreeTermSystem(const vectorf<double> &coeff, const int from, const int to,
+                            matrix<double> &W, vectorf<double> &b)
+{
+  for (int i{1}, k{from}; k <= to; i++, k++)
   {
-    W(i, 1) = (k - 1) * coeff(k);
-    W(i, 2) = coeff(k);
-    b(i) = k * coeff(k + 1);
+    constructThreeTermRow(coeff, k, W(i, 1), W(i, 2), b(i));
   }
   // std::cout << "Rows [" + std::to_string(W.get_rows()) + "]\n";
   // std::cout << "Cols [" + std::to_string(W.get_cols()) + "]\n";
@@ -45,6 +49,25 @@ void testOrder(double order)
   }
 }
 
+// Relative error in all equations starting from THREETERM_KSTART
+double errorThreeTerm(const vectorf<double> &coeff, const vectorf<double> &beta)
+{
+  int dim;
+  double w1, w2;
+  vectorf<double> residual(coeff.get_size());
+  vectorf<double> rhs(coeff.get_size());
+  for (int i{1}, k{THREETERM_KSTART}; k < (int)coeff.get_size(); i++, k++)
+  {
+    dim = i;
+    constructThreeTermRow(coeff, k, w1, w2, rhs(i));
+    residual(i) = w1*beta(1) + w2*beta(2) - rhs(i);
+  }
+  double bnrm2 = norm2(dim, rhs.data());
+  double rnrm2 = norm2(dim, residual.data());
+  double error = rnrm2/bnrm2;
+  return error;
+}
+
 // The three-term-test of Chang and Corliss
 double threeterm(const std::vector<double> &coeff, const double &scale,
                  double &rc, double &order)
@@ -52,11 +75,14 @@ double threeterm(const std::vector<double> &coeff, const double &scale,
   int nUse = THREETERM_NUSE;
   int m{nUse}, n{2};
   matrix<double> W(m, n);
-  vectorf<double> beta(n);
-  vectorf<double> b(m);
+  vectorf<double> beta(m);
   vectorf<double> tc(coeff);
 
-  constructThreeTermSystem(tc, nUse, W, b);
+  // from must be greater than 0
+  int from = (int)coeff.size()-nUse;
+  // to must be less than coeff.size()
+  int to = (int)coeff.size()-1;
+  constructThreeTermSystem(tc, from, to, W, beta);
 
   // Solve W beta = b for beta
   MinNormSolution(m, n, W.data(), beta.data());
@@ -69,14 +95,5 @@ double threeterm(const std::vector<double> &coeff, const double &scale,
   order = beta(2) / beta(1);
   testOrder(order);
 
-  // Evaluate previous W equation at the solution of the least squares
-  // optimization problem. Return the backward error, the absolute value of this
-  // evaluation.
-  //
-  // TODO Use all equations?
-  nUse++;
-  int k = coeff.size() - nUse;
-  double check = k * tc(k + 1) - ((k - 1) * tc(k) * beta(1) + tc(k) * beta(2));
-
-  return fabs(check);
+  return errorThreeTerm(tc, beta);
 }
