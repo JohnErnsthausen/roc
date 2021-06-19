@@ -78,7 +78,7 @@ Clean up the repository with
 
 > rake clobber
 
-Examples reside in the directory roc/examples_cpp. Change to this directory and type
+Examples reside in the directory roc/examples. Change to this directory and type
 
 > rake compile[e_calculus.cpp]
 
@@ -107,7 +107,7 @@ f(x) = sum_0^{infty} \frac{2^n}{n} (4 x -8)^n on 15/8 <= x < 17/8 has Rc=1/8.
 
 From roc directory
 
-1. cd examples_cpp
+1. cd examples
 2. rake compile[e_calculus.cpp]
 3. ./e_calculus
 4. rake clean
@@ -116,7 +116,7 @@ From roc directory
 
 We present an example with Taylor series data from the solution of a Differential Algebraic Equation. From roc directory 
 
-1. cd examples_cpp
+1. cd examples
 2. make
 3. ./e_sevenbody
 4. gprof e_sevenbody gmon.out > gprof_output.txt
@@ -181,6 +181,6 @@ The folders and files for this project are as follows:
 2. refs - Reference material used for the project, including papers
 3. src - Source code
 4. test - Test cases
-5. examples_cpp - Example use cases
+5. examples - Example use cases
 
 

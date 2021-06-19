@@ -9,16 +9,16 @@ using namespace fadbad;
 
 T<double> func(const T<double>& x)
 {
-  T<double> y = 1.0 + 25.0 * x * x;
-  y = pow(y, 3.1415);
+  T<double> y = 1.0 + (1.0/10000.0) * x * x;
+  T<double> z = 1.0001 + (1.01/10000.0) * x * x;
 
   // T<double> y = 1.0 - x;
-  return 1.0 / y;
+  return 1.0 / y + 1.0 / z;
 }
 
 int main()
 {
-  double x0{0.3}, hbar{1.0};
+  double x0{0.5}, hbar{1.0};
 
   T<double> x, f;
   x = x0;         // Expansion point
