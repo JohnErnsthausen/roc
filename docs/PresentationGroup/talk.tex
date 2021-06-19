@@ -11,6 +11,7 @@
 \usepackage{epstopdf}
 % End Packages
 
+ 
 % Begin Theme
 \setbeamertemplate{navigation symbols}{}
 \mode<presentation>{
@@ -95,82 +96,49 @@
 %%%% START DOCUMENT
 \graphicspath{{images/}}
 
-\begin{frame}{Problem statement}
+\begin{frame}{Problem}
 
-  Given sequence $\Setbg{c_n}$ and {\it expansion point} $z_0 \in \Cz \text{ or } \Rz$
-  construct power series (PS)
-\DM
-{
-  \sum_{n=0}^{\infty} c_n (z-z_0)^n
-}
+  Given the first $k+1$ coefficients  of the  power series (PS) expansion of an  $f\,:\, \mathbb R\rightarrow\mathbb R$
+\begin{align}
+  f(t) =   \sum_{n=0}^{\infty} c_n (z-z_0)^n \label{eq:maineq}
+\end{align}
+estimate the radius of convergence (RC) of this series
  
 \vspace{3mm}
 
-What is an infinite sum?
-
-\vspace{3mm}
-
-When does an infinite sum converge?
-
-\vspace{3mm}
-
-But computers cannot sum an infinite sum!
-
+We are interested in estimating the RC of Taylor series solutions of  ODEs and DAEs
 \begin{itemize}
-  \item {\footnotesize \NC{INPUTS:} A finite sequence of real numbers, an expansion point, a scale}
-
-\vspace{2mm}
-
-  \item {\footnotesize \NC{OUTPUTS:} Radius of convergence and Order of singularity}
-
+\item Needed for reliable stepsize control 
 \end{itemize}
 
-\end{frame}
 
-\begin{frame}{What is an infinite sum?}
-
-Given any sequence $\Setbg{c_n}$ of complex numbers. Associate sequence $\Setbg{s_n}$  \NC{of finite sumes}
-\DM
-{
-  s_n \defeq \sum_{k=0}^n c_k
-}
-
-\vspace{2mm}
-
-If $\Setbg{s_n} \rightarrow s$ as $n \rightarrow \infty$ we say $\Setbg{s_n}$ converges to $s$ and write
-\DM
-{
-  \sum_{n=0}^{\infty} c_n = s
-}
 
 \end{frame}
 
-\begin{frame}{When does it converge?}
-
-  {\bf Root test}
-Given a series $\sum_{n=0}^{\infty} c_n$. Set $\alpha \defeq \nlimsup{n} \proot{n}{|c_n|}$. Then
-  \begin{itemize}
-    \item[(a)] if $\alpha < 1$, then $\sum_{n=0}^{\infty} c_n$ converges;
-    \item[(b)] if $\alpha > 1$, then $\sum_{n=0}^{\infty} c_n$ diverges;
-    \item[(c)] if $\alpha = 1$, then this test gives no information.
-  \end{itemize}
-
-\vspace{2mm}
-
-  {\bf Radius of convergence (RC)}
-  \NC{Given any sequence $\Setbg{c_n}$}, construct
-$\sum_{n=0}^{\infty} c_n (z-z_0)^n$. Set $a_n = c_n (z - z_0)^n$. Root test $\sum_{n=0}^{\infty} a_n$
-\DM
-{
-  \nlimsup{n} \proot{n}{|a_n|} = |z-z_0| \nlimsup{n} \proot{n}{|c_n|} \defeq \tfrac{|z-z_0|}{R_c}.
-}
-Obtain
-\begin{itemize}
-  \item[(a)] if $|z-z_0| < R_c$, then the power series converges;
-  \item[(b)] if $|z-z_0| > R_c$, then the power series diverges;
-  \item[(c)] if $|z-z_0| = R_c$, then this test gives no information.
-\end{itemize}
-\end{frame}
+%\begin{frame}{When does it converge?}
+%
+%  {\bf Root test}:  Let $\alpha \defeq \nlimsup{n} \proot{n}{|c_n|}$. Then
+%  \begin{itemize}
+%    \item[(a)] if $\alpha < 1$, then $\sum_{n=0}^{\infty} c_n$ converges;
+%    \item[(b)] if $\alpha > 1$, then $\sum_{n=0}^{\infty} c_n$ diverges;
+%    \item[(c)] if $\alpha = 1$, then this test gives no information.
+%  \end{itemize}
+%
+%\vspace{2mm}
+%
+%  {\bf Radius of convergence (RC)}
+%  Let $a_n = c_n (z - z_0)^n$. Root test $\sum_{n=0}^{\infty} a_n$
+%\DM
+%{
+%  \nlimsup{n} \proot{n}{|a_n|} = |z-z_0| \nlimsup{n} \proot{n}{|c_n|} \defeq \tfrac{|z-z_0|}{R_c}.
+%}
+%Obtain
+%\begin{itemize}
+%  \item[(a)] if $|z-z_0| < R_c$, then the power series converges;
+%  \item[(b)] if $|z-z_0| > R_c$, then the power series diverges;
+%  \item[(c)] if $|z-z_0| = R_c$, then this test gives no information.
+%\end{itemize}
+%\end{frame}
 
 
 
@@ -180,26 +148,62 @@ Obtain
 
 The coefficients of a general PS follow no patterns
 
-\vspace{3mm}
 
-  PS of real valued functions follow \NC{a few very definite patterns characterized by the
-  location of primary singularities}
 
-\vspace{3mm}
-
-PS which are real valued on the real axis can have poles, logarithmic branch points, and essential singularities only on the real axis or in conjugate pairs
-
-\vspace{3mm}
-
-The effects of secondary singularities disappear if sufficiently long PS are used
+  PS of a real valued function \NC{any or ODE solution?} follow a few very definite patterns
+  \begin{itemize}
+  \item  characterized by the
+  location of primary (closest to $z_0$) singularity
+  \item effects of secondary (second closest) singularities diminish as number of coefficients increases 
+  \end{itemize}
 
 \vspace{3mm}
 
-  CC tests \NC{fit} your (finite) sequence to their model
+%PS which are real valued on the real axis can have poles, logarithmic branch points, and essential singularities only on the real axis or in conjugate pairs
+
+%\vspace{3mm}
+
+
+
+  
 
 \end{frame}
 
-  
+\begin{frame}{CC idea}
+ For sufficiently large $k$, $c_k$  behave like the coefficients of
+  \begin{itemize}
+  \item single-pole model 
+\begin{align}
+ v(z) \defeq \parbg{a-z}^{-s}  \qquad s \neq 0, -1, -2, \ldots 
+ \label{eq:sp}
+ \end{align}
+ \item or conjugate-pair model 
+ \begin{align}
+ w(z) \defeq \parbg{z^2 - 2 b z + a^2}^{-s} \qquad s \neq 0, -1, -2, \ldots
+ \label{eq:spp}
+ \end{align}
+\end{itemize}
+
+We know the coefficients of  (\ref{eq:sp}) and (\ref{eq:spp})
+
+Find which model the $c_k$ fit, i.e. find
+ $a, s$ in (\ref{eq:sp}) and $a,b,s$ if (\ref{eq:spp})
+
+We know the RC in (\ref{eq:sp}) and (\ref{eq:spp})
+
+Use it as an approximation of RC of (\ref{eq:maineq}).
+
+\end{frame}
+
+\begin{frame}{Example}
+\framesubtitle{Single pole}
+
+\end{frame}
+
+\begin{frame}{Example}
+\framesubtitle{Conjugate pair of poles}
+
+\end{frame}
 \begin{frame}
 
 \begin{figure}
