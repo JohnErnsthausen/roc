@@ -80,7 +80,7 @@ Clean up the repository with
 
 Examples reside in the directory roc/examples. Change to this directory and type
 
-> rake compile[e_calculus.cpp]
+> rake compile[e_calculus]
 
 and a Makefile will be constructed and executed. To execute the software built for this example type
 
@@ -108,7 +108,7 @@ f(x) = sum_0^{infty} \frac{2^n}{n} (4 x -8)^n on 15/8 <= x < 17/8 has Rc=1/8.
 From roc directory
 
 1. cd examples
-2. rake compile[e_calculus.cpp]
+2. rake compile[e_calculus]
 3. ./e_calculus
 4. rake clean
 
@@ -117,10 +117,10 @@ From roc directory
 We present an example with Taylor series data from the solution of a Differential Algebraic Equation. From roc directory 
 
 1. cd examples
-2. make
-3. ./e_sevenbody
-4. gprof e_sevenbody gmon.out > gprof_output.txt
-4. make clean
+2. rake compile[e_laynewatson]
+3. ./e_laynewatson
+4. gprof e_laynewatson gmon.out > gprof_output.txt
+4. rake clean
 
 ## Documentation for coders
 
@@ -170,8 +170,6 @@ of larger software needs such as a stepsize controller in a Ordinary Differentia
 and a Differential-Algebraic Equation solver.
 
 This software described in [Chang and Corliss](https://dl.acm.org/doi/pdf/10.1145/355993.355995).
-Linear algebra described in [Stewart](https://books.google.com/books?hl=en&lr=&id=XXzNCgAAQBAJ&oi=fnd&pg=PP1&dq=stewart+introduction+to+matrix+computations&ots=sj2tcycEub&sig=OzbhV-wuRoBZanLVSiQwtN_Gr34#v=onepage&q=stewart%20introduction%20to%20matrix%20computations&f=false) as well as __Golub, G. H., C. F. Van Loan, and Matrix Computations. "Johns Hopkins Univ." Press, Baltimore (1989)__.
-Software aspects were inspired by the [MANPAK](https://www.sciencedirect.com/science/article/pii/S0898122196002040) project which I worked on with Rheinboldt.
 
 ## This repository
 
@@ -179,8 +177,13 @@ The folders and files for this project are as follows:
 
 1. docs - Documentation for the project
 2. refs - Reference material used for the project, including papers
-3. src - Source code
-4. test - Test cases
-5. examples - Example use cases
-
+3. cmake - Cmake build resources used in CMakeLists.txt
+4. src - Source code
+5. include - Include files
+6. test - Test cases
+7. examples - Example use cases. See the Rakefile.rb for building make files to compile examples
+8. GetTS.cpp - Compute Taylor coefficients of a function
+9. LICENSE - License information
+10. Rakefile.rb - Ruby tasks for your convenience, although not necessary to use them
+11. README.md - This readme file
 
