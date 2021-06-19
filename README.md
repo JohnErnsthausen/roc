@@ -105,7 +105,7 @@ and analyse
 f(x) = sum_0^{infty} \frac{2^n}{n} (4 x -8)^n on 15/8 <= x < 17/8 has Rc=1/8.
 ```
 
-We want to fit the tail of the Taylor series, ignore the first 17 terms of the TCs. From roc directory
+From roc directory
 
 1. cd examples_cpp
 2. rake compile[e_calculus.cpp]
