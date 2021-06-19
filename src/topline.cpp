@@ -8,8 +8,6 @@
 #include "vectorf.hpp"
 #include "linearalgebra.hpp"
 
-#include <iostream>
-
 void constructLinearLeastSquaresRow(const std::vector<double> &coeff, const int k,
                                     double &w1, double &w2, double &b)
 {
