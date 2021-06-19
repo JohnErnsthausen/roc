@@ -52,7 +52,7 @@ void testOrder(double order)
 // Relative error in all equations starting from THREETERM_KSTART
 double errorThreeTerm(const vectorf<double> &coeff, const vectorf<double> &beta)
 {
-  int dim;
+  int dim{0};
   double w1, w2;
   vectorf<double> residual(coeff.get_size());
   vectorf<double> rhs(coeff.get_size());

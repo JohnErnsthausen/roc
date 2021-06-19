@@ -94,7 +94,7 @@ double testSingularityOrder(double singularityOrder1, double singularityOrder2)
 // Relative error in all equations starting from SIXTERM_KSTART
 double errorSixTerm(const vectorf<double> &coeff, const vectorf<double> &beta)
 {
-  int dim;
+  int dim{0};
   double w1, w2, w3, w4;
   vectorf<double> residual(coeff.get_size());
   vectorf<double> rhs(coeff.get_size());

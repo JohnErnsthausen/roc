@@ -78,9 +78,9 @@ Clean up the repository with
 
 > rake clobber
 
-Examples reside in the directory roc/examples. Change to this directory and type
+Examples reside in the directory roc/examples_cpp. Change to this directory and type
 
-> rake compile[e_calculus]
+> rake compile[e_calculus.cpp]
 
 and a Makefile will be constructed and executed. To execute the software built for this example type
 
@@ -96,7 +96,7 @@ To remove the Makefile, type
 
 > rake clobber
 
-## Plain C example
+## Example Calculus
 
 We present an example form [a calculus tutorial](https://tutorial.math.lamar.edu/Classes/CalcII/PowerSeries.aspx)
 and analyse
@@ -107,12 +107,12 @@ f(x) = sum_0^{infty} \frac{2^n}{n} (4 x -8)^n on 15/8 <= x < 17/8 has Rc=1/8.
 
 We want to fit the tail of the Taylor series, ignore the first 17 terms of the TCs. From roc directory
 
-1. cd examples_c
-2. make
+1. cd examples_cpp
+2. rake compile[e_calculus.cpp]
 3. ./e_calculus
-4. make clean
+4. rake clean
 
-## CPP example
+## Example DAE
 
 We present an example with Taylor series data from the solution of a Differential Algebraic Equation. From roc directory 
 
@@ -132,16 +132,6 @@ how to implement the functionality described.
 
 Documentation in this repository will undergo major revisions in the coming weeks. Please bare with me
 as I build the documentation for you.
-
-## Software usage
-
-At the moment, this software can be used as in the example __roc/examples/e_calculus.c__. The user specifies
-
-1. The start index, kstart
-2. A sufficient number of terms in the power series in TC (length at least kstart+10)
-3. The scale used to produce the TCs 
-
-The software returns the RC and the best fit line slope/intercept coefficients.
 
 ## Obtain a Taylor Series of a function 
 
@@ -172,12 +162,9 @@ and run to obtain a 30 term Taylor Series output to STDOUT
 
 ## Algorithms used
 
-The code solves the linear least squares problem to best fit the power series coefficients.
-The QRFactorization was implemented and used to solve the Linear Least Squares problem,
-and great care was taken in the construction of the Householder transformations,
-the two-norm, and the backward substitution used in solving the linear system.
+The code uses LAPACK/DGELS and LAPACK/dnrm2.
 
-This software was build somewhat for speed. However there is room for improvement. The
+This software was built for speed. The
 author anticipates calling the __roc__ subroutine thousands of times in the context
 of larger software needs such as a stepsize controller in a Ordinary Differential Equation
 and a Differential-Algebraic Equation solver.
@@ -194,6 +181,6 @@ The folders and files for this project are as follows:
 2. refs - Reference material used for the project, including papers
 3. src - Source code
 4. test - Test cases
-5. examples - Example use cases
+5. examples_cpp - Example use cases
 
 
