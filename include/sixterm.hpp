@@ -10,7 +10,7 @@ double sixterm(const std::vector<double> &coeff, const double &scale,
 void constructSixTermSystem(const vectorf<double> &, const int, const int,
                             matrix<double> &, vectorf<double> &);
 void constructSixTermRow(const vectorf<double> &, const int,
-                         double, double, double, double, double);
+                         double &, double &, double &, double &, double &);
 void testBeta4(double beta4);
 void testRCSix(double);
 void testCosTheta(double);

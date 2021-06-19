@@ -4,66 +4,93 @@
 #include <cfloat>
 #include "data.hpp"
 #include "matrix.hpp"
-#include "topline.hpp"
 #include "vectorf.hpp"
+#include "topline.hpp"
 
 using namespace testing;
-using std::vector;
 
 class TestThatTopLine : public Test
 {
  public:
-  const int num_tc{30};
+  const int num_coeff{30};
   double scale = 1.0;
-  double rc = 0.0, order = 0.0;
-  vector<double> tc;
+  double rc = 0.0;
+  double order = 0.0;
+  std::vector<double> coeff;
+
   double epsilon{DBL_EPSILON};
 
-  void SetUp() override { tc = vector<double>(num_tc); }
+  void SetUp() override
+  {
+    // Initialized to zero
+    coeff = std::vector<double>(num_coeff);
+  }
 
   void TearDown() override {}
 };
 
-TEST_F(TestThatTopLine, RequiresAtLeastTOPLINE_NUSEMoreThanTOPLINE_KSTARTCoefficients)
+TEST_F(TestThatTopLine, hasMethodToplineThatReturnsADouble)
 {
-  tc = vector<double>(TOPLINE_KSTART + TOPLINE_NUSE - 1);
-  ASSERT_THROW(topline(tc, scale, rc, order), std::exception);
+  for (int k = 0; k < num_coeff; k++)
+    coeff[ k ] = pow(8, k + 1) / ((double)(k + 1));
+
+  ASSERT_THAT(topline(coeff, scale, rc, order), DoubleNear(0.0, 0.000966623));
 }
 
-TEST_F(TestThatTopLine, SatisfiesStorageRequirementsForLinearLeastSquaresSystem)
+TEST_F(TestThatTopLine, ExpectThrowIfToplineCalledWithCoeffSizeLessThanTOPLINE_KSTARTPlusTOPLINE_NUSE)
 {
-  int kstart{5};
-  int m{num_tc - kstart - 1};
-  int n{2};
-  matrix<double> W(m, n);
-  vectorf<double> b(m);
-
-  ASSERT_THROW(constructLinearLeastSquaresSystem(tc, kstart, W, b),
-               std::exception);
+  coeff = std::vector<double>(TOPLINE_KSTART+TOPLINE_NUSE-1);
+  ASSERT_THROW(topline(coeff, scale, rc, order), std::exception);
 }
 
-TEST_F(TestThatTopLine, CanConstructLinearLeastSquaresSystem)
+TEST_F(TestThatTopLine, ExpectNoThrowIfToplineCalledWithCoeffSizeEqualToTOPLINE_KSTARTPlusTOPLINE_NUSEOrGreater)
 {
-  for (int k{0}; k < num_tc; k++)
-  {
-    tc[ k ] = (double)(k + 1);
-  }
+  coeff = std::vector<double>(TOPLINE_KSTART+TOPLINE_NUSE);
+  ASSERT_NO_THROW(topline(coeff, scale, rc, order));
+}
 
-  int kstart{5};
-  int m{num_tc - kstart};
-  int n{2};
+TEST_F(TestThatTopLine, ExpectThrowIfConstructLinearLeastSquaresSystemCalledWithNumberWRowsLessThanCoeffSizeMinusTOPLINE_KSTART)
+{
+  int m{(int)coeff.size() - TOPLINE_KSTART - 1}, n{2};
   matrix<double> W(m, n);
-  vectorf<double> b(m);
+  vectorf<double> beta(m);
+  
+  ASSERT_THROW(constructLinearLeastSquaresSystem(coeff, TOPLINE_KSTART, W, beta), std::exception);
+}
 
-  constructLinearLeastSquaresSystem(tc, kstart, W, b);
+TEST_F(TestThatTopLine, ConstructLinearLeastSquaresRow)
+{
+  double w1{0.0}, w2{0.0}, b{0.0};
+  int k{3};
+  coeff[3] = 1.0;
 
-  for (int k{1}; k <= m; k++)
+  constructLinearLeastSquaresRow(coeff, k, w1, w2, b);
+  EXPECT_THAT(w1, DoubleEq(1.0));
+  EXPECT_THAT(w2, DoubleEq(3.0));
+  EXPECT_THAT(b, DoubleEq(0.0));
+}
+
+TEST_F(TestThatTopLine, CanSolveAContrivedLinearLeastSquaresSystem)
+{
+  for (int k{0}; k < num_coeff; k++)
   {
-    EXPECT_THAT(W(k, 1), DoubleNear(1.0, epsilon));
-    EXPECT_THAT(W(k, 2), DoubleNear((double)(kstart + k - 1), epsilon));
-    EXPECT_THAT(
-        b(k), DoubleNear(log10(fabs((double)((kstart + k - 1) + 1))), epsilon));
+    coeff[ k ] = std::pow(10.0, -3.0 * (double)k + 1.0);
   }
+
+  double w1, w2, b;
+  for (int k{TOPLINE_KSTART}; k < (int)coeff.size(); k++)
+  {
+    constructLinearLeastSquaresRow(coeff, k, w1, w2, b);
+    EXPECT_THAT(w1, DoubleNear(1.0, epsilon));
+    EXPECT_THAT(w2, DoubleNear((double)k, epsilon));
+    EXPECT_THAT(b, DoubleNear(-3.0 * (double)k + 1.0, epsilon));
+  }
+  
+  double error = topline(coeff, scale, rc, order);
+  EXPECT_THAT(error, DoubleNear(0.0, epsilon));
+
+  // rc = 1/10^{-3} = 1000
+  EXPECT_THAT(rc, DoubleNear(1000.0, 2.16006e-12));
 }
 
 // Problem from
@@ -72,14 +99,14 @@ TEST_F(TestThatTopLine, CanConstructLinearLeastSquaresSystem)
 //
 // We want to fit the tail of the Taylor series, omit first
 // TOPLINE_KSTART terms from consideration.
-TEST_F(TestThatTopLine, WillComputeLeastSquarsSolution)
+TEST_F(TestThatTopLine, WillComputeLeastSquaresSolutionOnExample)
 {
-  for (int k = 0; k < num_tc; k++)
+  for (int k = 0; k < num_coeff; k++)
   {
-    tc[ k ] = pow(8, k + 1) / ((double)(k + 1));
+    coeff[ k ] = pow(8, k + 1) / ((double)(k + 1));
   }
 
-  EXPECT_THAT(topline(tc, scale, rc, order),
+  EXPECT_THAT(topline(coeff, scale, rc, order),
               DoubleNear(0.0, 0.000966623));
   EXPECT_THAT(rc, DoubleNear(1.0/8.0, 0.131588));
   EXPECT_TRUE(std::isnan(order));
