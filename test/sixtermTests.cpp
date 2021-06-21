@@ -1,5 +1,6 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+
 #include <cfloat>
 #include <cmath>
 
@@ -396,16 +397,7 @@ TEST(
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
-// Test exception throws (Seems hard)
-// QRFactorization and QRSolve tested in the developement of these methods
-// SQRT tested above (by accident)
-// The radius of convergence is infinity, which is highly unlikely (NOT TESTED)
-// Unconstrained optimization lead to infinite CosTheta which is not in [-1, 1]
-// (NOT TESTED) Unconstrained optimization lead to CosTheta [" +
-// to_string(cosTheta) + "] not in [-1, 1] (by accident) Unconstrained
-// optimization lead to NaN for Order of Singularity (NOT TESTED)
-//
-// Test real pole, which should fail.
+// WARNING This model is wrong for real pole. Real pole test should fail
 TEST(
     SixTermAnalysisOf,
     TaylorSeriesAtNegativeOneNearARealPoleAtOneWithScalingTenthAlphaOneExpectedToFail)
@@ -522,3 +514,13 @@ TEST(
               DoubleNear(2.0, epsilon));
 }
 
+// Test exception throws (Seems hard)
+//
+// SQRT test
+// 
+// The radius of convergence is infinity, a highly unlikely case (NOT TESTED)
+// 
+// Unconstrained optimization lead to CosTheta which is not in [-1, 1]
+//
+// Test sdiff = |s1 - s2| is small. What is small?
+// Implement IPOPT for that case that sdiff is not small.

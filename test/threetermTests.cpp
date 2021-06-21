@@ -1,5 +1,6 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
+
 #include <cfloat>
 #include <cmath>
 #include <limits>
@@ -664,7 +665,9 @@ TEST(ThreeTermAnalysisOf, TestOrder)
 }
 
 // WARNING Rc and order can be accurate, but backward error can be large near
-// singularity WARNING Error model wrong for complex-conjugate comparison
+// singularity, However, finding the relative error is small.
+//
+// WARNING This model is wrong for complex-conjugate comparison
 //
 // Exceptions (Hard to think of a test)
 // Top-line comparison

@@ -16,7 +16,7 @@ This software estimates the radius of convergence [(RC)](https://en.wikipedia.or
 
 ## Getting started
 
-You can build this software on a computer system equipped with the gnu c/cpp compiler. For a good
+You can build this software on a computer system equipped with the gnu cpp compiler. For a good
 tutorial on equipping your system with this compiler, see
 [Barak Shoshany](http://baraksh.com/CSE701/notes.php#visual-studio-code).
 
@@ -130,8 +130,7 @@ how to implement the functionality described.
 
 ## Documentation for users
 
-Documentation in this repository will undergo major revisions in the coming weeks. Please bare with me
-as I build the documentation for you.
+Documentation in this repository is available in the `docs` directory.
 
 ## Obtain a Taylor Series of a function 
 
