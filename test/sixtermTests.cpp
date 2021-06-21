@@ -3,11 +3,114 @@
 
 #include <cfloat>
 #include <cmath>
-
+#include "data.hpp"
+#include "matrix.hpp"
+#include "vectorf.hpp"
 #include "sixterm.hpp"
 
-#define epsilon DBL_EPSILON
 using namespace testing;
+
+class TestThatSixTermAnalysis : public Test
+{
+ public:
+  const int num_coeff{30};
+  double scale = 1.0;
+  double rc = 0.0;
+  double order = 0.0;
+  std::vector<double> coeff;
+
+  double epsilon{DBL_EPSILON};
+
+  void SetUp() override
+  {
+    // Initialized to zero
+    coeff = std::vector<double>(num_coeff);
+  }
+
+  void TearDown() override {}
+};
+
+
+TEST(TestThatSixTermAnalysis, ThrowsExceptionIfBeta4IsNegative)
+{
+  double beta4 = -1.0;
+  EXPECT_THROW(testBeta4(beta4), std::exception);
+}
+
+TEST(TestThatSixTermAnalysis, ThrowsExceptionIfRCIsNaN)
+{
+  double rc = std::numeric_limits<double>::quiet_NaN();
+  EXPECT_THROW(testRCSix(rc), std::exception);
+}
+
+TEST(TestThatSixTermAnalysis, ThrowsExceptionIfCosThetaIsNAN)
+{
+  double cosTheta = std::numeric_limits<double>::quiet_NaN();
+  EXPECT_THROW(testCosTheta(cosTheta), std::exception);
+}
+
+TEST(TestThatSixTermAnalysis, ThrowsExceptionIfCosThetaLessThanNegativeOne)
+{
+  double cosTheta = -2.0;
+  EXPECT_THROW(testCosTheta(cosTheta), std::exception);
+}
+
+TEST(TestThatSixTermAnalysis, ThrowsExceptionIfCosThetaGreaterThanPositiveOne)
+{
+  double cosTheta = 2.0;
+  EXPECT_THROW(testCosTheta(cosTheta), std::exception);
+}
+
+TEST(TestThatSixTermAnalysis, ThrowsExceptionIfSingularityOrdersAreBothNAN)
+{
+  double singularityOrder1 = std::numeric_limits<double>::quiet_NaN();
+  double singularityOrder2 = std::numeric_limits<double>::quiet_NaN();
+
+  EXPECT_THROW(testSingularityOrder(singularityOrder1, singularityOrder2),
+               std::exception);
+}
+
+TEST(TestThatSixTermAnalysis,
+     ReturnsOneIfSingularityOrderOneIsNANAndSingularityOrderTwoIsOne)
+{
+  double singularityOrder1 = std::numeric_limits<double>::quiet_NaN();
+  double singularityOrder2 = 1.0;
+
+  EXPECT_THAT(testSingularityOrder(singularityOrder1, singularityOrder2),
+              DoubleNear(1.0, epsilon));
+}
+
+TEST(TestThatSixTermAnalysis,
+     ReturnsOneIfSingularityOrderOneIsOneAndSingularityOrderTwoIsNAN)
+{
+  double singularityOrder1 = 1.0;
+  double singularityOrder2 = std::numeric_limits<double>::quiet_NaN();
+
+  EXPECT_THAT(testSingularityOrder(singularityOrder1, singularityOrder2),
+              DoubleNear(1.0, epsilon));
+}
+
+TEST(
+    TestThatSixTermAnalysis,
+    ReturnsAverageOfSingularityOrderOneAndSingularityOrderTwoIfEachSingularityOrderIsInIntervalMinusOneToOne)
+{
+  double singularityOrder1 = 1.0;
+  double singularityOrder2 = 3.0;
+
+  EXPECT_THAT(testSingularityOrder(singularityOrder1, singularityOrder2),
+              DoubleNear(2.0, epsilon));
+}
+
+// Test exception throws (Seems hard)
+//
+// SQRT test
+// 
+// The radius of convergence is infinity, a highly unlikely case (NOT TESTED)
+// 
+// Unconstrained optimization lead to CosTheta which is not in [-1, 1]
+//
+// Test sdiff = |s1 - s2| is small. What is small?
+// Implement IPOPT for that case that sdiff is not small.
 
 TEST(
     SixTermAnalysisOf,
@@ -70,7 +173,7 @@ TEST(
   double err = sixterm(coeffs, scale, rc, order);
 
   EXPECT_THAT(err, DoubleNear(0.0, 2.60419e-15));
-  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), epsilon));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), DBL_EPSILON));
   EXPECT_THAT(order, DoubleNear(1.0, 2.24266e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
@@ -135,7 +238,7 @@ TEST(
 
   double err = sixterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(err, DoubleNear(0.0, DBL_EPSILON));
   EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 1.55432e-15));
   EXPECT_THAT(order, DoubleNear(1.0, 1.34560e-13));
   EXPECT_THAT(coeffs.size(), Eq(30));
@@ -166,8 +269,8 @@ TEST(
 
  double err = sixterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
-  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), epsilon));
+  EXPECT_THAT(err, DoubleNear(0.0, DBL_EPSILON));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), DBL_EPSILON));
   EXPECT_THAT(order, DoubleNear(1.0, 4.44090e-16));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
@@ -197,7 +300,7 @@ TEST(
 
   double err = sixterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(err, DoubleNear(0.0, DBL_EPSILON));
   EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 1.55432e-15));
   EXPECT_THAT(order, DoubleNear(1.0, 1.34560e-13));
   EXPECT_THAT(coeffs.size(), Eq(30));
@@ -356,7 +459,7 @@ TEST(
 
   double err = sixterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, epsilon));
+  EXPECT_THAT(err, DoubleNear(0.0, DBL_EPSILON));
   EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 7.21646e-16));
   EXPECT_THAT(order, DoubleNear(3.1415, 7.90489e-14));
   EXPECT_THAT(coeffs.size(), Eq(30));
@@ -444,83 +547,3 @@ TEST(
   ASSERT_THROW(sixterm(coeffs, scale, rc, order), std::exception);
 }
 
-TEST(SixTermAnalysisOf, TestBeta4)
-{
-  double beta4 = -1.0;
-  EXPECT_THROW(testBeta4(beta4), std::exception);
-}
-
-TEST(SixTermAnalysisOf, TestRCSix)
-{
-  double rc = std::numeric_limits<double>::quiet_NaN();
-  EXPECT_THROW(testRCSix(rc), std::exception);
-}
-
-TEST(SixTermAnalysisOf, TestCosThetaNAN)
-{
-  double cosTheta = std::numeric_limits<double>::quiet_NaN();
-  EXPECT_THROW(testCosTheta(cosTheta), std::exception);
-}
-
-TEST(SixTermAnalysisOf, TestCosThetaLessThanNegativeOne)
-{
-  double cosTheta = -2.0;
-  EXPECT_THROW(testCosTheta(cosTheta), std::exception);
-}
-
-TEST(SixTermAnalysisOf, TestCosThetaGreaterThanPositiveOne)
-{
-  double cosTheta = 2.0;
-  EXPECT_THROW(testCosTheta(cosTheta), std::exception);
-}
-
-TEST(SixTermAnalysisOf, TestSingularityOrderBothNAN)
-{
-  double singularityOrder1 = std::numeric_limits<double>::quiet_NaN();
-  double singularityOrder2 = std::numeric_limits<double>::quiet_NaN();
-
-  EXPECT_THROW(testSingularityOrder(singularityOrder1, singularityOrder2),
-               std::exception);
-}
-
-TEST(SixTermAnalysisOf,
-     TestSingularityOrderSingularityOrderOneIsNANSingularityOrderTwoIsOne)
-{
-  double singularityOrder1 = std::numeric_limits<double>::quiet_NaN();
-  double singularityOrder2 = 1.0;
-
-  EXPECT_THAT(testSingularityOrder(singularityOrder1, singularityOrder2),
-              DoubleNear(1.0, epsilon));
-}
-
-TEST(SixTermAnalysisOf,
-     TestSingularityOrderSingularityOrderOneIsOneSingularityOrderTwoIsNAN)
-{
-  double singularityOrder1 = 1.0;
-  double singularityOrder2 = std::numeric_limits<double>::quiet_NaN();
-
-  EXPECT_THAT(testSingularityOrder(singularityOrder1, singularityOrder2),
-              DoubleNear(1.0, epsilon));
-}
-
-TEST(
-    SixTermAnalysisOf,
-    TestSingularityOrderSingularityOrderOneIsOneSingularityOrderTwoIsThreeOrderIsAverage)
-{
-  double singularityOrder1 = 1.0;
-  double singularityOrder2 = 3.0;
-
-  EXPECT_THAT(testSingularityOrder(singularityOrder1, singularityOrder2),
-              DoubleNear(2.0, epsilon));
-}
-
-// Test exception throws (Seems hard)
-//
-// SQRT test
-// 
-// The radius of convergence is infinity, a highly unlikely case (NOT TESTED)
-// 
-// Unconstrained optimization lead to CosTheta which is not in [-1, 1]
-//
-// Test sdiff = |s1 - s2| is small. What is small?
-// Implement IPOPT for that case that sdiff is not small.
