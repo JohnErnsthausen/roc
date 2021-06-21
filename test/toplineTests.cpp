@@ -58,7 +58,7 @@ TEST_F(TestThatTopLine, ThrowsExceptionIfConstructLinearLeastSquaresSystemCalled
   ASSERT_THROW(constructLinearLeastSquaresSystem(coeff, TOPLINE_KSTART, W, beta), std::exception);
 }
 
-TEST_F(TestThatTopLine, ConstructLinearLeastSquaresRow)
+TEST_F(TestThatTopLine, ConstructsLinearLeastSquaresRow)
 {
   double w1{0.0}, w2{0.0}, b{0.0};
   int k{3};
