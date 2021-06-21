@@ -37,19 +37,19 @@ TEST_F(TestThatTopLine, hasMethodToplineThatReturnsADouble)
   ASSERT_THAT(topline(coeff, scale, rc, order), DoubleNear(0.0, 0.000966623));
 }
 
-TEST_F(TestThatTopLine, ExpectThrowIfToplineCalledWithCoeffSizeLessThanTOPLINE_KSTARTPlusTOPLINE_NUSE)
+TEST_F(TestThatTopLine, ThrowsExceptionIfToplineCalledWithCoeffSizeLessThanTOPLINE_KSTARTPlusTOPLINE_NUSE)
 {
   coeff = std::vector<double>(TOPLINE_KSTART+TOPLINE_NUSE-1);
   ASSERT_THROW(topline(coeff, scale, rc, order), std::exception);
 }
 
-TEST_F(TestThatTopLine, ExpectNoThrowIfToplineCalledWithCoeffSizeEqualToTOPLINE_KSTARTPlusTOPLINE_NUSEOrGreater)
+TEST_F(TestThatTopLine, DoesNotThrowExceptionIfToplineCalledWithCoeffSizeEqualToTOPLINE_KSTARTPlusTOPLINE_NUSEOrGreater)
 {
   coeff = std::vector<double>(TOPLINE_KSTART+TOPLINE_NUSE);
   ASSERT_NO_THROW(topline(coeff, scale, rc, order));
 }
 
-TEST_F(TestThatTopLine, ExpectThrowIfConstructLinearLeastSquaresSystemCalledWithNumberWRowsLessThanCoeffSizeMinusTOPLINE_KSTART)
+TEST_F(TestThatTopLine, ThrowsExceptionIfConstructLinearLeastSquaresSystemCalledWithNumberWRowsLessThanCoeffSizeMinusTOPLINE_KSTART)
 {
   int m{(int)coeff.size() - TOPLINE_KSTART - 1}, n{2};
   matrix<double> W(m, n);

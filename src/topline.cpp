@@ -58,7 +58,7 @@ double errorTopLine(const std::vector<double> &coeff, const vectorf<double> &bet
 // To fit the tail of the Taylor series, ignore the first kstart terms
 // of the TCs.
 //
-// If Taylor coefficients TC(i) are unscaled, then the scaled TCs are
+// Suppose Taylor coefficients TC(i) are unscaled. The scaled TCs are
 // T(i) = (1/scale)^i TC(i).
 //
 // Multiply Rc by scale to get Rc when computing with scaled TCs.
