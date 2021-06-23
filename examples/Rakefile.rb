@@ -8,8 +8,8 @@ end
 
 files = FileList.new('*', '../src/*')
 BLD_FILES = files.collect{ |f| matchData = f.match(/^(.*)\.(o|d)$/); matchData[0] if matchData }.compact
-OUT_FILES = files.collect{ |f| matchData = f.match(/^e_(.*)\.out$/); matchData[0] if matchData }.compact
-TXT_FILES = files.collect{ |f| matchData = f.match(/^e[_|-](.*)\.txt$/); matchData[0] if matchData }.compact
+OUT_FILES = [] #files.collect{ |f| matchData = f.match(/^e_(.*)\.out$/); matchData[0] if matchData }.compact
+TXT_FILES = [] #files.collect{ |f| matchData = f.match(/^e[_|-](.*)\.txt$/); matchData[0] if matchData }.compact
 RUN_EXECS = files.collect{ |f| matchData = f.match(/^e_(.*)$/); matchData[0] if matchData && File.extname(f).empty? && f[-1]!= "." }.compact
 GENERATED_FILES = BLD_FILES + OUT_FILES + TXT_FILES + RUN_EXECS
 

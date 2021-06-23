@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 
+#include <iostream>
+
 #include "data.hpp"
 #include "exceptions.hpp"
 #include "matrix.hpp"
@@ -21,6 +23,27 @@ void constructSixTermRow(const vectorf<double> &coeff, const int k,
 void constructSixTermSystem(const vectorf<double> &coeff, const int from, const int to,
                             matrix<double> &W, vectorf<double> &b)
 {
+  // Suggicient storage. Remember it must be a contiguous block.
+  if( (to-from+1 != (int)W.get_rows()) || ((int)W.get_cols() != 4) )      
+  {
+    std::string message{
+        "Insufficient storage to construct Six Term system. Have [" +
+        std::to_string(W.get_rows()) + "] rows Need [" +
+        std::to_string(to-from+1) + "] rows\nHave [" +
+        std::to_string(W.get_cols()) + "] cols Need [4] cols\n"
+    };
+    throw sayMessage(message);
+  }
+  // Compatible storage
+  if( b.get_size() != W.get_rows() )      
+  {
+    std::string message{
+        "Incompatible storage between Matrix and its range in construction of Six Term system. Have [" +
+        std::to_string(W.get_rows()) + "] matrix rows.\nHave [" +
+        std::to_string(b.get_size()) + "] rhs rows\n"
+    };
+    throw sayMessage(message);
+  }
   for (int i{1}, k{from}; k <= to; i++, k++)
   {
     constructSixTermRow(coeff, k, W(i, 1), W(i, 2), W(i, 3), W(i, 4), b(i));
@@ -88,6 +111,13 @@ double testSingularityOrder(double singularityOrder1, double singularityOrder2)
   if (!std::isnan(singularityOrder1) && !std::isnan(singularityOrder2))
     order = (singularityOrder1 + singularityOrder2) / 2.0;
 
+  double diff = fabs(singularityOrder1 - singularityOrder2);
+  if ( diff > TOL )
+  {
+    std::cout.precision(16);
+    std::cout << std::scientific << "|s1 - s2| = " + std::to_string(diff) + "\n";
+  }
+
   return order;
 }
 
@@ -117,23 +147,26 @@ double errorSixTerm(const vectorf<double> &coeff, const vectorf<double> &beta)
 // header file data.h
 //
 // The method returns the relative error of the Six-Term model evaluated
-// at the computed solution of the Six-Term model subproblem at indicies
-// FROM to TO where FROM = 11 and TO = coeff.size()-1.
-//
-// The calling subroutine should maintain the invarient that coeff.size()
-// must be sufficiently large, say larger than 19.
-//
-// The computation is successful whenever the relative error is acceptably small,
-// otherwise the algorithm is said to detect that the coefficients do not
-// resemble pair of complex conjugate poles.
+// at the computed solution of the Six-Term model subproblem from index
+// SIXTERM_KSTART to index coeff.size()-1.
 double sixterm(const std::vector<double> &coeff, const double &scale,
                double &rc, double &order)
 {
   int nUse = SIXTERM_NUSE;
+  int kStart = SIXTERM_KSTART;
   int m{nUse}, n{4};
   matrix<double> W(m, n);
   vectorf<double> beta(m);
   vectorf<double> tc(coeff);
+
+  // coeff has less than kStart+nUse coefficients to estimate Rc
+  if ((int)coeff.size() < kStart+nUse)
+  {
+    std::string message{
+        "Need at least [" + std::to_string(kStart+nUse) +
+        "] Taylor coefficients to estimate Radius of Convergence with Six Term Analysis\n"};
+    throw sayMessage(message);
+  }
 
   // from must be greater than 0
   int from = (int)coeff.size()-nUse;

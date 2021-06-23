@@ -8,60 +8,123 @@
 #include "vectorf.hpp"
 #include "sixterm.hpp"
 
+// TODO
+// Test sdiff = |s1 - s2| is small. What is small?
+// Implement IPOPT for that case that sdiff is not small.
+
 using namespace testing;
 
 class TestThatSixTermAnalysis : public Test
 {
  public:
-  const int num_coeff{30};
   double scale = 1.0;
   double rc = 0.0;
   double order = 0.0;
-  std::vector<double> coeff;
 
   double epsilon{DBL_EPSILON};
 
-  void SetUp() override
-  {
-    // Initialized to zero
-    coeff = std::vector<double>(num_coeff);
-  }
+  void SetUp() override {}
 
   void TearDown() override {}
 };
 
+TEST_F(TestThatSixTermAnalysis, ThrowsExceptionIfSixTermCalledWithCoeffSizeLessThanSIXTERM_KSTARTPlusSIXTERM_NUSE)
+{
+  std::vector<double> coeff{3.0769230769230771e-01,  1.4201183431952663e-01,
+                        4.1875284478834776e-02,  8.4030671194986195e-03,
+                        6.5716294139668780e-04,  -3.4308380547065328e-04,
+                        -2.0889736724773902e-04, -7.0023107539675438e-05,
+                        -1.6249329076177969e-05, -2.1132974551840289e-06,
+                        2.7458033423644587e-07,  2.8929072773866954e-07,
+                        1.1239723324581319e-07,  2.9622513210477662e-08,
+                        5.0259881551579064e-09,  4.1031978497675339e-11};
+  ASSERT_THROW(sixterm(coeff, scale, rc, order), std::exception);
+}
 
-TEST(TestThatSixTermAnalysis, ThrowsExceptionIfBeta4IsNegative)
+TEST_F(TestThatSixTermAnalysis, ThrowsExceptionIfConstructSixTermSystemCalledWithNumberWRowsLessThanSIXTERM_NUSE)
+{
+  int m{SIXTERM_NUSE-1}, n{4};
+  matrix<double> W(m, n);
+  vectorf<double> beta(m);
+
+  std::vector<double> coeff = std::vector<double>(SIXTERM_KSTART + SIXTERM_NUSE + 10);
+  vectorf<double> tc(coeff);
+  
+  // from must be greater than 0
+  int from = (int)coeff.size()-SIXTERM_NUSE;
+  // to must be less than coeff.size()
+  int to = (int)coeff.size()-1;
+  
+  ASSERT_THROW(constructSixTermSystem(tc, from, to, W, beta), std::exception);
+}
+
+TEST_F(TestThatSixTermAnalysis, ThrowsExceptionIfConstructSixTermSystemCalledWithNumberIncompatibleWRowsAndBRows)
+{
+  int m{SIXTERM_NUSE}, n{4};
+  matrix<double> W(m, n);
+  vectorf<double> beta(m-1);
+
+  std::vector<double> coeff = std::vector<double>(SIXTERM_KSTART + SIXTERM_NUSE + 10);
+  vectorf<double> tc(coeff);
+  
+  // from must be greater than 0
+  int from = (int)coeff.size()-SIXTERM_NUSE;
+  // to must be less than coeff.size()
+  int to = (int)coeff.size()-1;
+  
+  ASSERT_THROW(constructSixTermSystem(tc, from, to, W, beta), std::exception);
+}
+
+TEST_F(TestThatSixTermAnalysis, ConstructsSixTermRow)
+{
+  std::vector<double> coeff{7,3,6,2};
+  vectorf<double> tc(coeff);
+
+  int k{2};
+  double w1,w2,w3,w4,b;
+  
+  constructSixTermRow(tc, k, w1, w2, w3, w4, b);
+  
+  double w1Test{6.0},w2Test{6.0},w3Test{-14.0},w4Test{0.0},bTest{12.0};
+  
+  EXPECT_THAT(w1, DoubleNear(w1Test, epsilon));
+  EXPECT_THAT(w2, DoubleNear(w2Test, epsilon));
+  EXPECT_THAT(w3, DoubleNear(w3Test, epsilon));
+  EXPECT_THAT(w4, DoubleNear(w4Test, epsilon));
+  EXPECT_THAT(b, DoubleNear(bTest, epsilon));
+}
+
+TEST_F(TestThatSixTermAnalysis, ThrowsExceptionIfBeta4IsNegative)
 {
   double beta4 = -1.0;
   EXPECT_THROW(testBeta4(beta4), std::exception);
 }
 
-TEST(TestThatSixTermAnalysis, ThrowsExceptionIfRCIsNaN)
+TEST_F(TestThatSixTermAnalysis, ThrowsExceptionIfRCIsNaN)
 {
   double rc = std::numeric_limits<double>::quiet_NaN();
   EXPECT_THROW(testRCSix(rc), std::exception);
 }
 
-TEST(TestThatSixTermAnalysis, ThrowsExceptionIfCosThetaIsNAN)
+TEST_F(TestThatSixTermAnalysis, ThrowsExceptionIfCosThetaIsNAN)
 {
   double cosTheta = std::numeric_limits<double>::quiet_NaN();
   EXPECT_THROW(testCosTheta(cosTheta), std::exception);
 }
 
-TEST(TestThatSixTermAnalysis, ThrowsExceptionIfCosThetaLessThanNegativeOne)
+TEST_F(TestThatSixTermAnalysis, ThrowsExceptionIfCosThetaLessThanNegativeOne)
 {
   double cosTheta = -2.0;
   EXPECT_THROW(testCosTheta(cosTheta), std::exception);
 }
 
-TEST(TestThatSixTermAnalysis, ThrowsExceptionIfCosThetaGreaterThanPositiveOne)
+TEST_F(TestThatSixTermAnalysis, ThrowsExceptionIfCosThetaGreaterThanPositiveOne)
 {
   double cosTheta = 2.0;
   EXPECT_THROW(testCosTheta(cosTheta), std::exception);
 }
 
-TEST(TestThatSixTermAnalysis, ThrowsExceptionIfSingularityOrdersAreBothNAN)
+TEST_F(TestThatSixTermAnalysis, ThrowsExceptionIfSingularityOrdersAreBothNAN)
 {
   double singularityOrder1 = std::numeric_limits<double>::quiet_NaN();
   double singularityOrder2 = std::numeric_limits<double>::quiet_NaN();
@@ -70,7 +133,7 @@ TEST(TestThatSixTermAnalysis, ThrowsExceptionIfSingularityOrdersAreBothNAN)
                std::exception);
 }
 
-TEST(TestThatSixTermAnalysis,
+TEST_F(TestThatSixTermAnalysis,
      ReturnsOneIfSingularityOrderOneIsNANAndSingularityOrderTwoIsOne)
 {
   double singularityOrder1 = std::numeric_limits<double>::quiet_NaN();
@@ -80,7 +143,7 @@ TEST(TestThatSixTermAnalysis,
               DoubleNear(1.0, epsilon));
 }
 
-TEST(TestThatSixTermAnalysis,
+TEST_F(TestThatSixTermAnalysis,
      ReturnsOneIfSingularityOrderOneIsOneAndSingularityOrderTwoIsNAN)
 {
   double singularityOrder1 = 1.0;
@@ -90,7 +153,7 @@ TEST(TestThatSixTermAnalysis,
               DoubleNear(1.0, epsilon));
 }
 
-TEST(
+TEST_F(
     TestThatSixTermAnalysis,
     ReturnsAverageOfSingularityOrderOneAndSingularityOrderTwoIfEachSingularityOrderIsInIntervalMinusOneToOne)
 {
@@ -100,17 +163,6 @@ TEST(
   EXPECT_THAT(testSingularityOrder(singularityOrder1, singularityOrder2),
               DoubleNear(2.0, epsilon));
 }
-
-// Test exception throws (Seems hard)
-//
-// SQRT test
-// 
-// The radius of convergence is infinity, a highly unlikely case (NOT TESTED)
-// 
-// Unconstrained optimization lead to CosTheta which is not in [-1, 1]
-//
-// Test sdiff = |s1 - s2| is small. What is small?
-// Implement IPOPT for that case that sdiff is not small.
 
 TEST(
     SixTermAnalysisOf,

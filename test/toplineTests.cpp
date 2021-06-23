@@ -29,32 +29,33 @@ class TestThatTopLine : public Test
   void TearDown() override {}
 };
 
-TEST_F(TestThatTopLine, hasMethodToplineThatReturnsADouble)
-{
-  for (int k = 0; k < num_coeff; k++)
-    coeff[ k ] = pow(8, k + 1) / ((double)(k + 1));
-
-  ASSERT_THAT(topline(coeff, scale, rc, order), DoubleNear(0.0, 0.000966623));
-}
-
 TEST_F(TestThatTopLine, ThrowsExceptionIfToplineCalledWithCoeffSizeLessThanTOPLINE_KSTARTPlusTOPLINE_NUSE)
 {
   coeff = std::vector<double>(TOPLINE_KSTART+TOPLINE_NUSE-1);
   ASSERT_THROW(topline(coeff, scale, rc, order), std::exception);
 }
 
-TEST_F(TestThatTopLine, DoesNotThrowExceptionIfToplineCalledWithCoeffSizeEqualToTOPLINE_KSTARTPlusTOPLINE_NUSEOrGreater)
+TEST_F(TestThatTopLine, ThrowsExceptionIfConstructLinearLeastSquaresSystemCalledWithWRowsUnequalToCoeffSizeMinusTOPLINE_KSTART)
 {
-  coeff = std::vector<double>(TOPLINE_KSTART+TOPLINE_NUSE);
-  ASSERT_NO_THROW(topline(coeff, scale, rc, order));
+  int ml{(int)coeff.size() - TOPLINE_KSTART - 1}, nl{2};
+  matrix<double> WL(ml, nl);
+  vectorf<double> betaL(ml);
+  
+  EXPECT_THROW(constructLinearLeastSquaresSystem(coeff, TOPLINE_KSTART, WL, betaL), std::exception);
+
+  int mg{(int)coeff.size() - TOPLINE_KSTART + 1}, ng{2};
+  matrix<double> WG(mg, ng);
+  vectorf<double> betaG(mg);
+  
+  EXPECT_THROW(constructLinearLeastSquaresSystem(coeff, TOPLINE_KSTART, WG, betaG), std::exception);
 }
 
-TEST_F(TestThatTopLine, ThrowsExceptionIfConstructLinearLeastSquaresSystemCalledWithNumberWRowsLessThanCoeffSizeMinusTOPLINE_KSTART)
+TEST_F(TestThatTopLine, ThrowsExceptionIfLinearLeastSquaresSystemCalledWithUnequalWRowsAndBRows)
 {
-  int m{(int)coeff.size() - TOPLINE_KSTART - 1}, n{2};
+  int m{(int)coeff.size() - TOPLINE_KSTART}, n{4};
   matrix<double> W(m, n);
-  vectorf<double> beta(m);
-  
+  vectorf<double> beta(m-1);
+
   ASSERT_THROW(constructLinearLeastSquaresSystem(coeff, TOPLINE_KSTART, W, beta), std::exception);
 }
 
@@ -103,7 +104,7 @@ TEST_F(TestThatTopLine, WillComputeLeastSquaresSolutionOnExample)
 {
   for (int k = 0; k < num_coeff; k++)
   {
-    coeff[ k ] = pow(8, k + 1) / ((double)(k + 1));
+    coeff[ k ] = std::pow(8, k + 1) / ((double)(k + 1));
   }
 
   EXPECT_THAT(topline(coeff, scale, rc, order),

@@ -24,7 +24,7 @@ int main()
     std::cout << e.what() << '\n';
   }
 
-  std::string filename{dn / "examples_cpp" / "e_laynewatson.out"};
+  std::string filename{dn / "examples" / "e_laynewatson.out"};
   std::cout << filename << "\n";
 
   std::ifstream input{filename};

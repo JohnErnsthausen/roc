@@ -21,12 +21,22 @@ void constructLinearLeastSquaresSystem(const std::vector<double> &coeff,
                                        vectorf<double> &b)
 {
   // Storage required to construct Top-Line system
-  if ((int)W.get_rows() < (int)coeff.size() - kstart)
+  if ((int)W.get_rows() != (int)coeff.size() - kstart)
   {
     std::string message{
         "Insufficient storage to construct Top-Line system. Have [" +
         std::to_string(W.get_rows()) + "] Need [" +
         std::to_string((int)coeff.size() - kstart) + "]\n"};
+    throw sayMessage(message);
+  }
+  // Compatible storage
+  if( b.get_size() != W.get_rows() )      
+  {
+    std::string message{
+        "Incompatible storage between Matrix and its range in construction of Linear Least Squares system. Have [" +
+        std::to_string(W.get_rows()) + "] matrix rows.\nHave [" +
+        std::to_string(b.get_size()) + "] rhs rows\n"
+    };
     throw sayMessage(message);
   }
 
