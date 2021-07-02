@@ -27,7 +27,7 @@ executors:
           name: Execute Tests
           command: |
             cd build
-            ./tests --gtest_output=XML
+            ./run --gtest_output=XML
       - store_test_results:
           path: buildworkflows:
   version: 2
