@@ -2,7 +2,9 @@ version: 2.1
 executors:
   exectr:
     docker:
-      - image: johnmernsthausen/cppwithgmockgtest:latestjobs:
+      - image: johnmernsthausen/cppwithgmockgtest:latest
+
+jobs:
   build:
     executor: exectr
     steps:
