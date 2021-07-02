@@ -29,7 +29,9 @@ executors:
             cd build
             ./run --gtest_output=XML
       - store_test_results:
-          path: buildworkflows:
+          path: build
+
+workflows:
   version: 2
   build-and-test:
     jobs:
