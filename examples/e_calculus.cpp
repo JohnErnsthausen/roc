@@ -20,7 +20,7 @@ int main()
 {
   // Variables to interact with roc
   std::vector<double> coeffs(NUM_COEFF);
-  double scale{0};
+  double scale{1.0};
   double rc{0};
   double order{0};
 

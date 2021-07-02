@@ -170,6 +170,7 @@ The coefficients of a general PS follow no patterns
 \end{frame}
 
 \begin{frame}{CC idea}
+
  For sufficiently large $k$, $c_k$  behave like the coefficients of
   \begin{itemize}
   \item single-pole model 
@@ -193,6 +194,15 @@ We know the RC in (\ref{eq:sp}) and (\ref{eq:spp})
 
 Use it as an approximation of RC of (\ref{eq:maineq}).
 
+  Given $f$ analytic (has PS expansion) at $x_0 = a$.
+
+  $a$ is an {\it pole of $f$ of order $m$}
+  means $f$ can be written as PS at $a$ of the form $f(x) = (a-x)^m * H(x)$ where $H(x) = \sum_0^{\infty} c_k (a-x)^k$
+  is entire
+
+  $a$ is an {\it essential singularity} means $f(x) = \sum_{-\infty}^{\infty} c_k (a - x)^k$
+
+  $a$ is a {\it logarithmic singularity}
 \end{frame}
 
 \begin{frame}{Example}

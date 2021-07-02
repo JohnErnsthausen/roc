@@ -13,7 +13,8 @@ T<double> func(const T<double>& x)
   T<double> z = 1.0001 + (1.01/10000.0) * x * x;
 
   // T<double> y = 1.0 - x;
-  return 1.0 / y + 1.0 / z;
+  //return 1.0 / y + 1.0 / z;
+  return sin(1.0/x);
 }
 
 int main()
