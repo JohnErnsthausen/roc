@@ -11,7 +11,7 @@ jobs:
       - run:
           name: Checkout
           command: |
-            git clone https://github.com:JohnErnsthausen/roc.git
+            git clone https://github.com/JohnErnsthausen/roc.git
       - run:
           name: Setup cmake and build artifacts
           command: |
