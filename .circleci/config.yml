@@ -29,7 +29,7 @@ jobs:
           name: Execute Tests
           command: |
             cd build
-            ./run --gtest_output=XML
+            ./run
       - store_test_results:
           path: build
 

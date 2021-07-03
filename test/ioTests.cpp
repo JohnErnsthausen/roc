@@ -21,6 +21,7 @@ class TestThatIO : public Test
 
 TEST_F(TestThatIO, FindsROCSubdirectoryInCurrentWorkingDirectory)
 {
+  std::cout << std::filesystem::current_path() << "\n";
   string roc{"roc"};
   ASSERT_NO_THROW(cwd_path_to(roc));
 }
