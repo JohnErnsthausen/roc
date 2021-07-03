@@ -28,7 +28,7 @@ jobs:
     executor: exectr
     steps:
       - attach_workspace:
-          at: .
+          at: ./roc
       - run:
           name: Execute Tests
           command: |
