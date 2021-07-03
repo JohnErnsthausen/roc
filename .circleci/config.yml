@@ -8,7 +8,10 @@ jobs:
   build:
     executor: exectr
     steps:
-      - checkout
+      - run:
+          name: Checkout
+          command: |
+            git clone ssh://git@github.com:JohnErnsthausen/roc.git
       - run:
           name: Setup cmake and build artifacts
           command: |
