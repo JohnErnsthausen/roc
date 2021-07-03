@@ -28,10 +28,11 @@ jobs:
     executor: exectr
     steps:
       - attach_workspace:
-          at: ./roc
+          at: .
       - run:
           name: Execute Tests
           command: |
+            cd roc
             cd build
             ./run
       - store_test_results:
