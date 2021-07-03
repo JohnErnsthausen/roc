@@ -9,12 +9,13 @@ jobs:
     executor: exectr
     steps:
       - run:
-          name: Checkout
+          name: Use this command in place of 'checkout' to clone repository into 'roc'
           command: |
             git clone https://github.com/JohnErnsthausen/roc.git
       - run:
           name: Setup cmake and build artifacts
           command: |
+            cd roc
             mkdir build
             cd build
             cmake ..
