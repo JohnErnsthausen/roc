@@ -21,7 +21,7 @@ jobs:
             cmake ..
             make
       - persist_to_workspace:
-          root: .
+          root: ./roc
           paths: build
 
   test:
