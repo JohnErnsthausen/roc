@@ -449,7 +449,7 @@ TEST(
 
   double err = sixterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, 2.2289e-13));
+  EXPECT_THAT(err, DoubleNear(0.0, 2600*DBL_EPSILON));
   EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 6.43930e-14));
   EXPECT_THAT(order, DoubleNear(3.1415, 1.64136e-12));
   EXPECT_THAT(coeffs.size(), Eq(30));
@@ -481,7 +481,7 @@ TEST(
   double err = sixterm(coeffs, scale, rc, order);
 
   EXPECT_THAT(err, DoubleNear(0.0, 2.38855e-15));
-  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 5.38459e-14));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 620*DBL_EPSILON));
   EXPECT_THAT(order, DoubleNear(3.1415, 3.79919e-12));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
