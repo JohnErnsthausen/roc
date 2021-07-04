@@ -224,9 +224,9 @@ TEST(
 
   double err = sixterm(coeffs, scale, rc, order);
 
-  EXPECT_THAT(err, DoubleNear(0.0, 2.60419e-15));
-  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), DBL_EPSILON));
-  EXPECT_THAT(order, DoubleNear(1.0, 2.24266e-14));
+  EXPECT_THAT(err, DoubleNear(0.0, 100*DBL_EPSILON));
+  EXPECT_THAT(rc, DoubleNear(sqrt(a * a + time * time), 10*DBL_EPSILON));
+  EXPECT_THAT(order, DoubleNear(1.0, 300*DBL_EPSILON));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
