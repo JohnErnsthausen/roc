@@ -55,7 +55,7 @@ TEST(ThreeTermAnalysisOf,
 
   EXPECT_THAT(err, DoubleNear(0.0, 710*DBL_EPSILON));
   EXPECT_THAT(rc, DoubleNear(a - time, 970*DBL_EPSILON));
-  EXPECT_THAT(order, DoubleNear(1.0, 1.05228e-12));
+  EXPECT_THAT(order, DoubleNear(1.0, 12000*DBL_EPSILON));
   EXPECT_THAT(coeffs.size(), Eq(30));
 }
 
