@@ -60,7 +60,7 @@ jobs:
             cmake -DENABLE_COVERAGE=ON ..
             make test
             make coverage
-            ./codecov -cF coverage.info
+            ./codecov -cF roc/build-coverage/coverage.info
              
 workflows:
   version: 2
