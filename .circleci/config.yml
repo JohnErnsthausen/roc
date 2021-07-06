@@ -38,6 +38,26 @@ jobs:
       - store_test_results:
           path: roc
 
+   coverage:
+     executor: exectr
+     steps:
+       - attach_workspace:
+           at: .
+       - run:
+           name: Upload Code Coverage Reports
+           command: |
+             curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --import
+             curl -Os https://uploader.codecov.io/latest/linux/codecov
+             curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM
+             curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM.sig
+             gpg --verify codecov.SHA256SUM.sig codecov.SHA256SUM
+             shasum -a 256 -c codecov.SHA256SUM
+             chmod +x codecov
+             ./codecov -t ${CODECOV_TOKEN}
+             cd roc
+             cd build
+             ./codecov -cF coverage.info
+             
 workflows:
   version: 2
   build-and-test:
