@@ -36,6 +36,7 @@ latex
 
 # John Additions
 build
+build-coverage
 # Makefile
 *.sw*
 *.exe

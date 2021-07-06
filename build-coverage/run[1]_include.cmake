@@ -1,0 +1,5 @@
+if(EXISTS "/home/john/cse701/roc/build-coverage/run[1]_tests.cmake")
+  include("/home/john/cse701/roc/build-coverage/run[1]_tests.cmake")
+else()
+  add_test(run_NOT_BUILT run_NOT_BUILT)
+endif()

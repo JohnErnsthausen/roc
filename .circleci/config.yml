@@ -55,7 +55,11 @@ jobs:
             chmod +x codecov
             ./codecov -t ${CODECOV_TOKEN}
             cd roc
-            cd build
+            mkdir build-coverage
+            cd build-coverage
+            cmake -DENABLE_COVERAGE=ON ..
+            make test
+            make coverage
             ./codecov -cF coverage.info
              
 workflows:
