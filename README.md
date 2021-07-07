@@ -5,12 +5,8 @@ Date of project start: 17 September 2020
 
 ## This repo uses
 
-[![Build Status](https://circleci.com/gh/JohnErnsthausen/roc.svg?style=svg)](https://app.circleci.com/pipelines/github/JohnErnsthausen)
-
-[![Build Status](https://travis-ci.org/JohnErnsthausen/roc.svg?branch=master)](https://travis-ci.org/JohnErnsthausen/roc)
-[![Coverage Status](https://coveralls.io/repos/github/JohnErnsthausen/roc/badge.svg?branch=master)](https://coveralls.io/github/JohnErnsthausen/roc?branch=master)
-
-[Coverage from plain gcov](http://www.johnernsthausen.com/experiences/coverage/)
+[![Build Status](https://circleci.com/gh/JohnErnsthausen/roc.svg?style=shield)](https://app.circleci.com/pipelines/github/JohnErnsthausen)
+[![codecov](https://codecov.io/gh/JohnErnsthausen/roc/branch/master/graph/badge.svg?token=LOCPRRBW3T)](https://codecov.io/gh/JohnErnsthausen/roc)
 
 ## Introduction
 
