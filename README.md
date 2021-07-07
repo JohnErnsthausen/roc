@@ -5,6 +5,8 @@ Date of project start: 17 September 2020
 
 ## This repo uses
 
+[![Build Status](https://circleci.com/gh/JohnErnsthausen/roc.svg?style=svg)](https://app.circleci.com/pipelines/github/JohnErnsthausen)
+
 [![Build Status](https://travis-ci.org/JohnErnsthausen/roc.svg?branch=master)](https://travis-ci.org/JohnErnsthausen/roc)
 [![Coverage Status](https://coveralls.io/repos/github/JohnErnsthausen/roc/badge.svg?branch=master)](https://coveralls.io/github/JohnErnsthausen/roc?branch=master)
 
