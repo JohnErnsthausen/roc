@@ -46,6 +46,12 @@ jobs:
       - run:
           name: Upload Code Coverage Reports
           command: |
+            cd roc
+            mkdir build-coverage
+            cd build-coverage
+            cmake -DENABLE_COVERAGE=ON ..
+            make test
+            make coverage
             curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --import
             curl -Os https://uploader.codecov.io/latest/linux/codecov
             curl -Os https://uploader.codecov.io/latest/linux/codecov.SHA256SUM
@@ -53,14 +59,7 @@ jobs:
             gpg --verify codecov.SHA256SUM.sig codecov.SHA256SUM
             shasum -a 256 -c codecov.SHA256SUM
             chmod +x codecov
-            ./codecov -t ${CODECOV_TOKEN}
-            cd roc
-            mkdir build-coverage
-            cd build-coverage
-            cmake -DENABLE_COVERAGE=ON ..
-            make test
-            make coverage
-            ./codecov -cF roc/build-coverage/coverage.info
+            ./codecov -t ${CODECOV_TOKEN} -cf roc/build-coverage/coverage.info
              
 workflows:
   version: 2
