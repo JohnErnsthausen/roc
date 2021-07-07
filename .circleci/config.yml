@@ -52,6 +52,7 @@ jobs:
             mkdir -p build-coverage
             cd build-coverage
             cmake -DENABLE_COVERAGE=ON ..
+            make
             make test
             make coverage
             curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --import
