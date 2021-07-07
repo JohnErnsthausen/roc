@@ -16,6 +16,7 @@ jobs:
           name: Setup cmake and build artifacts
           command: |
             cd roc
+            rm -rf build
             mkdir build
             cd build
             cmake ..
@@ -47,7 +48,8 @@ jobs:
           name: Upload Code Coverage Reports
           command: |
             cd roc
-            mkdir build-coverage
+            rm -rf build-coverage
+            mkdir -p build-coverage
             cd build-coverage
             cmake -DENABLE_COVERAGE=ON ..
             make test
