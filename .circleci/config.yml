@@ -62,7 +62,7 @@ jobs:
             gpg --verify codecov.SHA256SUM.sig codecov.SHA256SUM
             shasum -a 256 -c codecov.SHA256SUM
             chmod +x codecov
-            ./codecov -t ${CODECOV_TOKEN} -cf roc/build-coverage/coverage.info
+            ./codecov -t ${CODECOV_TOKEN} -cf coverage.info
              
 workflows:
   version: 2
