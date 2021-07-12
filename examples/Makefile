@@ -1,4 +1,4 @@
-CPPSRCS = e_laynewatson.cpp \
+CPPSRCS = e_sevenbody.cpp \
    ../src/norm2.cpp \
    ../src/minnormsol.cpp \
    ../src/io.cpp \
@@ -31,13 +31,18 @@ LDLIBS =-lm -lstdc++ -lblas -lgfortran -llapack
 
 .PHONY: all clean
 
-all: e_laynewatson
+all: e_sevenbody
+
+gprof:
+	./e_sevenbody
+	gprof e_sevenbody gmon.out > e_sevenbody_gprof_output.txt
+	$(RM) gmon.out
 
 clean:
-	$(RM) $(OBJECTS) $(DEPENDS) e_laynewatson 
+	$(RM) $(OBJECTS) $(DEPENDS) e_sevenbody 
 
 # Rule for the executable, depending on all the object files
-e_laynewatson: $(OBJECTS)
+e_sevenbody: $(OBJECTS)
 	$(CXX) $(WARNING) $(CXXFLAGS) $(LDFLAGS) -o $@ $(OBJECTS) $(LDLIBS)
 
 # We have a dependency file for each source file. Here we include them into the Makefile.
@@ -48,7 +53,7 @@ e_laynewatson: $(OBJECTS)
 # Generic rule to compile CPP individual source files into corresponding object file
 # Demanding this rule to depend on the Makefile as well ensures that e.g. changes in
 # $(CXXFLAGS) trigger a recompile as well. $< resolves to the first dependency, the
-# first CPP source file. $@ is the filename of the target, here e_laynewatson
+# first CPP source file. $@ is the filename of the target, here e_sevenbody
 #
 # We have the compiler generate those dependency files for us. For that, we extend the build
 # rule. The -MMD flag generates the dependency file (%.cpp.d), which will hold in Makefile
@@ -69,7 +74,7 @@ e_laynewatson: $(OBJECTS)
 # Generic rule to compile CC individual source files into corresponding object file
 # Demanding this rule to depend on the Makefile as well ensures that e.g. changes in
 # $(CFLAGS) trigger a recompile as well. $< resolves to the first dependency, the
-# first CC source file. $@ is the filename of the target, here e_laynewatson
+# first CC source file. $@ is the filename of the target, here e_sevenbody
 %.c.o: %.c
 	$(CC) $(WARNING) $(CFLAGS) $(LDFLAGS) -MMD -MP -c $< -o $@
 

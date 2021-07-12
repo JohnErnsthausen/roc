@@ -2,10 +2,6 @@
 
 require 'rake/clean'
 
-def method_name
-  (/`(.*)'/.match(caller.first) ? $1 : 'Unresolved_Method_Name')
-end
-
 files = FileList.new('*', '../src/*')
 BLD_FILES = files.collect{ |f| matchData = f.match(/^(.*)\.(o|d)$/); matchData[0] if matchData }.compact
 OUT_FILES = [] #files.collect{ |f| matchData = f.match(/^e_(.*)\.out$/); matchData[0] if matchData }.compact
@@ -34,12 +30,8 @@ desc "Compile an example"
 task :compile, [:example] do |t,args|
   args.with_defaults(:example => "foo.c")
   puts "Args used: #{args}"
-  begin
-    makefile = File.read("RBMakefile.mk").gsub(/##MYEXAMPLE##/,args[:example].ext(''))
-    fn = "Makefile"
-    File.write(fn, makefile)
-    sh "make -j 8"
-  rescue Exception => e
-    puts "ERROR [#{method_name}]: #{e.to_s} (#{e.class})"
-  end
+  makefile = File.read("RBMakefile.mk").gsub(/##MYEXAMPLE##/,args[:example].ext(''))
+  fn = "Makefile"
+  File.write(fn, makefile)
+  sh "make -j 8"
 end

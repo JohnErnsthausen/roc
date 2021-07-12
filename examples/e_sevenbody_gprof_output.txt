@@ -1,0 +1,327 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  Ts/call  Ts/call  name    
+100.08      0.01     0.01                             read_numbers(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  0.00      0.01     0.00   401468     0.00     0.00  constructSixTermRow(vectorf<double> const&, int, double&, double&, double&, double&, double&)
+  0.00      0.01     0.00   240700     0.00     0.00  vectorf<double>::vectorf(unsigned long const&)
+  0.00      0.01     0.00   171864     0.00     0.00  void std::vector<double, std::allocator<double> >::_M_realloc_insert<double>(__gnu_cxx::__normal_iterator<double*, std::vector<double, std::allocator<double> > >, double&&)
+  0.00      0.01     0.00   154768     0.00     0.00  norm2(int, double*)
+  0.00      0.01     0.00    85932     0.00     0.00  MinNormSolution(int, int, double*, double*)
+  0.00      0.01     0.00    28649     0.00     0.00  void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag)
+  0.00      0.01     0.00    28646     0.00     0.00  void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag)
+  0.00      0.01     0.00    28644     0.00     0.00  testRCThree(double)
+  0.00      0.01     0.00    28644     0.00     0.00  errorTopLine(std::vector<double, std::allocator<double> > const&, vectorf<double> const&)
+  0.00      0.01     0.00    28644     0.00     0.00  errorThreeTerm(vectorf<double> const&, vectorf<double> const&)
+  0.00      0.01     0.00    28644     0.00     0.00  constructSixTermSystem(vectorf<double> const&, int, int, matrix<double>&, vectorf<double>&)
+  0.00      0.01     0.00    28644     0.00     0.00  constructThreeTermSystem(vectorf<double> const&, int, int, matrix<double>&, vectorf<double>&)
+  0.00      0.01     0.00    28644     0.00     0.00  constructLinearLeastSquaresSystem(std::vector<double, std::allocator<double> > const&, int, matrix<double>&, vectorf<double>&)
+  0.00      0.01     0.00    28644     0.00     0.00  sixterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&)
+  0.00      0.01     0.00    28644     0.00     0.00  topline(std::vector<double, std::allocator<double> > const&, double const&, double&, double&)
+  0.00      0.01     0.00    28644     0.00     0.00  testBeta4(double)
+  0.00      0.01     0.00    28644     0.00     0.00  testOrder(double)
+  0.00      0.01     0.00    28644     0.00     0.00  threeterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&)
+  0.00      0.01     0.00    28644     0.00     0.00  std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > __gnu_cxx::__to_xstring<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, char>(int (*)(char*, unsigned long, char const*, __va_list_tag*), unsigned long, char const*, ...)
+  0.00      0.01     0.00    26131     0.00     0.00  testCosTheta(double)
+  0.00      0.01     0.00    26131     0.00     0.00  testRCSix(double)
+  0.00      0.01     0.00    20096     0.00     0.00  errorSixTerm(vectorf<double> const&, vectorf<double> const&)
+  0.00      0.01     0.00    20096     0.00     0.00  testSingularityOrder(double, double)
+  0.00      0.01     0.00     8548     0.00     0.00  std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&, char const*)
+  0.00      0.01     0.00     8548     0.00     0.00  std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(char const*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&)
+  0.00      0.01     0.00        1     0.00     0.00  _GLOBAL__sub_I__Z19constructSixTermRowRK7vectorfIdEiRdS3_S3_S3_S3_
+  0.00      0.01     0.00        1     0.00     0.00  _GLOBAL__sub_I__Z21constructThreeTermRowRK7vectorfIdEiRdS3_S3_
+  0.00      0.01     0.00        1     0.00     0.00  _GLOBAL__sub_I__Z24derivatives2coefficientsRSt6vectorIdSaIdEE
+  0.00      0.01     0.00        1     0.00     0.00  _GLOBAL__sub_I__Z30constructLinearLeastSquaresRowRKSt6vectorIdSaIdEEiRdS4_S4_
+  0.00      0.01     0.00        1     0.00     0.00  _GLOBAL__sub_I__ZlsRSoRKSt6vectorIdSaIdEE
+  0.00      0.01     0.00        1     0.00     0.00  _GLOBAL__sub_I_main
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 2 byte(s) for 99.92% of 0.01 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]    100.0    0.01    0.00                 read_numbers(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [1]
+                0.00    0.00  171864/171864      void std::vector<double, std::allocator<double> >::_M_realloc_insert<double>(__gnu_cxx::__normal_iterator<double*, std::vector<double, std::allocator<double> > >, double&&) [11]
+                0.00    0.00   28644/28649       void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) [14]
+-----------------------------------------------
+                0.00    0.00  200508/401468      constructSixTermSystem(vectorf<double> const&, int, int, matrix<double>&, vectorf<double>&) [19]
+                0.00    0.00  200960/401468      errorSixTerm(vectorf<double> const&, vectorf<double> const&) [30]
+[9]      0.0    0.00    0.00  401468         constructSixTermRow(vectorf<double> const&, int, double&, double&, double&, double&, double&) [9]
+-----------------------------------------------
+                0.00    0.00   28644/240700      threeterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [26]
+                0.00    0.00   28644/240700      sixterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [22]
+                0.00    0.00   28644/240700      topline(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [23]
+                0.00    0.00   40192/240700      errorSixTerm(vectorf<double> const&, vectorf<double> const&) [30]
+                0.00    0.00   57288/240700      errorThreeTerm(vectorf<double> const&, vectorf<double> const&) [18]
+                0.00    0.00   57288/240700      errorTopLine(std::vector<double, std::allocator<double> > const&, vectorf<double> const&) [17]
+[10]     0.0    0.00    0.00  240700         vectorf<double>::vectorf(unsigned long const&) [10]
+-----------------------------------------------
+                0.00    0.00  171864/171864      read_numbers(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [1]
+[11]     0.0    0.00    0.00  171864         void std::vector<double, std::allocator<double> >::_M_realloc_insert<double>(__gnu_cxx::__normal_iterator<double*, std::vector<double, std::allocator<double> > >, double&&) [11]
+-----------------------------------------------
+                0.00    0.00   40192/154768      errorSixTerm(vectorf<double> const&, vectorf<double> const&) [30]
+                0.00    0.00   57288/154768      errorThreeTerm(vectorf<double> const&, vectorf<double> const&) [18]
+                0.00    0.00   57288/154768      errorTopLine(std::vector<double, std::allocator<double> > const&, vectorf<double> const&) [17]
+[12]     0.0    0.00    0.00  154768         norm2(int, double*) [12]
+-----------------------------------------------
+                0.00    0.00   28644/85932       threeterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [26]
+                0.00    0.00   28644/85932       sixterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [22]
+                0.00    0.00   28644/85932       topline(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [23]
+[13]     0.0    0.00    0.00   85932         MinNormSolution(int, int, double*, double*) [13]
+-----------------------------------------------
+                0.00    0.00       5/28649       cwd_path_to(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [41]
+                0.00    0.00   28644/28649       read_numbers(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [1]
+[14]     0.0    0.00    0.00   28649         void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag) [14]
+-----------------------------------------------
+                0.00    0.00       2/28646       std::filesystem::__cxx11::operator/(std::filesystem::__cxx11::path const&, std::filesystem::__cxx11::path const&) [52]
+                0.00    0.00   28644/28646       std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > __gnu_cxx::__to_xstring<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, char>(int (*)(char*, unsigned long, char const*, __va_list_tag*), unsigned long, char const*, ...) [27]
+[15]     0.0    0.00    0.00   28646         void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) [15]
+-----------------------------------------------
+                0.00    0.00   28644/28644       threeterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [26]
+[16]     0.0    0.00    0.00   28644         testRCThree(double) [16]
+-----------------------------------------------
+                0.00    0.00   28644/28644       topline(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [23]
+[17]     0.0    0.00    0.00   28644         errorTopLine(std::vector<double, std::allocator<double> > const&, vectorf<double> const&) [17]
+                0.00    0.00   57288/240700      vectorf<double>::vectorf(unsigned long const&) [10]
+                0.00    0.00   57288/154768      norm2(int, double*) [12]
+-----------------------------------------------
+                0.00    0.00   28644/28644       threeterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [26]
+[18]     0.0    0.00    0.00   28644         errorThreeTerm(vectorf<double> const&, vectorf<double> const&) [18]
+                0.00    0.00   57288/240700      vectorf<double>::vectorf(unsigned long const&) [10]
+                0.00    0.00   57288/154768      norm2(int, double*) [12]
+-----------------------------------------------
+                0.00    0.00   28644/28644       sixterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [22]
+[19]     0.0    0.00    0.00   28644         constructSixTermSystem(vectorf<double> const&, int, int, matrix<double>&, vectorf<double>&) [19]
+                0.00    0.00  200508/401468      constructSixTermRow(vectorf<double> const&, int, double&, double&, double&, double&, double&) [9]
+-----------------------------------------------
+                0.00    0.00   28644/28644       threeterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [26]
+[20]     0.0    0.00    0.00   28644         constructThreeTermSystem(vectorf<double> const&, int, int, matrix<double>&, vectorf<double>&) [20]
+-----------------------------------------------
+                0.00    0.00   28644/28644       topline(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [23]
+[21]     0.0    0.00    0.00   28644         constructLinearLeastSquaresSystem(std::vector<double, std::allocator<double> > const&, int, matrix<double>&, vectorf<double>&) [21]
+-----------------------------------------------
+                0.00    0.00   28644/28644       roc(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [45]
+[22]     0.0    0.00    0.00   28644         sixterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [22]
+                0.00    0.00   28644/240700      vectorf<double>::vectorf(unsigned long const&) [10]
+                0.00    0.00   28644/28644       constructSixTermSystem(vectorf<double> const&, int, int, matrix<double>&, vectorf<double>&) [19]
+                0.00    0.00   28644/85932       MinNormSolution(int, int, double*, double*) [13]
+                0.00    0.00   28644/28644       testBeta4(double) [24]
+                0.00    0.00   26131/26131       testRCSix(double) [29]
+                0.00    0.00   26131/26131       testCosTheta(double) [28]
+                0.00    0.00   20096/20096       testSingularityOrder(double, double) [31]
+                0.00    0.00   20096/20096       errorSixTerm(vectorf<double> const&, vectorf<double> const&) [30]
+-----------------------------------------------
+                0.00    0.00   28644/28644       roc(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [45]
+[23]     0.0    0.00    0.00   28644         topline(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [23]
+                0.00    0.00   28644/240700      vectorf<double>::vectorf(unsigned long const&) [10]
+                0.00    0.00   28644/28644       constructLinearLeastSquaresSystem(std::vector<double, std::allocator<double> > const&, int, matrix<double>&, vectorf<double>&) [21]
+                0.00    0.00   28644/85932       MinNormSolution(int, int, double*, double*) [13]
+                0.00    0.00   28644/28644       errorTopLine(std::vector<double, std::allocator<double> > const&, vectorf<double> const&) [17]
+-----------------------------------------------
+                0.00    0.00   28644/28644       sixterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [22]
+[24]     0.0    0.00    0.00   28644         testBeta4(double) [24]
+                0.00    0.00    2513/28644       std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > __gnu_cxx::__to_xstring<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, char>(int (*)(char*, unsigned long, char const*, __va_list_tag*), unsigned long, char const*, ...) [27]
+                0.00    0.00    2513/8548        std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(char const*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&) [33]
+                0.00    0.00    2513/8548        std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&, char const*) [32]
+-----------------------------------------------
+                0.00    0.00   28644/28644       threeterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [26]
+[25]     0.0    0.00    0.00   28644         testOrder(double) [25]
+-----------------------------------------------
+                0.00    0.00   28644/28644       roc(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [45]
+[26]     0.0    0.00    0.00   28644         threeterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [26]
+                0.00    0.00   28644/240700      vectorf<double>::vectorf(unsigned long const&) [10]
+                0.00    0.00   28644/28644       constructThreeTermSystem(vectorf<double> const&, int, int, matrix<double>&, vectorf<double>&) [20]
+                0.00    0.00   28644/85932       MinNormSolution(int, int, double*, double*) [13]
+                0.00    0.00   28644/28644       testRCThree(double) [16]
+                0.00    0.00   28644/28644       errorThreeTerm(vectorf<double> const&, vectorf<double> const&) [18]
+                0.00    0.00   28644/28644       testOrder(double) [25]
+-----------------------------------------------
+                0.00    0.00    2513/28644       testBeta4(double) [24]
+                0.00    0.00    6035/28644       testCosTheta(double) [28]
+                0.00    0.00   20096/28644       testSingularityOrder(double, double) [31]
+[27]     0.0    0.00    0.00   28644         std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > __gnu_cxx::__to_xstring<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, char>(int (*)(char*, unsigned long, char const*, __va_list_tag*), unsigned long, char const*, ...) [27]
+                0.00    0.00   28644/28646       void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag) [15]
+-----------------------------------------------
+                0.00    0.00   26131/26131       sixterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [22]
+[28]     0.0    0.00    0.00   26131         testCosTheta(double) [28]
+                0.00    0.00    6035/28644       std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > __gnu_cxx::__to_xstring<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, char>(int (*)(char*, unsigned long, char const*, __va_list_tag*), unsigned long, char const*, ...) [27]
+                0.00    0.00    6035/8548        std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(char const*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&) [33]
+                0.00    0.00    6035/8548        std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&, char const*) [32]
+-----------------------------------------------
+                0.00    0.00   26131/26131       sixterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [22]
+[29]     0.0    0.00    0.00   26131         testRCSix(double) [29]
+-----------------------------------------------
+                0.00    0.00   20096/20096       sixterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [22]
+[30]     0.0    0.00    0.00   20096         errorSixTerm(vectorf<double> const&, vectorf<double> const&) [30]
+                0.00    0.00  200960/401468      constructSixTermRow(vectorf<double> const&, int, double&, double&, double&, double&, double&) [9]
+                0.00    0.00   40192/240700      vectorf<double>::vectorf(unsigned long const&) [10]
+                0.00    0.00   40192/154768      norm2(int, double*) [12]
+-----------------------------------------------
+                0.00    0.00   20096/20096       sixterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [22]
+[31]     0.0    0.00    0.00   20096         testSingularityOrder(double, double) [31]
+                0.00    0.00   20096/28644       std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > __gnu_cxx::__to_xstring<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, char>(int (*)(char*, unsigned long, char const*, __va_list_tag*), unsigned long, char const*, ...) [27]
+-----------------------------------------------
+                0.00    0.00    2513/8548        testBeta4(double) [24]
+                0.00    0.00    6035/8548        testCosTheta(double) [28]
+[32]     0.0    0.00    0.00    8548         std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&, char const*) [32]
+-----------------------------------------------
+                0.00    0.00    2513/8548        testBeta4(double) [24]
+                0.00    0.00    6035/8548        testCosTheta(double) [28]
+[33]     0.0    0.00    0.00    8548         std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(char const*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&) [33]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [59]
+[34]     0.0    0.00    0.00       1         _GLOBAL__sub_I__Z19constructSixTermRowRK7vectorfIdEiRdS3_S3_S3_S3_ [34]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [59]
+[35]     0.0    0.00    0.00       1         _GLOBAL__sub_I__Z21constructThreeTermRowRK7vectorfIdEiRdS3_S3_ [35]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [59]
+[36]     0.0    0.00    0.00       1         _GLOBAL__sub_I__Z24derivatives2coefficientsRSt6vectorIdSaIdEE [36]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [59]
+[37]     0.0    0.00    0.00       1         _GLOBAL__sub_I__Z30constructLinearLeastSquaresRowRKSt6vectorIdSaIdEEiRdS4_S4_ [37]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [59]
+[38]     0.0    0.00    0.00       1         _GLOBAL__sub_I__ZlsRSoRKSt6vectorIdSaIdEE [38]
+-----------------------------------------------
+                0.00    0.00       1/1           __libc_csu_init [59]
+[39]     0.0    0.00    0.00       1         _GLOBAL__sub_I_main [39]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+  [34] _GLOBAL__sub_I__Z19constructSixTermRowRK7vectorfIdEiRdS3_S3_S3_S3_ [18] errorThreeTerm(vectorf<double> const&, vectorf<double> const&) [25] testOrder(double)
+  [35] _GLOBAL__sub_I__Z21constructThreeTermRowRK7vectorfIdEiRdS3_S3_ [13] MinNormSolution(int, int, double*, double*) [29] testRCSix(double)
+  [36] _GLOBAL__sub_I__Z24derivatives2coefficientsRSt6vectorIdSaIdEE [9] constructSixTermRow(vectorf<double> const&, int, double&, double&, double&, double&, double&) [26] threeterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&)
+  [37] _GLOBAL__sub_I__Z30constructLinearLeastSquaresRowRKSt6vectorIdSaIdEEiRdS4_S4_ [31] testSingularityOrder(double, double) [10] vectorf<double>::vectorf(unsigned long const&)
+  [38] _GLOBAL__sub_I__ZlsRSoRKSt6vectorIdSaIdEE [19] constructSixTermSystem(vectorf<double> const&, int, int, matrix<double>&, vectorf<double>&) [27] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > __gnu_cxx::__to_xstring<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, char>(int (*)(char*, unsigned long, char const*, __va_list_tag*), unsigned long, char const*, ...)
+  [39] _GLOBAL__sub_I_main    [20] constructThreeTermSystem(vectorf<double> const&, int, int, matrix<double>&, vectorf<double>&) [11] void std::vector<double, std::allocator<double> >::_M_realloc_insert<double>(__gnu_cxx::__normal_iterator<double*, std::vector<double, std::allocator<double> > >, double&&)
+  [16] testRCThree(double)    [21] constructLinearLeastSquaresSystem(std::vector<double, std::allocator<double> > const&, int, matrix<double>&, vectorf<double>&) [14] void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char const*>(char const*, char const*, std::forward_iterator_tag)
+  [30] errorSixTerm(vectorf<double> const&, vectorf<double> const&) [12] norm2(int, double*) [15] void std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::_M_construct<char*>(char*, char*, std::forward_iterator_tag)
+  [17] errorTopLine(std::vector<double, std::allocator<double> > const&, vectorf<double> const&) [22] sixterm(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [32] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&, char const*)
+   [1] read_numbers(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [23] topline(std::vector<double, std::allocator<double> > const&, double const&, double&, double&) [33] std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > std::operator+<char, std::char_traits<char>, std::allocator<char> >(char const*, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&)
+  [28] testCosTheta(double)   [24] testBeta4(double)

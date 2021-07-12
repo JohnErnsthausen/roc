@@ -33,6 +33,11 @@ LDLIBS =-lm -lstdc++ -lblas -lgfortran -llapack
 
 all: ##MYEXAMPLE##
 
+gprof:
+	./##MYEXAMPLE##
+	gprof ##MYEXAMPLE## gmon.out > ##MYEXAMPLE##_gprof_output.txt
+	$(RM) gmon.out
+
 clean:
 	$(RM) $(OBJECTS) $(DEPENDS) ##MYEXAMPLE## 
 
