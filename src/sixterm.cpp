@@ -48,10 +48,10 @@ void constructSixTermSystem(const vectorf<double> &coeff, const int from, const 
   {
     constructSixTermRow(coeff, k, W(i, 1), W(i, 2), W(i, 3), W(i, 4), b(i));
   }
-  // std::cout << "Rows [" + std::to_string(W.get_rows()) + "]\n";
-  // std::cout << "Cols [" + std::to_string(W.get_cols()) + "]\n";
-  // std::cout << "W =\n" << W << '\n';
-  // std::cout << "b =\n" << b << '\n';
+  std::cout << "Rows [" + std::to_string(W.get_rows()) + "]\n";
+  std::cout << "Cols [" + std::to_string(W.get_cols()) + "]\n";
+  std::cout << "W =\n" << W << '\n';
+  std::cout << "b =\n" << b << '\n';
 }
 
 void testBeta4(double beta4)
