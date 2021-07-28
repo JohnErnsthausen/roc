@@ -1,6 +1,0 @@
-/home/john/cse701/roc/build-coverage/CMakeFiles/rebuild_cache.dir
-/home/john/cse701/roc/build-coverage/CMakeFiles/edit_cache.dir
-/home/john/cse701/roc/build-coverage/CMakeFiles/test.dir
-/home/john/cse701/roc/build-coverage/CMakeFiles/run.dir
-/home/john/cse701/roc/build-coverage/CMakeFiles/coverage.dir
-/home/john/cse701/roc/build-coverage/CMakeFiles/roc.dir
